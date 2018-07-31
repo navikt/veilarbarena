@@ -1,0 +1,28 @@
+# ref https://raw.githubusercontent.com/nais/naisd/master/nais_example.yaml
+image: docker.adeo.no:5000/fo/veilarbarena
+replicas:
+  min: 2
+  max: 4
+  cpuThresholdPercentage: 50
+port: 8080
+healthcheck:
+  liveness:
+    path: veilarbarena/internal/isAlive
+    initialDelay: 120
+  readiness:
+    path: veilarbarena/internal/selftest
+    initialDelay: 120
+prometheus:
+  enabled: true
+  path: veilarbarena/internal/metrics
+fasitResources:
+  used:
+  - alias: appdynamics
+    resourceType: applicationproperties
+  - alias: loadbalancer:veilarbarena
+    resourceType: loadbalancerconfig
+  exposed:
+  - alias: veilarbarenaAPI
+    resourceType: restservice
+    path: /veilarbarena/api
+team: oppfolging
