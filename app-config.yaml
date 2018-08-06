@@ -17,10 +17,32 @@ prometheus:
   path: veilarbarena/internal/metrics
 fasitResources:
   used:
+  # custom veilarbarena props
   - alias: appdynamics
     resourceType: applicationproperties
   - alias: loadbalancer:veilarbarena
     resourceType: loadbalancerconfig
+  - alias: srvveilarbarena
+      resourceType: credential
+
+  # stolen resources
+  - alias: veilarbportefoljeDB
+      resourceType: datasource
+
+  # security resources
+  - alias: isso-rp-user
+    resourceType: credential
+  - alias: isso-host
+    resourceType: baseUrl
+  - alias: isso-jwks
+    resourceType: baseUrl
+  - alias: isso-issuer
+    resourceType: baseUrl
+  - alias: isso.isalive
+    resourceType: baseUrl
+  - alias: veilarblogin.redirect-url
+    resourceType: baseUrl
+
   exposed:
   - alias: veilarbarenaAPI
     resourceType: restservice
