@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        DbConfig.class,
-        FeedConfig.class
+        DbConfig.class
 })
 @ComponentScan("no.nav.fo.veilarbarena.rest")
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {

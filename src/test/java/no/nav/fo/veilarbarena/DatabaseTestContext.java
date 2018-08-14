@@ -5,7 +5,6 @@ import no.nav.dialogarena.config.fasit.DbCredentials;
 import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.TestEnvironment;
 
-import static no.nav.fo.veilarbarena.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_PASSWORD;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_URL;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_USERNAME;
