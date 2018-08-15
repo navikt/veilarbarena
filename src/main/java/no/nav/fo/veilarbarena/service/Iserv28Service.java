@@ -3,7 +3,11 @@ package no.nav.fo.veilarbarena.service;
 import no.nav.fo.veilarbarena.domain.Iserv28;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.jose4j.json.internal.json_simple.JSONValue;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
 import java.sql.ResultSet;
@@ -14,6 +18,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static no.nav.fo.veilarbarena.config.KafkaConfig.ISERV28DAGER_TOPIC;
+import static no.nav.fo.veilarbarena.config.KafkaConfig.createProducer;
+
 public class Iserv28Service {
 
     private final JdbcTemplate jdbc;
@@ -21,6 +28,13 @@ public class Iserv28Service {
     @Inject
     public Iserv28Service(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
+    }
+
+    @Scheduled(cron = "* * * 10")
+    public void sendTilKafkaBrukereMedIserv28Dager() {
+        final Producer<String, String> producer = createProducer();
+        finnBrukereMedIservI28Dager(ZonedDateTime.now())
+                .forEach(iserv -> producer.send(new ProducerRecord<>(ISERV28DAGER_TOPIC, JSONValue.toJSONString(iserv))));
     }
 
     public List<Iserv28> finnBrukereMedIservI28Dager(ZonedDateTime oppdatertEtter) {

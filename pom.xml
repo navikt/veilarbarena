@@ -17,6 +17,7 @@
 
     <properties>
         <hikariCP.version>2.7.3</hikariCP.version>
+        <spring.kafka.version>2.1.7.RELEASE</spring.kafka.version>
         <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.coverage.exclusions>
             **/java/Main.java,
@@ -93,6 +94,19 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
+        </dependency>
+
+        <!-- kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring.kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <version>${spring.kafka.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Logging -->
