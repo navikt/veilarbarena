@@ -13,7 +13,7 @@ import static java.lang.System.getProperty;
 
 @Configuration
 public class OppfolgingstatusConfig {
-    private static final String ENDPOINTURL = "VIRKSOMHET:OPPFOELGINGSSTATUS_V1_ENDPOINTURL";
+    public static final String ENDPOINTURL = "VIRKSOMHET_OPPFOELGINGSSTATUS_V1_ENDPOINTURL";
 
     private static Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(),
             "OPPFOELGINGSTATUS_V1 via " + getProperty(ENDPOINTURL),
