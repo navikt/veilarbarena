@@ -15,6 +15,9 @@ healthcheck:
 prometheus:
   enabled: true
   path: veilarbarena/internal/metrics
+resources:
+  limits:
+    cpu: 3
 fasitResources:
   used:
   # custom veilarbarena props
