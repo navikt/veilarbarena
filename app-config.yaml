@@ -23,11 +23,11 @@ fasitResources:
   - alias: loadbalancer:veilarbarena
     resourceType: loadbalancerconfig
   - alias: srvveilarbarena
-      resourceType: credential
+    resourceType: credential
 
   # stolen resources
   - alias: veilarbportefoljeDB
-      resourceType: datasource
+    resourceType: datasource
 
   # security resources
   - alias: isso-rp-user
