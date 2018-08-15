@@ -19,14 +19,13 @@ public class MainTest {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
         DatabaseTestContext.setupContext(getProperty("database", "T6"));
 
-// TODO finne løsning for lokal-kjøring
-//        setupSecurity();
+        setupSecurity();
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
         setProperty(REDIRECT_URL_PROPERTY, loginUrl);
         Main.main(TEST_PORT);
     }
 
-    public static void setupSecurity(){
+    private static void setupSecurity(){
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
