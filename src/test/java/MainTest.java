@@ -19,19 +19,18 @@ public class MainTest {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
         DatabaseTestContext.setupContext(getProperty("database", "T6"));
 
-// TODO finne løsning for lokal-kjøring
-//        setupSecurity();
+        setupSecurity();
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
         setProperty(REDIRECT_URL_PROPERTY, loginUrl);
         Main.main(TEST_PORT);
     }
 
-    public static void setupSecurity(){
+    private static void setupSecurity(){
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
         String issoIsAlive = FasitUtils.getBaseUrl("isso.isalive", FasitUtils.Zone.FSS);
-        ServiceUser srvveilarbdirigent = FasitUtils.getServiceUser("srvveilarbdirigent", APPLICATION_NAME);
+        ServiceUser srvveilarbarena = FasitUtils.getServiceUser("srvveilarena", APPLICATION_NAME);
         ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
 
         setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME, issoHost);
@@ -40,7 +39,7 @@ public class MainTest {
         setProperty(Constants.ISSO_JWKS_URL_PROPERTY_NAME, issoJWS);
         setProperty(Constants.ISSO_ISSUER_URL_PROPERTY_NAME, issoISSUER);
         setProperty(Constants.ISSO_ISALIVE_URL_PROPERTY_NAME, issoIsAlive);
-        setProperty(SecurityConstants.SYSTEMUSER_USERNAME, srvveilarbdirigent.getUsername());
-        setProperty(SecurityConstants.SYSTEMUSER_PASSWORD, srvveilarbdirigent.getPassword());
+        setProperty(SecurityConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
+        setProperty(SecurityConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());
     }
 }

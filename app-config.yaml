@@ -43,6 +43,12 @@ fasitResources:
   - alias: veilarblogin.redirect-url
     resourceType: baseUrl
 
+  # SOAP-services
+  - alias: Aktoer_v2
+    resourceType: webserviceendpoint
+  - alias: Oppfoelgingsstatus_v1
+    resourceType: webserviceendpoint
+
   exposed:
   - alias: veilarbarenaAPI
     resourceType: restservice
