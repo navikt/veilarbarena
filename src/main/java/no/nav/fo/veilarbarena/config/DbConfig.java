@@ -22,7 +22,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class DbConfig {
     public static final String VEILARBARENADB_URL = "VEILARBPORTEFOLJEDB_URL";
     public static final String VEILARBARENADB_USERNAME = "VEILARBPORTEFOLJEDB_USERNAME";
-    public static final String VEILARBARENADB_PASSWORD = "VEILARBPORTEFOLJEDB_PASSWORD ";
+    public static final String VEILARBARENADB_PASSWORD = "VEILARBPORTEFOLJEDB_PASSWORD";
 
     @Bean
     public static DataSource getDataSource() {
