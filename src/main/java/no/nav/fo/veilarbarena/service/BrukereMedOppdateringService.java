@@ -3,9 +3,6 @@ package no.nav.fo.veilarbarena.service;
 import no.nav.fo.veilarbarena.domain.Bruker;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.jose4j.json.internal.json_simple.JSONValue;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -17,23 +14,21 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN;
-import static no.nav.fo.veilarbarena.config.KafkaConfig.createProducer;
-
 public class BrukereMedOppdateringService {
 
     private final JdbcTemplate jdbc;
 
+    private final OppfolgingsbrukerEndringTemplate kafkaTemplate;
+
     @Inject
-    public BrukereMedOppdateringService(JdbcTemplate jdbc) {
+    public BrukereMedOppdateringService(JdbcTemplate jdbc, OppfolgingsbrukerEndringTemplate kafkaTemplate) {
         this.jdbc = jdbc;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Scheduled(fixedDelay = 10000)
     public void sendTilKafkaBrukereMedEndringerSiden() {
-        final Producer<String, String> producer = createProducer();
-        finnBrukereMedEndringSiden(ZonedDateTime.now())
-                .forEach(bruker -> producer.send(new ProducerRecord<>(OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN, JSONValue.toJSONString(bruker))));
+        finnBrukereMedEndringSiden(ZonedDateTime.now()).forEach(kafkaTemplate::send);
     }
 
     public List<Bruker> finnBrukereMedEndringSiden(ZonedDateTime oppdatertEtter) {

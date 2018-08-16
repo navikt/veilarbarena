@@ -2,14 +2,13 @@ package no.nav.fo.veilarbarena.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @Getter
-@ToString
-public class Bruker {
+public class Bruker implements Serializable {
     Long person_id;
     String aktoerid;
     String fodselsnr;
@@ -25,7 +24,7 @@ public class Bruker {
     String fr_kode;
     String har_oppfolgingssak;
     String sperret_ansatt;
-    boolean er_doed;
+    Boolean er_doed;
     ZonedDateTime doed_fra_dato;
     ZonedDateTime tidsstempel;
 }
