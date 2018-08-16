@@ -14,10 +14,13 @@ import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_EN
 
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
-    private KafkaTemplate<String, Bruker> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper brukerMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+
 
     @Inject
-    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, Bruker> kafkaTemplate) {
+    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
