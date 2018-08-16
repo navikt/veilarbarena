@@ -2,7 +2,6 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiParam;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.RestUtils;
 import no.nav.fo.veilarbarena.domain.PersonId;

@@ -2,6 +2,7 @@ import no.nav.brukerdialog.security.Constants;
 import no.nav.brukerdialog.tools.SecurityConstants;
 import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.ServiceUser;
+import no.nav.dialogarena.config.fasit.dto.RestService;
 import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -39,10 +40,13 @@ public class MainTest {
         ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
+        RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
 
-        setProperty(StsSecurityConstants.STS_URL_KEY, securityTokenService);
-        setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
-        setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());
+        setProperty("SRVVEILARBARENA_USERNAME", srvveilarbarena.getUsername());
+        setProperty("SRVVEILARBARENA_PASSWORD", srvveilarbarena.getPassword());
+        setProperty(SECURITYTOKENSERVICE_URL, securityTokenService);
+        setProperty(ABAC_PDP_ENDPOINT_URL, abac.getUrl());
+
         setProperty(CredentialConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
         setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());
         setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME, issoHost);
@@ -51,10 +55,7 @@ public class MainTest {
         setProperty(Constants.ISSO_JWKS_URL_PROPERTY_NAME, issoJWS);
         setProperty(Constants.ISSO_ISSUER_URL_PROPERTY_NAME, issoISSUER);
         setProperty(Constants.ISSO_ISALIVE_URL_PROPERTY_NAME, issoIsAlive);
-        setProperty(SecurityConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
-        setProperty(SecurityConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());
         setProperty(ApplicationConfig.REDIRECT_URL_PROPERTY, loginUrl);
-        setProperty(Constants.OIDC_REDIRECT_URL_PROPERTY_NAME, loginUrl);
 
         setProperty(AKTOER_V2_ENDPOINTURL, FasitUtils.getWebServiceEndpoint("Aktoer_v2").getUrl());
         setProperty(OppfolgingstatusConfig.ENDPOINTURL, FasitUtils.getWebServiceEndpoint("virksomhet:Oppfoelgingsstatus_v1").getUrl());

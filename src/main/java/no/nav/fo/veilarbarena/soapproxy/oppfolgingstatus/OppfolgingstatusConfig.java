@@ -15,11 +15,6 @@ import static java.lang.System.getProperty;
 public class OppfolgingstatusConfig {
     public static final String ENDPOINTURL = "VIRKSOMHET_OPPFOELGINGSSTATUS_V1_ENDPOINTURL";
 
-    private static Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(),
-            "OPPFOELGINGSTATUS_V1 via " + getProperty(ENDPOINTURL),
-            "Ping av oppfolgingstatus_v1. Henter informasjon om oppfølgingsstatus fra arena.",
-            true
-    );
     private static CXFClient<OppfoelgingsstatusV1> oppfoelgingsstatusV1Factory() {
         return new CXFClient<>(OppfoelgingsstatusV1.class)
                 .address(System.getProperty(ENDPOINTURL))
@@ -48,6 +43,11 @@ public class OppfolgingstatusConfig {
         OppfoelgingsstatusV1 service = oppfoelgingsstatusV1Factory()
                 .configureStsForSystemUser()
                 .build();
+        Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(),
+                "OPPFOELGINGSTATUS_V1 via " + getProperty(ENDPOINTURL),
+                "Ping av oppfolgingstatus_v1. Henter informasjon om oppfølgingsstatus fra arena.",
+                true
+        );
 
         return ServiceUtils.createPingable(service::ping, metadata);
     }
