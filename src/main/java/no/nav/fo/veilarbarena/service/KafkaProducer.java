@@ -1,11 +1,11 @@
 package no.nav.fo.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbarena.domain.Iserv28;
+import no.nav.fo.veilarbarena.domain.Bruker;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import static no.nav.fo.veilarbarena.config.KafkaConfig.ISERV28DAGER_TOPIC;
+import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN;
 
 @Component
 @Slf4j
@@ -16,12 +16,12 @@ public class KafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void send(Iserv28 iserv28) {
+    public void send(Bruker bruker) {
         kafkaTemplate.send(
-                ISERV28DAGER_TOPIC,
-                iserv28.aktorId,
-                iserv28.toString()
+                OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN,
+                bruker.getAktoerid(),
+                bruker.toString()
         );
-        log.info("Ident {} lagt på kø", iserv28.aktorId);
+        log.info("Bruker: {} har endringer, legger på kø", bruker.getAktoerid());
     }
 }

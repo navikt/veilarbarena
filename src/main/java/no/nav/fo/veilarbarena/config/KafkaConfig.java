@@ -15,7 +15,7 @@ import java.util.Properties;
 
 @Configuration
 public class KafkaConfig {
-    public static final String ISERV28DAGER_TOPIC = "aapen-fo-iservMerEnn28Dager-v1";
+    public static final String OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN = "aapen-fo-endringPaaOppfoelgingsBruker-v1";
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
