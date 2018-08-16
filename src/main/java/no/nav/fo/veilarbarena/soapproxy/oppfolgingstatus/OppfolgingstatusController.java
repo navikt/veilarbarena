@@ -38,12 +38,12 @@ public class OppfolgingstatusController {
     })
     public Oppfolgingstatus oppfolgingstatus() {
         return RestUtils.getUserIdent(requestProvider)
-                .map((userid) -> userid.toAktorId(aktorService))
+                .map((userid) -> userid.toFnr(aktorService))
                 .map(this::hentOppfolgingsstatus)
                 .getOrElseThrow(() -> new BadRequestException("Missing userid"));
     }
 
-    private Oppfolgingstatus hentOppfolgingsstatus(PersonId.AktorId userId) {
+    private Oppfolgingstatus hentOppfolgingsstatus(PersonId.Fnr userId) {
         return service.hentOppfoelgingsstatus(userId)
                 .getOrElseThrow((error) -> Match(error).of(
                         Case($(instanceOf(HentOppfoelgingsstatusPersonIkkeFunnet.class)), (e) -> new NotFoundException("Could not find user: " + userId, e)),

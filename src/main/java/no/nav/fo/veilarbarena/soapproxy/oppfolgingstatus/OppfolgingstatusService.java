@@ -3,7 +3,7 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 import io.vavr.control.Try;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.OppfoelgingsstatusV1;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.informasjon.AktoerId;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.meldinger.HentOppfoelgingsstatusRequest;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.meldinger.HentOppfoelgingsstatusResponse;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,14 +17,14 @@ public class OppfolgingstatusService {
     @Inject
     private OppfoelgingsstatusV1 service;
 
-    @Cacheable(cacheNames = OppfolgingstatusCache.NAME, key = "#aktorId.get()")
-    public Try<Oppfolgingstatus> hentOppfoelgingsstatus(PersonId.AktorId aktorId) {
+    @Cacheable(cacheNames = OppfolgingstatusCache.NAME, key = "#fnr.get()")
+    public Try<Oppfolgingstatus> hentOppfoelgingsstatus(PersonId.Fnr fnr) {
         return Try.of(() -> {
             HentOppfoelgingsstatusRequest request = new HentOppfoelgingsstatusRequest();
 
-            AktoerId aktoerId = new AktoerId();
-            aktoerId.setAktoerId(aktorId.get());
-            request.setBruker(aktoerId);
+            Person person = new Person();
+            person.setIdent(fnr.get());
+            request.setBruker(person);
 
             return toOppfolgingsstatus(service.hentOppfoelgingsstatus(request));
         });
