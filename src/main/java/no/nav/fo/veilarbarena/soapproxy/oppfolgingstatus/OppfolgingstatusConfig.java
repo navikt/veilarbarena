@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
 
-import static java.lang.System.getProperty;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class OppfolgingstatusConfig {
@@ -17,7 +17,7 @@ public class OppfolgingstatusConfig {
 
     private static CXFClient<OppfoelgingsstatusV1> oppfoelgingsstatusV1Factory() {
         return new CXFClient<>(OppfoelgingsstatusV1.class)
-                .address(System.getProperty(ENDPOINTURL))
+                .address(getRequiredProperty(ENDPOINTURL))
                 .withMetrics();
     }
 
@@ -44,7 +44,7 @@ public class OppfolgingstatusConfig {
                 .configureStsForSystemUser()
                 .build();
         Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(),
-                "OPPFOELGINGSTATUS_V1 via " + getProperty(ENDPOINTURL),
+                "OPPFOELGINGSTATUS_V1 via " + getRequiredProperty(ENDPOINTURL),
                 "Ping av oppfolgingstatus_v1. Henter informasjon om oppfølgingsstatus fra arena.",
                 true
         );

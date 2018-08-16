@@ -1,5 +1,4 @@
 import no.nav.brukerdialog.security.Constants;
-import no.nav.brukerdialog.tools.SecurityConstants;
 import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.ServiceUser;
 import no.nav.dialogarena.config.fasit.dto.RestService;
@@ -7,7 +6,6 @@ import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
 import no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants;
-import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 import no.nav.testconfig.ApiAppTest;
 
 import static java.lang.System.getProperty;
@@ -18,7 +16,7 @@ import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
 public class MainTest {
     private static final String TEST_PORT = "8790";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         setProperty("SERVICE_CALLS_HOME", "target/log");
         setProperty("testmiljo", "q6");
 
@@ -31,7 +29,7 @@ public class MainTest {
         Main.main(TEST_PORT);
     }
 
-    private static void setupSecurity(){
+    private static void setupSecurity() {
         String issoHost = FasitUtils.getBaseUrl("isso-host");
         String issoJWS = FasitUtils.getBaseUrl("isso-jwks");
         String issoISSUER = FasitUtils.getBaseUrl("isso-issuer");
