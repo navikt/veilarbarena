@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
+import no.nav.fo.veilarbarena.domain.Bruker;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -23,18 +24,18 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Bruker.class);
 
         return props;
     }
 
     @Bean
-    public static ProducerFactory<String, String> producerFactory() {
+    public static ProducerFactory<String, Bruker> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, Bruker> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

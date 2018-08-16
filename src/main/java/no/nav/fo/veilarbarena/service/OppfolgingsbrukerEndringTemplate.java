@@ -11,10 +11,10 @@ import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_EN
 
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Bruker> kafkaTemplate;
 
     @Inject
-    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate) {
+    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, Bruker> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -22,7 +22,7 @@ public class OppfolgingsbrukerEndringTemplate {
         kafkaTemplate.send(
                 OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN,
                 bruker.getAktoerid(),
-                bruker.toString()
+                bruker
         );
         log.info("Bruker: {} har endringer, legger på kø", bruker.getAktoerid());
     }
