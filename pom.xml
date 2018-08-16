@@ -18,7 +18,6 @@
     <properties>
         <hikariCP.version>2.7.3</hikariCP.version>
         <spring.kafka.version>2.1.7.RELEASE</spring.kafka.version>
-        <jackson.version>2.9.6</jackson.version>
         <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.coverage.exclusions>
             **/java/Main.java,
@@ -48,6 +47,10 @@
         <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>api-app</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>json</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
@@ -135,16 +138,6 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikariCP.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Test -->
