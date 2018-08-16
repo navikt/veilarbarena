@@ -43,7 +43,6 @@ public class BrukereMedOppdateringService {
         return SqlUtils.select(jdbc, "oppfolgingsbruker", BrukereMedOppdateringService::mapper)
                 .column("person_id")
                 .column("aktoerid")
-                .column("fodselsnr")
                 .column("etternavn")
                 .column("fornavn")
                 .column("nav_kontor")
@@ -69,7 +68,6 @@ public class BrukereMedOppdateringService {
         return new Bruker(
                 resultSet.getLong("person_id"),
                 resultSet.getString("aktoerid"),
-                resultSet.getString("fodselsnr"),
                 resultSet.getString("etternavn"),
                 resultSet.getString("fornavn"),
                 resultSet.getString("nav_kontor"),

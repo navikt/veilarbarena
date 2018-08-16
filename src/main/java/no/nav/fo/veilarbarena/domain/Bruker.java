@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 public class Bruker implements Serializable {
     Long person_id;
     String aktoerid;
-    String fodselsnr;
     String etternavn;
     String fornavn;
     String nav_kontor;
