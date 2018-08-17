@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
@@ -18,8 +17,7 @@ class OppfolgingsbrukerEndringTemplateTest {
     @Test
     void serialiseringOgDeserialiseringAvBruker() {
         final ZonedDateTime tidspunkt = new Timestamp(100000000000L).toLocalDateTime().atZone(ZoneId.systemDefault());
-        Bruker b = new Bruker(
-                1L,
+        Bruker opprinneligBruker = new Bruker(
                 "test",
                 "test",
                 "test",
@@ -38,11 +36,11 @@ class OppfolgingsbrukerEndringTemplateTest {
                 tidspunkt
         );
 
-        final String serialisertBruker = toJson(b);
+        final String serialisertBruker = toJson(opprinneligBruker);
         ConsumerRecord<String, String> cr = new ConsumerRecord<>("testTopic", 1, 1, "testKey", serialisertBruker);
 
         Bruker deserialisertBruker = fromJson(cr.value(), Bruker.class);
-        assertThat(Objects.equals(deserialisertBruker, serialisertBruker));
-    }
 
+        assertThat(opprinneligBruker.equals(deserialisertBruker)).isTrue();
+    }
 }

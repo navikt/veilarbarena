@@ -41,7 +41,6 @@ public class BrukereMedOppdateringService {
         WhereClause erOppdatertSidenSist = WhereClause.gteq("tidsstempel", Timestamp.from(oppdatertEtter.toInstant()));
 
         return SqlUtils.select(jdbc, "oppfolgingsbruker", BrukereMedOppdateringService::mapper)
-                .column("person_id")
                 .column("aktoerid")
                 .column("etternavn")
                 .column("fornavn")
@@ -66,7 +65,6 @@ public class BrukereMedOppdateringService {
 
     public static Bruker mapper(ResultSet resultSet) throws SQLException {
         return new Bruker(
-                resultSet.getLong("person_id"),
                 resultSet.getString("aktoerid"),
                 resultSet.getString("etternavn"),
                 resultSet.getString("fornavn"),

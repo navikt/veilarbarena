@@ -20,7 +20,7 @@ public class KafkaConfig {
     public static Map<String, Object> producerConfigs() {
         HashMap<String, Object> props = new HashMap<>();
 
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
