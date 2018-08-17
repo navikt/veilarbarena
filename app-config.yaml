@@ -15,6 +15,9 @@ healthcheck:
 prometheus:
   enabled: true
   path: veilarbarena/internal/metrics
+resources:
+  limits:
+    cpu: 3
 fasitResources:
   used:
   # custom veilarbarena props
@@ -46,9 +49,13 @@ fasitResources:
 
   # stolen resources
   - alias: veilarbportefoljeDB
-      resourceType: datasource
+    resourceType: datasource
 
   # security resources
+  - alias: securityTokenService
+    resourceType: baseUrl
+  - alias: abac.pdp.endpoint
+    resourceType: restservice
   - alias: isso-rp-user
     resourceType: credential
   - alias: isso-host
@@ -61,6 +68,12 @@ fasitResources:
     resourceType: baseUrl
   - alias: veilarblogin.redirect-url
     resourceType: baseUrl
+
+  # SOAP-services
+  - alias: Aktoer_v2
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Oppfoelgingsstatus_v1
+    resourceType: webserviceendpoint
 
   exposed:
   - alias: veilarbarenaAPI

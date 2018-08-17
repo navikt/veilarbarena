@@ -20,9 +20,9 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 @Configuration
 @EnableTransactionManagement
 public class DbConfig {
-    public static final String VEILARBARENADB_URL = "VEILARBARENADB_URL";
-    public static final String VEILARBARENADB_USERNAME = "VEILARBARENADB_USERNAME";
-    public static final String VEILARBARENADB_PASSWORD = "VEILARBARENADB_PASSWORD";
+    public static final String VEILARBARENADB_URL = "VEILARBPORTEFOLJEDB_URL";
+    public static final String VEILARBARENADB_USERNAME = "VEILARBPORTEFOLJEDB_USERNAME";
+    public static final String VEILARBARENADB_PASSWORD = "VEILARBPORTEFOLJEDB_PASSWORD";
 
     @Bean
     public static DataSource getDataSource() {
