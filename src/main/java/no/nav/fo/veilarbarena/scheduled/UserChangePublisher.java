@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
-import no.nav.fo.veilarbarena.DateUtils;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.order.OrderClause;
@@ -14,22 +13,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.util.function.Consumer;
 
 import static java.time.ZonedDateTime.now;
 import static no.nav.fo.veilarbarena.DateUtils.timestampToZonedDateTime;
 
 public class UserChangePublisher {
+    private static final int SECONDS = 1000;
+
     @Inject
     private JdbcTemplate db;
     private ZonedDateTime lastCheck = now().minusMinutes(10);
-    private List<Consumer<User>> jobs;
+    private List<UserChangeListener> listeners;
 
-    public void subscribe(Consumer<User> job) {
-        this.jobs = this.jobs.append(job);
+    public void subscribe(UserChangeListener listener) {
+        this.listeners = this.listeners.append(listener);
     }
 
-    @Scheduled(fixedDelay = 10 * 1000)
+    @Scheduled(fixedDelay = 10 * SECONDS, initialDelay = SECONDS)
     private void findChangesSinceLastCheck() {
         WhereClause hasAktoerId = WhereClause.isNotNull("aktoerid");
         WhereClause updated = WhereClause.gteq("tidsstempel", Timestamp.from(lastCheck.toInstant()));
@@ -64,7 +64,7 @@ public class UserChangePublisher {
     }
 
     private void publish(User person) {
-        this.jobs.forEach((job) -> job.accept(person));
+        this.listeners.forEach((listener) -> listener.userChanged(person));
     }
 
     public static User mapper(ResultSet resultSet) throws SQLException {
