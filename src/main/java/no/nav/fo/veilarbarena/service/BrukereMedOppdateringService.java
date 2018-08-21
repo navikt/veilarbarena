@@ -28,7 +28,7 @@ public class BrukereMedOppdateringService {
 
     @Scheduled(fixedDelay = 10000)
     public void sendTilKafkaBrukereMedEndringerSiden() {
-        finnBrukereMedEndringSiden(ZonedDateTime.now()).forEach(kafkaTemplate::send);
+        finnBrukereMedEndringSiden(ZonedDateTime.now().minusSeconds(10)).forEach(kafkaTemplate::send);
     }
 
     public List<Bruker> finnBrukereMedEndringSiden(ZonedDateTime oppdatertEtter) {
