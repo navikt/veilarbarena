@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Import;
 @Import({
         DbConfig.class,
         AktorConfig.class,
-        ServiceConfig.class
+        ServiceConfig.class,
+        KafkaConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
     public static final String APPLICATION_NAME = "veilarbarena";
