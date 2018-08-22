@@ -6,7 +6,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN;
+import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
 import static no.nav.json.JsonUtils.toJson;
 
 
@@ -23,7 +23,7 @@ public class OppfolgingsbrukerEndringTemplate {
         final String serialisertBruker = toJson(bruker);
 
         kafkaTemplate.send(
-                OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN,
+                KAFKA_TOPIC,
                 bruker.getAktoerid(),
                 serialisertBruker
         );

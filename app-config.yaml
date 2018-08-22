@@ -26,9 +26,11 @@ fasitResources:
   - alias: loadbalancer:veilarbarena
     resourceType: loadbalancerconfig
   - alias: srvveilarbarena
-      resourceType: credential
+    resourceType: credential
   - alias: kafka-brokers
     resourceType: baseurl
+  - alias: veilarbarena.kafka.properties
+    resourceType: applicationproperties
 
   # kafka
   kafka:

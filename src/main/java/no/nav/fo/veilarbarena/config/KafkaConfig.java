@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
+import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -14,13 +15,14 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
-    public static final String OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN = "aapen-fo-endringPaaOppfoelgingsBruker-v1";
+    public static final String KAFKA_TOPIC = FasitUtils.getApplicationProperties("veilarbarena.kafka.properties").getProperty("topic");
+    private static final String KAFKA_BROKERS = FasitUtils.getBaseUrl("kafka-brokers", FasitUtils.Zone.FSS);
 
     @Bean
     public static Map<String, Object> producerConfigs() {
         HashMap<String, Object> props = new HashMap<>();
-
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);

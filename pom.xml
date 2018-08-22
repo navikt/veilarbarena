@@ -62,6 +62,11 @@
             <artifactId>jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>fasit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>no.nav.dialogarena</groupId>
             <artifactId>oidc-security</artifactId>
         </dependency>
@@ -199,11 +204,6 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>test-config</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
-            <artifactId>fasit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -22,10 +22,10 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.producerProps;
 
 public abstract  class KafkaTest {
 
-    protected static String SENDER_TOPIC = "sender.t";
+    public static String SENDER_TOPIC = "sender.t";
 
     private KafkaMessageListenerContainer<String, String> container;
-    protected KafkaTemplate<String, String> sender;
+    public KafkaTemplate<String, String> sender;
     protected BlockingQueue<ConsumerRecord<String, String>> records;
 
     @ClassRule

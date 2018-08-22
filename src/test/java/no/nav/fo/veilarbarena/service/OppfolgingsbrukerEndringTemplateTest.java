@@ -10,7 +10,8 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static no.nav.fo.veilarbarena.config.KafkaConfig.OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN;
+import static no.nav.fo.veilarbarena.KafkaTest.SENDER_TOPIC;
+import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ class OppfolgingsbrukerEndringTemplateTest {
     @Test
     void serialiseringOgDeserialiseringAvBruker() {
         final String serialisertBruker = toJson(BRUKER);
-        ConsumerRecord<String, String> cr = new ConsumerRecord<>("testTopic", 1, 1, "testKey", serialisertBruker);
+        ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
         Bruker deserialisertBruker = fromJson(cr.value(), Bruker.class);
 
@@ -57,7 +58,7 @@ class OppfolgingsbrukerEndringTemplateTest {
 
         sender.send(BRUKER);
 
-        verify(template, times(1)).send(matches(OPPFOLGINGSBRUKER_MED_ENDRING_SIDEN), aktorId.capture(), bruker.capture());
+        verify(template, times(1)).send(matches(KAFKA_TOPIC), aktorId.capture(), bruker.capture());
         assertThat(aktorId.getValue()).isEqualTo(BRUKER.getAktoerid());
         assertThat(bruker.getValue()).isEqualTo(toJson(BRUKER));
     }
