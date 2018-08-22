@@ -19,14 +19,14 @@ public class BrukereMedOppdateringService {
     private final JdbcTemplate jdbc;
 
     private final OppfolgingsbrukerEndringTemplate kafkaTemplate;
-
+    private final long TEN_SECONDS = 10000;
     @Inject
     public BrukereMedOppdateringService(JdbcTemplate jdbc, OppfolgingsbrukerEndringTemplate kafkaTemplate) {
         this.jdbc = jdbc;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void sendTilKafkaBrukereMedEndringerSiden() {
         finnBrukereMedEndringSiden(ZonedDateTime.now().minusSeconds(10)).forEach(kafkaTemplate::send);
     }
