@@ -19,9 +19,31 @@ public class User {
     String hovedmaalkode;
     String sikkerhetstiltak_type_kode;
     String fr_kode;
-    String har_oppfolgingssak;
+    Boolean har_oppfolgingssak;
     String sperret_ansatt;
     Boolean er_doed;
     ZonedDateTime doed_fra_dato;
     ZonedDateTime tidsstempel;
+
+    public static User of(UserRecord record) {
+        return new User(
+                record.getAktoerid().value,
+                record.getFodselsnr().value,
+                record.getEtternavn().value,
+                record.getFornavn().value,
+                record.getNav_kontor().value,
+                record.getFormidlingsgruppekode().value,
+                record.getIserv_fra_dato().value,
+                record.getKvalifiseringsgruppekode().value,
+                record.getRettighetsgruppekode().value,
+                record.getHovedmaalkode().value,
+                record.getSikkerhetstiltak_type_kode().value,
+                record.getFr_kode().value,
+                record.getHar_oppfolgingssak().value,
+                record.getSperret_ansatt().value,
+                record.getEr_doed().value,
+                record.getDoed_fra_dato().value,
+                record.getTidsstempel().value
+        );
+    }
 }
