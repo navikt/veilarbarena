@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -15,8 +14,8 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_TOPIC = FasitUtils.getApplicationProperties("veilarbarena.kafka.properties").getProperty("topic");
-    private static final String KAFKA_BROKERS = FasitUtils.getBaseUrl("kafka-brokers", FasitUtils.Zone.FSS);
+    public static final String KAFKA_TOPIC = System.getProperty("endring.bruker.topic");
+    private static final String KAFKA_BROKERS = System.getProperty("kafka-brokers.url");
 
     @Bean
     public static Map<String, Object> producerConfigs() {

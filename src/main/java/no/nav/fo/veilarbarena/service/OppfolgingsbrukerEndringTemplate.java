@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbarena.domain.Bruker;
+import no.nav.fo.veilarbarena.domain.User;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.inject.Inject;
@@ -19,12 +19,12 @@ public class OppfolgingsbrukerEndringTemplate {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    void send(Bruker bruker) {
+    void send(User bruker) {
         final String serialisertBruker = toJson(bruker);
 
         kafkaTemplate.send(
                 KAFKA_TOPIC,
-                bruker.getAktoerid(),
+                bruker.getAktoerid().get(),
                 serialisertBruker
         );
         log.info("Bruker: {} har endringer, legger på kø", bruker.getAktoerid());

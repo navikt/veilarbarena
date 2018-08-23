@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
         DbConfig.class,
         AktorConfig.class,
         ServiceConfig.class,
+        UserChangeConfig.class,
         KafkaConfig.class
 })
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
