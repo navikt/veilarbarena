@@ -31,11 +31,11 @@ public class OppfolgingstatusController {
     @Inject
     private AktorService aktorService;
 
-    @GET
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fnr", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "aktorId", dataType = "string", paramType = "query")
     })
+    @GET
     public Oppfolgingstatus oppfolgingstatus() {
         return RestUtils.getUserIdent(requestProvider)
                 .map((userid) -> userid.toFnr(aktorService))

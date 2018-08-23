@@ -1,4 +1,5 @@
 import no.nav.brukerdialog.security.Constants;
+import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.ServiceUser;
 import no.nav.dialogarena.config.fasit.dto.RestService;
