@@ -27,8 +27,8 @@ public class OppfolgingstatusConfig {
     }
 
     @Bean
-    public OppfolgingstatusService oppfolgingstatusService() {
-        return new OppfolgingstatusService();
+    public OppfolgingstatusService oppfolgingstatusService(OppfoelgingsstatusV1 service) {
+        return new OppfolgingstatusService(service);
     }
 
     @Bean

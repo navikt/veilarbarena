@@ -35,7 +35,7 @@ class OppfolgingsbrukerEndringTemplateTest {
             "test",
             "test",
             false,
-            "test",
+            false,
             false,
             TIDSPUNKT,
             TIDSPUNKT

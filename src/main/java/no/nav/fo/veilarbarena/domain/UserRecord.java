@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbarena.domain;
 
 import lombok.Value;
-import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.mapping.QueryMapping.Column;
 import no.nav.sbl.sql.mapping.SqlRecord;
 
@@ -10,11 +9,6 @@ import java.time.ZonedDateTime;
 
 @Value
 public class UserRecord implements SqlRecord {
-    static {
-        QueryMapping.register(String.class, PersonId.AktorId.class, PersonId::aktorId);
-        QueryMapping.register(String.class, PersonId.Fnr.class, PersonId::fnr);
-    }
-
     Column<String, PersonId.AktorId> aktoerid;
     Column<String, PersonId.Fnr> fodselsnr;
     Column<String, String> etternavn;
@@ -27,9 +21,9 @@ public class UserRecord implements SqlRecord {
     Column<String, String> hovedmaalkode;
     Column<String, String> sikkerhetstiltak_type_kode;
     Column<String, String> fr_kode;
-    Column<Boolean, Boolean> har_oppfolgingssak;
-    Column<String, String> sperret_ansatt;
-    Column<Boolean, Boolean> er_doed;
+    Column<String, Boolean> har_oppfolgingssak;
+    Column<String, Boolean> sperret_ansatt;
+    Column<String, Boolean> er_doed;
     Column<Timestamp, ZonedDateTime> doed_fra_dato;
     Column<Timestamp, ZonedDateTime> tidsstempel;
 }

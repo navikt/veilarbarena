@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.service.BrukereMedOppdateringService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.Import;
 public class ServiceConfig {
 
     @Bean
-    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate kafkaTemplate, UserChangePublisher userChangePublisher) {
-        return new BrukereMedOppdateringService(kafkaTemplate, userChangePublisher);
+    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate kafkaTemplate) {
+        return new BrukereMedOppdateringService(kafkaTemplate);
     }
 }

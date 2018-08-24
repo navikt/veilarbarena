@@ -19,7 +19,7 @@ public class User {
     String sikkerhetstiltak_type_kode;
     String fr_kode;
     Boolean har_oppfolgingssak;
-    String sperret_ansatt;
+    Boolean sperret_ansatt;
     Boolean er_doed;
     ZonedDateTime doed_fra_dato;
     ZonedDateTime tidsstempel;
