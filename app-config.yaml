@@ -29,7 +29,7 @@ fasitResources:
     resourceType: credential
 
   # stolen resources
-  - alias: veilarbportefoljeDB
+  - alias: veilarbarenaDataSource
     resourceType: datasource
 
   # security resources
