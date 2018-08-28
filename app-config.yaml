@@ -50,7 +50,7 @@ fasitResources:
         value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   # stolen resources
-  - alias: veilarbportefoljeDB
+  - alias: veilarbarenaDataSource
     resourceType: datasource
 
   # security resources
