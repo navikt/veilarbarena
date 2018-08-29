@@ -1,5 +1,7 @@
 import no.nav.apiapp.ApiApp;
+import no.nav.fo.veilarbarena.MigrationUtils;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
+import no.nav.fo.veilarbarena.config.DbConfig;
 import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 
 import static no.nav.brukerdialog.security.Constants.OIDC_REDIRECT_URL_PROPERTY_NAME;
@@ -20,6 +22,8 @@ public class Main {
         System.setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty(AKTOER_V2_ENDPOINTURL));
         System.setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty(REDIRECT_URL_PROPERTY));
         System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
+
+        MigrationUtils.createTables(DbConfig.getDataSource());
 
         ApiApp.runApp(ApplicationConfig.class, args);
     }

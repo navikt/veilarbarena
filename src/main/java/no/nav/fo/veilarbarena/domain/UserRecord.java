@@ -9,7 +9,6 @@ import java.time.ZonedDateTime;
 
 @Value
 public class UserRecord implements SqlRecord {
-    Column<String, PersonId.AktorId> aktoerid;
     Column<String, PersonId.Fnr> fodselsnr;
     Column<String, String> etternavn;
     Column<String, String> fornavn;

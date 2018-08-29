@@ -6,7 +6,6 @@ import java.time.ZonedDateTime;
 
 @Value
 public class User {
-    PersonId.AktorId aktoerid;
     PersonId.Fnr fodselsnr;
     String etternavn;
     String fornavn;
@@ -26,7 +25,6 @@ public class User {
 
     public static User of(UserRecord record) {
         return new User(
-                record.getAktoerid().value,
                 record.getFodselsnr().value,
                 record.getEtternavn().value,
                 record.getFornavn().value,
