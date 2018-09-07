@@ -1,7 +1,9 @@
 package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
+import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.PersonId;
+import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;

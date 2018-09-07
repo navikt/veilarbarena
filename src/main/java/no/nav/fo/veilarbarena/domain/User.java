@@ -1,12 +1,14 @@
-package no.nav.fo.veilarbarena.scheduled;
+package no.nav.fo.veilarbarena.domain;
 
 import lombok.Value;
-import no.nav.fo.veilarbarena.domain.PersonId;
+import lombok.experimental.Wither;
 
 import java.time.ZonedDateTime;
 
 @Value
+@Wither
 public class User {
+    PersonId.AktorId aktoerid;
     PersonId.Fnr fodselsnr;
     String etternavn;
     String fornavn;
@@ -26,6 +28,7 @@ public class User {
 
     public static User of(UserRecord record) {
         return new User(
+                null, // Legges til når man legger melding på kafka-topic
                 record.getFodselsnr().value,
                 record.getEtternavn().value,
                 record.getFornavn().value,
