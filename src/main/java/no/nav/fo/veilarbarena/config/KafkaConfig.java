@@ -12,10 +12,12 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_TOPIC = System.getProperty("endring.bruker.topic");
-    private static final String KAFKA_BROKERS = System.getProperty("kafka-brokers.url");
+    public static final String KAFKA_TOPIC =  getRequiredProperty("endring.bruker.topic");
+    private static final String KAFKA_BROKERS = getRequiredProperty("kafka-brokers.url");
 
     @Bean
     public static Map<String, Object> producerConfigs() {
