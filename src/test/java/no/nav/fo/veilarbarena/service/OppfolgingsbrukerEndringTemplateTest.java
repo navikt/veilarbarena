@@ -57,7 +57,8 @@ class OppfolgingsbrukerEndringTemplateTest {
 
     @Test
     void leggerBrukerPaTopic() {
-        System.setProperty("endring.bruker.topic", "topic");
+        System.setProperty("ENDRING_BRUKER_TOPIC", "topic");
+        System.setProperty("KAFKA_BROKERS_URL", "testing.localhost,13337.localhost");
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
         OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template);
         ArgumentCaptor<String> aktorId = ArgumentCaptor.forClass(String.class);
