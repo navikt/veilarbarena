@@ -30,6 +30,8 @@ fasitResources:
     resourceType: credential
   - alias: kafka-brokers
     resourceType: baseurl
+    propertyMap:
+      url: KAFKA_BROKERS_URL
   - alias: veilarbarena.kafka.properties
     resourceType: applicationproperties
 

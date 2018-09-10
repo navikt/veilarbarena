@@ -16,8 +16,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_TOPIC =  getRequiredProperty("endring.bruker.topic");
-    private static final String KAFKA_BROKERS = getRequiredProperty("kafka-brokers.url");
+    public static final String KAFKA_TOPIC =  getRequiredProperty("ENDRING_BRUKER_TOPIC");
+    private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
 
     @Bean
     public static Map<String, Object> producerConfigs() {
