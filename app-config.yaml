@@ -28,9 +28,6 @@ fasitResources:
     resourceType: loadbalancerconfig
   - alias: srvveilarbarena
     resourceType: credential
-    propertyMap:
-      username: KAFKA_USERNAME
-      password: KAFKA_PASSWORD
   - alias: kafka-brokers
     resourceType: baseurl
     propertyMap:
