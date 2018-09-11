@@ -1,6 +1,7 @@
 package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.UserRecord;
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime;
 
 import static java.time.ZonedDateTime.now;
 
+@Slf4j
 public class UserChangePublisher {
     private static final int SECONDS = 1000;
 
@@ -44,6 +46,7 @@ public class UserChangePublisher {
                 .map(User::of);
 
         updateLastcheck(users.lastOption().map(User::getTidsstempel).getOrElse(now()));
+        log.info("Legger {} brukere til kafka", users.size());
 
         users.forEach(this::publish);
     }
