@@ -21,7 +21,7 @@ public class MainTest {
         setProperty("testmiljo", "q6");
 
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
-        DatabaseTestContext.setupContext(getProperty("database", "T6"));
+        DatabaseTestContext.setupContext(getProperty("database", "Q6"));
 
         setupSecurity();
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FSS);
