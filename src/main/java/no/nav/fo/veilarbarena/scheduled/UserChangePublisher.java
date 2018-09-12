@@ -2,8 +2,8 @@ package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.PersonId;
+import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-
-import static java.time.ZonedDateTime.now;
 
 @Slf4j
 public class UserChangePublisher {
@@ -36,31 +34,46 @@ public class UserChangePublisher {
     @Scheduled(fixedDelay = 10 * SECONDS, initialDelay = SECONDS)
     @Transactional
     void findChangesSinceLastCheck() {
-        WhereClause updated = WhereClause.gteq("tidsstempel", Timestamp.from(getLastcheck().toInstant()));
+        final ZonedDateTime sistSjekketTidspunkt = getLastCheck();
+
+        WhereClause tidspunktEquals = WhereClause.equals("tidsstempel", Timestamp.from(sistSjekketTidspunkt.toInstant()));
+        WhereClause tidspunktGreater = WhereClause.gt("tidsstempel", Timestamp.from(sistSjekketTidspunkt.toInstant()));
+
+        WhereClause sistSjekketFnrGreater = WhereClause.gt("fodselsnr", getLastCheckFnr());
+
+        WhereClause tidspunktOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
         List<User> users = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
-                .where(updated)
-                .orderBy(OrderClause.asc("tidsstempel"))
+                .where(tidspunktOgFnr.or(tidspunktGreater))
+                .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
                 .limit(1000)
                 .executeToList())
                 .map(User::of);
 
-        updateLastcheck(users.lastOption().map(User::getTidsstempel).getOrElse(now()));
+        updateLastcheck(users.lastOption().get());
         log.info("Legger {} brukere til kafka", users.size());
 
         users.forEach(this::publish);
     }
 
-    private void updateLastcheck(ZonedDateTime time) {
+    private void updateLastcheck(User user) {
         SqlUtils.update(db, "METADATA")
-                .set("OPPFOLGINGSBRUKER_SIST_ENDRING", Timestamp.from(time.toInstant()))
+                .set("OPPFOLGINGSBRUKER_SIST_ENDRING", Timestamp.from(user.getTidsstempel().toInstant()))
+                .set("FODSELSNR", user.getFodselsnr().get())
                 .execute();
     }
 
-    private ZonedDateTime getLastcheck() {
+    private ZonedDateTime getLastCheck() {
         return SqlUtils.select(db, "METADATA", SisteOppdatertRecord.class)
                 .execute()
                 .getOppfolgingsbruker_sist_endring()
+                .value;
+    }
+
+    private String getLastCheckFnr() {
+        return SqlUtils.select(db, "METADATA", SisteOppdatertRecord.class)
+                .execute()
+                .getFodselsnr()
                 .value;
     }
 
