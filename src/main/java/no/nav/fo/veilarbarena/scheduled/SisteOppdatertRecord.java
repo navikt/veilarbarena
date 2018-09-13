@@ -10,4 +10,5 @@ import java.time.ZonedDateTime;
 @Value
 public class SisteOppdatertRecord implements SqlRecord {
     Column<Timestamp, ZonedDateTime> oppfolgingsbruker_sist_endring;
+    Column<String, String> fodselsnr;
 }
