@@ -27,6 +27,6 @@ public class OppfolgingsbrukerEndringTemplate {
                 bruker.getAktoerid().get(),
                 serialisertBruker
         );
-        log.info("Bruker: {} har endringer, legger på kafka", bruker.getAktoerid().get());
+        log.debug("Bruker: {} har endringer, legger på kafka", bruker.getAktoerid().get());
     }
 }

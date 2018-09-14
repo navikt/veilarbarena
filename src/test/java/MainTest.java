@@ -39,7 +39,11 @@ public class MainTest {
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
+        String endringBrukerTopic = FasitUtils.getApplicationProperties("veilarbarena.kafka.properties").getProperty("endring.bruker.topic");
+        String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
+        setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
+        setProperty("KAFKA_BROKERS_URL", kafkaBrokers);
         setProperty("SRVVEILARBARENA_USERNAME", srvveilarbarena.getUsername());
         setProperty("SRVVEILARBARENA_PASSWORD", srvveilarbarena.getPassword());
         setProperty(SECURITYTOKENSERVICE_URL, securityTokenService);
