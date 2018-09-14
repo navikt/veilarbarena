@@ -38,9 +38,7 @@ public class UserChangePublisher {
     void findChangesSinceLastCheck() {
         List<User> users = changesSinceLastCheckSql();
 
-        if (users.isEmpty()) {
-            updateLastcheck(now(), "");
-        } else {
+        if (!users.isEmpty()) {
             User user = users.lastOption().get();
             updateLastcheck(user.getTidsstempel(), user.getFodselsnr().get());
             log.info("Legger {} brukere til kafka", users.size());
