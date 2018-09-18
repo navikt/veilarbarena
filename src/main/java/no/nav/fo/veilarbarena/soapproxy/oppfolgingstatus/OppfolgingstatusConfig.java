@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 
-import no.nav.fo.veilarbarena.ServiceUtils;
+import no.nav.fo.veilarbarena.utils.ServiceUtils;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.OppfoelgingsstatusV1;

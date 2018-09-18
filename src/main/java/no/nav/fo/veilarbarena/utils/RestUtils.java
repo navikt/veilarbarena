@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbarena;
+package no.nav.fo.veilarbarena.utils;
 
 import io.vavr.control.Option;
 import no.nav.fo.veilarbarena.domain.PersonId;

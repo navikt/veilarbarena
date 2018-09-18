@@ -24,7 +24,7 @@ public class User {
     Boolean sperret_ansatt;
     Boolean er_doed;
     ZonedDateTime doed_fra_dato;
-    ZonedDateTime tidsstempel;
+    ZonedDateTime endret_dato;
 
     public static User of(UserRecord record) {
         return new User(

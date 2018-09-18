@@ -14,7 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbarena.DateUtils.xmlGregorianCalendarToLocalDate;
+import static no.nav.fo.veilarbarena.utils.DateUtils.xmlGregorianCalendarToLocalDate;
 
 @Slf4j
 public class OppfolgingstatusService implements UserChangeListener {

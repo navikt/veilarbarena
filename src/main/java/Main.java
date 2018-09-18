@@ -1,5 +1,5 @@
 import no.nav.apiapp.ApiApp;
-import no.nav.fo.veilarbarena.MigrationUtils;
+import no.nav.fo.veilarbarena.utils.MigrationUtils;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.config.DbConfig;
 import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbarena;
+package no.nav.fo.veilarbarena.utils;
 
 import no.nav.sbl.dialogarena.types.Pingable;
 

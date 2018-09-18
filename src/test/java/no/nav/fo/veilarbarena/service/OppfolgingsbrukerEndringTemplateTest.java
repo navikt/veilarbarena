@@ -52,7 +52,7 @@ class OppfolgingsbrukerEndringTemplateTest {
         assertThat(BRUKER).isEqualToIgnoringGivenFields(deserialisertBruker, "iserv_fra_dato", "doed_fra_dato", "tidsstempel");
         assertThat(BRUKER.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
         assertThat(BRUKER.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
-        assertThat(BRUKER.getTidsstempel()).isEqualTo(deserialisertBruker.getTidsstempel());
+        assertThat(BRUKER.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
     }
 
     @Test
