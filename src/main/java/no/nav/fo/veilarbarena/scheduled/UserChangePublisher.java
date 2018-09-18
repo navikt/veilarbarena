@@ -40,7 +40,7 @@ public class UserChangePublisher {
 
         if (!users.isEmpty()) {
             User user = users.lastOption().get();
-            updateLastcheck(user.getTidsstempel(), user.getFodselsnr().get());
+            updateLastcheck(user.getEndret_dato(), user.getFodselsnr().get());
             log.info("Legger {} brukere til kafka", users.size());
         }
 

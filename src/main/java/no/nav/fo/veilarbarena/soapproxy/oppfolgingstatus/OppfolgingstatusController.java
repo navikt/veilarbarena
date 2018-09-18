@@ -3,7 +3,7 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarbarena.RestUtils;
+import no.nav.fo.veilarbarena.utils.RestUtils;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.HentOppfoelgingsstatusPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.HentOppfoelgingsstatusSikkerhetsbegrensning;

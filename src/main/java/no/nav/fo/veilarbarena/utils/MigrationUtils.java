@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbarena;
+package no.nav.fo.veilarbarena.utils;
 
 import org.flywaydb.core.Flyway;
 
