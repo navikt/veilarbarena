@@ -7,6 +7,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import javax.inject.Inject;
 
 import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
+import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.leggerBrukerPaKafkaMetrikk;
 import static no.nav.json.JsonUtils.toJson;
 
 
@@ -27,6 +28,8 @@ public class OppfolgingsbrukerEndringTemplate {
                 bruker.getAktoerid().get(),
                 serialisertBruker
         );
+
+        leggerBrukerPaKafkaMetrikk(bruker);
         log.debug("Bruker: {} har endringer, legger på kafka", bruker.getAktoerid().get());
     }
 }
