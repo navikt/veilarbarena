@@ -5,7 +5,6 @@ import no.nav.metrics.MetricsFactory;
 
 import java.time.ZonedDateTime;
 
-import static java.lang.String.valueOf;
 import static java.time.LocalDate.now;
 
 public class FunksjonelleMetrikker {
@@ -19,12 +18,12 @@ public class FunksjonelleMetrikker {
         }
 
         MetricsFactory.createEvent("bruker.kafka.send")
-                .addFieldToReport("formidlingsgruppekode", user.getFormidlingsgruppekode())
-                .addFieldToReport("kvalifiseringsgruppekode", user.getKvalifiseringsgruppekode())
-                .addFieldToReport("rettighetsgruppekode", user.getRettighetsgruppekode())
+                .addTagToReport("formidlingsgruppekode", user.getFormidlingsgruppekode())
+                .addTagToReport("kvalifiseringsgruppekode", user.getKvalifiseringsgruppekode())
+                .addTagToReport("rettighetsgruppekode", user.getRettighetsgruppekode())
                 .addFieldToReport("kontor",  user.getNav_kontor())
-                .addTagToReport("iserv28", valueOf(erIserv28))
-                .addFieldToReport("endringstidspunkt", user.getEndret_dato())
+                .addFieldToReport("iserv28", erIserv28)
+                .addFieldToReport("endringstidspunkt", user.getEndret_dato().toInstant())
                 .report();
     }
 }
