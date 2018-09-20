@@ -5,6 +5,7 @@ import no.nav.metrics.MetricsFactory;
 
 import java.time.ZonedDateTime;
 
+import static java.lang.String.valueOf;
 import static java.time.LocalDate.now;
 
 public class FunksjonelleMetrikker {
@@ -22,7 +23,7 @@ public class FunksjonelleMetrikker {
                 .addTagToReport("kvalifiseringsgruppekode", user.getKvalifiseringsgruppekode())
                 .addTagToReport("rettighetsgruppekode", user.getRettighetsgruppekode())
                 .addFieldToReport("kontor",  user.getNav_kontor())
-                .addFieldToReport("iserv28", erIserv28)
+                .addTagToReport("iserv28", valueOf(erIserv28))
                 .addFieldToReport("endringstidspunkt", user.getEndret_dato().toInstant())
                 .report();
     }
