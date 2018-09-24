@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.sbl</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>2018.07.28.03.06</version>
+        <version>2018.08.23.10.26</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -17,7 +17,6 @@
 
     <properties>
         <hikariCP.version>2.7.3</hikariCP.version>
-        <spring.kafka.version>2.1.7.RELEASE</spring.kafka.version>
         <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.coverage.exclusions>
             **/java/Main.java,
@@ -34,7 +33,7 @@
             <dependency>
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>bom</artifactId>
-                <version>2018.07.28.03.06</version>
+                <version>2018.08.23.10.26</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -50,10 +49,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
-            <artifactId>json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl</groupId>
             <artifactId>util</artifactId>
         </dependency>
         <dependency>
@@ -61,23 +56,42 @@
             <artifactId>jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>feed</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.dialogarena</groupId>
             <artifactId>oidc-security</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>common-abac</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-types</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>aktor-klient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>common-cxf</artifactId>
+        </dependency>
 
+        <!-- Tjenester -->
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>nav-oppfoelgingsstatus-v1-tjenestespesifikasjon</artifactId>
+            <version>1.0.1</version>
+            <classifier>jaxws</classifier>
+        </dependency>
 
         <!-- javax/spring -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -93,6 +107,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
         <dependency>
@@ -100,26 +118,11 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
 
-        <!-- kafka -->
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>${spring.kafka.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
-            <version>${spring.kafka.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Logging -->
+        <!-- Utils -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
-        <!-- Utils -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -138,6 +141,19 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikariCP.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Test -->

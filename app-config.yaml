@@ -15,6 +15,9 @@ healthcheck:
 prometheus:
   enabled: true
   path: veilarbarena/internal/metrics
+resources:
+  limits:
+    cpu: 3
 fasitResources:
   used:
   # custom veilarbarena props
@@ -23,32 +26,17 @@ fasitResources:
   - alias: loadbalancer:veilarbarena
     resourceType: loadbalancerconfig
   - alias: srvveilarbarena
-      resourceType: credential
-  - alias: kafka-brokers
-    resourceType: baseurl
-
-  # kafka
-  kafka:
-      client-id: ${app.name}-${fasit.environment.name}
-      bootstrap-servers: ${kafka-brokers.url}
-      properties:
-        security.protocol: SASL_SSL
-        value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
-        sasl:
-          mechanism: PLAIN
-          jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${srv$APPLIKASJONSNAVN$.username}" password="${srv$APPLIKASJONSNAVN$.password}";
-        ssl.truststore:
-          location: ${javax.net.ssl.trustStore}
-          password: ${javax.net.ssl.trustStorePassword}
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    resourceType: credential
 
   # stolen resources
   - alias: veilarbportefoljeDB
-      resourceType: datasource
+    resourceType: datasource
 
   # security resources
+  - alias: securityTokenService
+    resourceType: baseUrl
+  - alias: abac.pdp.endpoint
+    resourceType: restservice
   - alias: isso-rp-user
     resourceType: credential
   - alias: isso-host
@@ -61,6 +49,12 @@ fasitResources:
     resourceType: baseUrl
   - alias: veilarblogin.redirect-url
     resourceType: baseUrl
+
+  # SOAP-services
+  - alias: Aktoer_v2
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Oppfoelgingsstatus_v1
+    resourceType: webserviceendpoint
 
   exposed:
   - alias: veilarbarenaAPI
