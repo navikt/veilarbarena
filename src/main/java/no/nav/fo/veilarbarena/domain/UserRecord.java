@@ -1,7 +1,6 @@
-package no.nav.fo.veilarbarena.scheduled;
+package no.nav.fo.veilarbarena.domain;
 
 import lombok.Value;
-import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.sbl.sql.mapping.QueryMapping.Column;
 import no.nav.sbl.sql.mapping.SqlRecord;
 
@@ -10,7 +9,6 @@ import java.time.ZonedDateTime;
 
 @Value
 public class UserRecord implements SqlRecord {
-    Column<String, PersonId.AktorId> aktoerid;
     Column<String, PersonId.Fnr> fodselsnr;
     Column<String, String> etternavn;
     Column<String, String> fornavn;

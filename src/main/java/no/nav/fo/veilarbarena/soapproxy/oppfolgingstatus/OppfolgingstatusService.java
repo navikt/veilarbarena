@@ -3,7 +3,7 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.domain.PersonId;
-import no.nav.fo.veilarbarena.scheduled.User;
+import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.scheduled.UserChangeListener;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.OppfoelgingsstatusV1;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.informasjon.Person;
@@ -14,7 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import javax.inject.Inject;
 
-import static no.nav.fo.veilarbarena.DateUtils.xmlGregorianCalendarToLocalDate;
+import static no.nav.fo.veilarbarena.utils.DateUtils.xmlGregorianCalendarToLocalDate;
 
 @Slf4j
 public class OppfolgingstatusService implements UserChangeListener {

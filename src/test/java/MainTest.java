@@ -1,5 +1,4 @@
 import no.nav.brukerdialog.security.Constants;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.ServiceUser;
 import no.nav.dialogarena.config.fasit.dto.RestService;
@@ -22,7 +21,7 @@ public class MainTest {
         setProperty("testmiljo", "q6");
 
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
-        DatabaseTestContext.setupContext(getProperty("database", "T6"));
+        DatabaseTestContext.setupContext(getProperty("database", "Q6"));
 
         setupSecurity();
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FSS);
@@ -40,7 +39,11 @@ public class MainTest {
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
+        String endringBrukerTopic = FasitUtils.getApplicationProperties("veilarbarena.kafka.properties").getProperty("endring.bruker.topic");
+        String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
+        setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
+        setProperty("KAFKA_BROKERS_URL", kafkaBrokers);
         setProperty("SRVVEILARBARENA_USERNAME", srvveilarbarena.getUsername());
         setProperty("SRVVEILARBARENA_PASSWORD", srvveilarbarena.getPassword());
         setProperty(SECURITYTOKENSERVICE_URL, securityTokenService);
