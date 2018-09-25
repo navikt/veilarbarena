@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
+import no.nav.fo.veilarbarena.api.UserDTO;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -13,6 +14,7 @@ import java.time.ZonedDateTime;
 
 import static no.nav.fo.veilarbarena.KafkaTest.SENDER_TOPIC;
 import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
+import static no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate.toDTO;
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +37,7 @@ class OppfolgingsbrukerEndringTemplateTest {
             "test",
             "test",
             false,
+
             false,
             false,
             TIDSPUNKT,
@@ -43,16 +46,14 @@ class OppfolgingsbrukerEndringTemplateTest {
 
     @Test
     void serialiseringOgDeserialiseringAvBruker() {
-        final String serialisertBruker = toJson(BRUKER);
+        final String serialisertBruker = toJson(toDTO(BRUKER));
         ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
-        User deserialisertBruker = fromJson(cr.value(), User.class);
+        UserDTO deserialisertBruker = fromJson(cr.value(), UserDTO.class);
 
-
-        assertThat(BRUKER).isEqualToIgnoringGivenFields(deserialisertBruker, "iserv_fra_dato", "doed_fra_dato", "endret_dato");
         assertThat(BRUKER.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
-        assertThat(BRUKER.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
-        assertThat(BRUKER.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
+        assertThat(BRUKER.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());
+        assertThat(BRUKER.getFodselsnr().get()).isEqualTo(deserialisertBruker.getFodselsnr());
     }
 
     @Test
@@ -71,6 +72,6 @@ class OppfolgingsbrukerEndringTemplateTest {
 
         verify(template, times(1)).send(matches(KAFKA_TOPIC), aktorId.capture(), bruker.capture());
         assertThat(aktorId.getValue()).isEqualTo(BRUKER.getAktoerid().get());
-        assertThat(bruker.getValue()).isEqualTo(toJson(BRUKER));
+        assertThat(bruker.getValue()).isEqualTo(toJson(toDTO(BRUKER)));
     }
 }
