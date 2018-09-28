@@ -54,9 +54,6 @@ public class OppfolgingsbrukerEndringTemplate {
         insertFeiletBruker(user);
     }
 
-    // helsesjekk
-    // count(*) FROM feilet == 0
-
     private void insertFeiletBruker(User user) {
         SqlUtils.insert(db, "FEILEDE_KAFKA_BRUKERE")
                 .value("FODSELSNR", user.getFodselsnr().get())

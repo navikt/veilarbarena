@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbarena.config;
 
+import no.nav.apiapp.selftest.Helsesjekk;
+import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -7,17 +9,23 @@ import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
-public class KafkaConfig {
+public class KafkaConfig implements Helsesjekk {
+
+    @Inject
+    private JdbcTemplate db;
+
     public static final String KAFKA_TOPIC =  getRequiredProperty("ENDRING_BRUKER_TOPIC");
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
     private static final String USERNAME = getRequiredProperty("SRVVEILARBARENA_USERNAME");
@@ -51,5 +59,17 @@ public class KafkaConfig {
     @Bean
     public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
         return new OppfolgingsbrukerEndringTemplate(kafkaTemplate());
+    }
+
+    @Override
+    public void helsesjekk() throws Throwable {
+        if (db.queryForObject("SELECT COUNT(*) FROM FEILEDE_KAFKA_BRUKERE", Long.class) != 0) {
+            throw new IllegalStateException();
+        }
+    }
+
+    @Override
+    public HelsesjekkMetadata getMetadata() {
+        return new HelsesjekkMetadata("kafka-status", "N/A", "Sjekker at det ikke er noen feil med sending av brukeroppdateringer til kafka", false);
     }
 }
