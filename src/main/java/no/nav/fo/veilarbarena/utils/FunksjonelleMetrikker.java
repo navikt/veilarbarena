@@ -27,4 +27,8 @@ public class FunksjonelleMetrikker {
                 .addFieldToReport("endringstidspunkt", user.getEndret_dato().toInstant())
                 .report();
     }
+
+    public static void feilVedSendingTilKafka() {
+        MetricsFactory.createEvent("bruker.kafka.send.feil").report();
+    }
 }

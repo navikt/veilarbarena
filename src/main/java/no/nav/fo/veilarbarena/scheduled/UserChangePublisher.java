@@ -17,8 +17,6 @@ import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 
-import static java.time.ZonedDateTime.now;
-
 @Slf4j
 public class UserChangePublisher {
     private static final int SECONDS = 1000;
@@ -44,7 +42,9 @@ public class UserChangePublisher {
             log.info("Legger {} brukere til kafka", users.size());
         }
 
-        users.forEach(this::publish);
+        List<User> feiledeFnrs = findAllFailedKakfkaUsers();
+        List<User> mergedUserList = users.appendAll(feiledeFnrs);
+        mergedUserList.forEach(this::publish);
     }
 
     private List<User> changesSinceLastCheckSql() {
@@ -60,6 +60,17 @@ public class UserChangePublisher {
                 .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
                 .limit(1000)
+                .executeToList())
+                .map(User::of);
+    }
+
+    private List<User> findAllFailedKakfkaUsers() {
+        List<String> feiledeKafkaFnrs = List.ofAll(SqlUtils.select(db, "FEILEDE_KAFKA_BRUKERE", FeiletKafkaRecord.class)
+                .executeToList())
+                .map(feiletBruker -> feiletBruker.fodselsnr.value);
+
+        return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKRE", UserRecord.class)
+                .where(WhereClause.in("FODSELSNR", feiledeKafkaFnrs.asJava()))
                 .executeToList())
                 .map(User::of);
     }

@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.sql.Timestamp;
 import java.time.ZoneId;
@@ -63,6 +64,7 @@ class OppfolgingsbrukerEndringTemplateTest {
         System.setProperty("SRVVEILARBARENA_PASSWORD", "test123");
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
+        when(template.send(any(), any(), any())).thenReturn(mock(ListenableFuture.class));
         OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template);
         ArgumentCaptor<String> aktorId = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> bruker = ArgumentCaptor.forClass(String.class);
