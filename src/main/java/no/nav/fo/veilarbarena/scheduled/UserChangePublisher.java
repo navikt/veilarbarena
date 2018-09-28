@@ -67,7 +67,7 @@ public class UserChangePublisher {
     private List<User> findAllFailedKakfkaUsers() {
         List<String> feiledeKafkaFnrs = List.ofAll(SqlUtils.select(db, "FEILEDE_KAFKA_BRUKERE", FeiletKafkaRecord.class)
                 .executeToList())
-                .map(feiletBruker -> feiletBruker.fodselsnr.value);
+                .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 
         return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKRE", UserRecord.class)
                 .where(WhereClause.in("FODSELSNR", feiledeKafkaFnrs.asJava()))
