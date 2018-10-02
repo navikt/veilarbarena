@@ -37,7 +37,6 @@ class OppfolgingsbrukerEndringTemplateTest {
             "test",
             "test",
             false,
-
             false,
             false,
             TIDSPUNKT,
@@ -50,10 +49,11 @@ class OppfolgingsbrukerEndringTemplateTest {
         ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
         UserDTO deserialisertBruker = fromJson(cr.value(), UserDTO.class);
-
         assertThat(BRUKER.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
         assertThat(BRUKER.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());
         assertThat(BRUKER.getFodselsnr().get()).isEqualTo(deserialisertBruker.getFodselsnr());
+        assertThat(BRUKER.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
+        assertThat(BRUKER.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
     }
 
     @Test

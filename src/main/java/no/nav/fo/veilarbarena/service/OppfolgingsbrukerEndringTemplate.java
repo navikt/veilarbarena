@@ -41,6 +41,19 @@ public class OppfolgingsbrukerEndringTemplate {
                 .setAktoerid(ofNullable(user.getAktoerid()).map(AktorId::get).orElse(null))
                 .setFodselsnr(ofNullable(user.getFodselsnr()).map(PersonId::get).orElse(null))
                 .setFormidlingsgruppekode(user.getFormidlingsgruppekode())
-                .setIserv_fra_dato(user.getIserv_fra_dato());
+                .setIserv_fra_dato(user.getIserv_fra_dato())
+                .setFornavn(user.getFornavn())
+                .setEtternavn(user.getEtternavn())
+                .setDoed_fra_dato(user.getDoed_fra_dato())
+                .setNav_kontor(user.getNav_kontor())
+                .setEr_doed(user.getEr_doed())
+                .setFr_kode(user.getFr_kode())
+                .setHar_oppfolgingssak(user.getHar_oppfolgingssak())
+                .setHovedmaalkode(user.getHovedmaalkode())
+                .setKvalifiseringsgruppekode(user.getKvalifiseringsgruppekode())
+                .setRettighetsgruppekode(user.getRettighetsgruppekode())
+                .setSikkerhetstiltak_type_kode(user.getSikkerhetstiltak_type_kode())
+                .setSperret_ansatt(user.getSperret_ansatt())
+                .setEndret_dato(user.getEndret_dato());
     }
 }
