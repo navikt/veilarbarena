@@ -19,6 +19,7 @@ prometheus:
 resources:
   limits:
     cpu: 3
+    memory: 512Mi
 fasitResources:
   used:
   # custom veilarbarena props
