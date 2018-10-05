@@ -22,13 +22,13 @@ public class FunksjonelleMetrikker {
                 .addTagToReport("formidlingsgruppekode", user.getFormidlingsgruppekode())
                 .addTagToReport("kvalifiseringsgruppekode", user.getKvalifiseringsgruppekode())
                 .addTagToReport("rettighetsgruppekode", user.getRettighetsgruppekode())
-                .addFieldToReport("kontor",  user.getNav_kontor())
+                .addFieldToReport("kontor", user.getNav_kontor())
                 .addTagToReport("iserv28", valueOf(erIserv28))
                 .addFieldToReport("endringstidspunkt", user.getEndret_dato().toInstant())
                 .report();
     }
 
-    public static void feilVedSendingTilKafka() {
+    public static void feilVedSendingTilKafkaMetrikk() {
         MetricsFactory.createEvent("bruker.kafka.send.feil").report();
     }
 }

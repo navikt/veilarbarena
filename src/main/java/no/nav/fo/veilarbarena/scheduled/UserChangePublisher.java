@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
+import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -20,7 +21,6 @@ import java.time.ZonedDateTime;
 @Slf4j
 public class UserChangePublisher {
     private static final int SECONDS = 1000;
-
     static {
         QueryMapping.register(String.class, PersonId.AktorId.class, PersonId::aktorId);
         QueryMapping.register(String.class, PersonId.Fnr.class, PersonId::fnr);
@@ -30,6 +30,8 @@ public class UserChangePublisher {
     private JdbcTemplate db;
     @Inject
     private java.util.List<UserChangeListener> listeners;
+    @Inject
+    private OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
 
     @Scheduled(fixedDelay = 10 * SECONDS, initialDelay = SECONDS)
     @Transactional
@@ -42,7 +44,7 @@ public class UserChangePublisher {
             log.info("Legger {} brukere til kafka", users.size());
         }
 
-        List<User> feiledeFnrs = findAllFailedKakfkaUsers();
+        List<User> feiledeFnrs = findAllFailedKafkaUsers();
         List<User> mergedUserList = users.appendAll(feiledeFnrs);
         mergedUserList.forEach(this::publish);
     }
@@ -64,15 +66,15 @@ public class UserChangePublisher {
                 .map(User::of);
     }
 
-    private List<User> findAllFailedKakfkaUsers() {
-        List<String> feiledeKafkaFnrs = List.ofAll(SqlUtils.select(db, "FEILEDE_KAFKA_BRUKERE", FeiletKafkaRecord.class)
-                .executeToList())
+    public List<User> findAllFailedKafkaUsers() {
+        List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 
-        return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKRE", UserRecord.class)
-                .where(WhereClause.in("FODSELSNR", feiledeKafkaFnrs.asJava()))
+        final List<User> map = List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
+                .where(WhereClause.in("FODSELSNR", feiledeFnrs.asJava()))
                 .executeToList())
                 .map(User::of);
+        return map;
     }
 
     private void updateLastcheck(ZonedDateTime tidspunkt, String fnr) {

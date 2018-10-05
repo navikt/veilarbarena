@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbarena.scheduled;
+package no.nav.fo.veilarbarena.domain;
 
 import lombok.Value;
 import no.nav.sbl.sql.mapping.QueryMapping;

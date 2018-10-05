@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.apiapp.selftest.Helsesjekk;
-import no.nav.apiapp.selftest.HelsesjekkMetadata;
+import no.nav.fo.veilarbarena.selftest.KafkaHelsesjekk;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -9,30 +8,31 @@ import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
-public class KafkaConfig implements Helsesjekk {
+@Import({OppfolgingsbrukerEndringTemplate.class, KafkaHelsesjekk.class})
+public class KafkaConfig {
 
-    @Inject
-    private JdbcTemplate db;
-
-    public static final String KAFKA_TOPIC =  getRequiredProperty("ENDRING_BRUKER_TOPIC");
+    public static final String KAFKA_TOPIC = getRequiredProperty("ENDRING_BRUKER_TOPIC");
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
     private static final String USERNAME = getRequiredProperty("SRVVEILARBARENA_USERNAME");
     private static final String PASSWORD = getRequiredProperty("SRVVEILARBARENA_PASSWORD");
 
     @Bean
-    public static Map<String, Object> producerConfigs() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    private static Map<String, Object> producerConfigs() {
         HashMap<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -46,30 +46,7 @@ public class KafkaConfig implements Helsesjekk {
         return props;
     }
 
-    @Bean
-    public static ProducerFactory<String, String> producerFactory() {
+    private static ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
-    }
-
-    @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
-    }
-
-    @Bean
-    public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
-        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate());
-    }
-
-    @Override
-    public void helsesjekk() throws Throwable {
-        if (db.queryForObject("SELECT COUNT(*) FROM FEILEDE_KAFKA_BRUKERE", Long.class) != 0) {
-            throw new IllegalStateException();
-        }
-    }
-
-    @Override
-    public HelsesjekkMetadata getMetadata() {
-        return new HelsesjekkMetadata("kafka-status", "N/A", "Sjekker at det ikke er noen feil med sending av brukeroppdateringer til kafka", false);
     }
 }
