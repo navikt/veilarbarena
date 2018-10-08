@@ -1,5 +1,7 @@
 package no.nav.fo.veilarbarena.service;
 
+import no.nav.fo.veilarbarena.api.UserDTO;
+import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import static no.nav.fo.veilarbarena.KafkaTest.SENDER_TOPIC;
 import static no.nav.fo.veilarbarena.Utils.lagNyBruker;
 import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
+import static no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate.toDTO;
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,14 +24,14 @@ class OppfolgingsbrukerEndringTemplateTest {
     @Test
     void serialiseringOgDeserialiseringAvBruker() {
         final User user = lagNyBruker();
-        final String serialisertBruker = toJson(user);
+        final String serialisertBruker = toJson(toDTO(user));
         ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
-        User deserialisertBruker = fromJson(cr.value(), User.class);
+        UserDTO deserialisertBruker = fromJson(cr.value(), UserDTO.class);
 
-
-        assertThat(user).isEqualToIgnoringGivenFields(deserialisertBruker, "iserv_fra_dato", "doed_fra_dato", "endret_dato");
         assertThat(user.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
+        assertThat(user.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());
+        assertThat(user.getFodselsnr().get()).isEqualTo(deserialisertBruker.getFodselsnr());
         assertThat(user.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
         assertThat(user.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
     }
@@ -52,6 +55,6 @@ class OppfolgingsbrukerEndringTemplateTest {
 
         verify(template, times(1)).send(matches(KAFKA_TOPIC), aktorId.capture(), bruker.capture());
         assertThat(aktorId.getValue()).isEqualTo(user.getAktoerid().get());
-        assertThat(bruker.getValue()).isEqualTo(toJson(user));
+        assertThat(bruker.getValue()).isEqualTo(toJson(toDTO(user)));
     }
 }
