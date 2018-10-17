@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 @Configuration
 public class KafkaConfig {
-    public static final String KAFKA_TOPIC =  getRequiredProperty("ENDRING_BRUKER_TOPIC");
+
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
     private static final String USERNAME = getRequiredProperty("SRVVEILARBARENA_USERNAME");
     private static final String PASSWORD = getRequiredProperty("SRVVEILARBARENA_PASSWORD");
@@ -50,6 +51,6 @@ public class KafkaConfig {
 
     @Bean
     public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
-        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate());
+        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
     }
 }

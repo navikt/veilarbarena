@@ -10,24 +10,25 @@ import org.springframework.kafka.core.KafkaTemplate;
 import javax.inject.Inject;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.leggerBrukerPaKafkaMetrikk;
 import static no.nav.json.JsonUtils.toJson;
 
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final String topic;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Inject
-    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate) {
+    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, String topic) {
         this.kafkaTemplate = kafkaTemplate;
+        this.topic = topic;
     }
 
     void send(User bruker) {
         final String serialisertBruker = toJson(toDTO(bruker));
 
         kafkaTemplate.send(
-                KAFKA_TOPIC,
+                topic,
                 bruker.getAktoerid().get(),
                 serialisertBruker
         );

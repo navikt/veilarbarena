@@ -13,7 +13,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static no.nav.fo.veilarbarena.KafkaTest.SENDER_TOPIC;
-import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
 import static no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate.toDTO;
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
@@ -62,15 +61,16 @@ class OppfolgingsbrukerEndringTemplateTest {
         System.setProperty("KAFKA_BROKERS_URL", "testing.localhost,13337.localhost");
         System.setProperty("SRVVEILARBARENA_USERNAME", "srvveilarbarena");
         System.setProperty("SRVVEILARBARENA_PASSWORD", "test123");
+        String testTopic = "test-topic";
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
-        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template);
+        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template, testTopic);
         ArgumentCaptor<String> aktorId = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> bruker = ArgumentCaptor.forClass(String.class);
 
         sender.send(BRUKER);
 
-        verify(template, times(1)).send(matches(KAFKA_TOPIC), aktorId.capture(), bruker.capture());
+        verify(template, times(1)).send(matches(testTopic), aktorId.capture(), bruker.capture());
         assertThat(aktorId.getValue()).isEqualTo(BRUKER.getAktoerid().get());
         assertThat(bruker.getValue()).isEqualTo(toJson(toDTO(BRUKER)));
     }

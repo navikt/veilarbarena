@@ -12,20 +12,16 @@ import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
+import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 public class MainTest {
     private static final String TEST_PORT = "8790";
 
     public static void main(String[] args) {
-        setProperty("SERVICE_CALLS_HOME", "target/log");
-        setProperty("testmiljo", "q6");
-
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
         DatabaseTestContext.setupContext(getProperty("database", "Q6"));
-
         setupSecurity();
-        String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FSS);
-        setProperty(REDIRECT_URL_PROPERTY, loginUrl);
+
         Main.main(TEST_PORT);
     }
 
@@ -37,9 +33,9 @@ public class MainTest {
         ServiceUser srvveilarbarena = FasitUtils.getServiceUser("srvveilarbarena", APPLICATION_NAME);
         ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
-        String loginUrl = FasitUtils.getBaseUrl("veilarblogin.redirect-url", FasitUtils.Zone.FSS);
+        RestService redirectUrlService = FasitUtils.getRestService("veilarblogin.redirect-url", FasitUtils.getDefaultEnvironment());
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
-        String endringBrukerTopic = FasitUtils.getApplicationProperties("veilarbarena.kafka.properties").getProperty("endring.bruker.topic");
+        String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
         setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
@@ -57,7 +53,7 @@ public class MainTest {
         setProperty(Constants.ISSO_JWKS_URL_PROPERTY_NAME, issoJWS);
         setProperty(Constants.ISSO_ISSUER_URL_PROPERTY_NAME, issoISSUER);
         setProperty(Constants.ISSO_ISALIVE_URL_PROPERTY_NAME, issoIsAlive);
-        setProperty(ApplicationConfig.REDIRECT_URL_PROPERTY, loginUrl);
+        setProperty(ApplicationConfig.REDIRECT_URL_PROPERTY, redirectUrlService.getUrl());
 
         setProperty(AKTOER_V2_ENDPOINTURL, FasitUtils.getWebServiceEndpoint("Aktoer_v2").getUrl());
         setProperty(OppfolgingstatusConfig.ENDPOINTURL, FasitUtils.getWebServiceEndpoint("virksomhet:Oppfoelgingsstatus_v1").getUrl());
