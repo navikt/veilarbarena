@@ -42,7 +42,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
         <!-- Intern avhengigheter -->
         <dependency>
