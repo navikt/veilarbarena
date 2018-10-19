@@ -42,7 +42,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
         <!-- Intern avhengigheter -->
         <dependency>
@@ -247,6 +246,11 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>test-config</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
