@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.fo.veilarbarena.config.KafkaConfig.KAFKA_TOPIC;
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.feilVedSendingTilKafkaMetrikk;
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.leggerBrukerPaKafkaMetrikk;
 import static no.nav.json.JsonUtils.toJson;
@@ -19,12 +18,14 @@ import static no.nav.json.JsonUtils.toJson;
 @Component
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
+    private final String topic;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
 
     @Inject
-    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository) {
+    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository, String topic) {
         this.kafkaTemplate = kafkaTemplate;
+        this.topic = topic;
         this.oppfolgingsbrukerEndringRepository = oppfolgingsbrukerEndringRepository;
     }
 
@@ -32,7 +33,7 @@ public class OppfolgingsbrukerEndringTemplate {
         final String serialisertBruker = toJson(toDTO(user));
 
         kafkaTemplate.send(
-                KAFKA_TOPIC,
+                topic,
                 user.getAktoerid().get(),
                 serialisertBruker
         ).addCallback(

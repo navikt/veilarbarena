@@ -17,22 +17,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 @Configuration
 @Import({OppfolgingsbrukerEndringTemplate.class, KafkaHelsesjekk.class})
 public class KafkaConfig {
 
-    public static final String KAFKA_TOPIC = getRequiredProperty("ENDRING_BRUKER_TOPIC");
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
     private static final String USERNAME = getRequiredProperty("SRVVEILARBARENA_USERNAME");
     private static final String PASSWORD = getRequiredProperty("SRVVEILARBARENA_PASSWORD");
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
-    }
-
-    private static Map<String, Object> producerConfigs() {
+    public static Map<String, Object> producerConfigs() {
         HashMap<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -46,7 +42,18 @@ public class KafkaConfig {
         return props;
     }
 
-    private static ProducerFactory<String, String> producerFactory() {
+    @Bean
+    public static ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
+        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
     }
 }
