@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import static no.nav.fo.veilarbarena.Utils.lagNyBruker;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+
 class UserChangePublisherTest extends DbTest {
 
     @Inject

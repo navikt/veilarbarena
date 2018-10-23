@@ -47,7 +47,7 @@ class OppfolgingsbrukerEndringTemplateTest {
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
         when(template.send(any(), any(), any())).thenReturn(mock(ListenableFuture.class));
-        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template, testTopic, mock(OppfolgingsbrukerEndringRepository.class));
+        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template, mock(OppfolgingsbrukerEndringRepository.class), testTopic);
         ArgumentCaptor<String> aktorId = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> bruker = ArgumentCaptor.forClass(String.class);
 

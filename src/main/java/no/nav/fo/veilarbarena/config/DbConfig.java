@@ -2,6 +2,9 @@ package no.nav.fo.veilarbarena.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.javacrumbs.shedlock.core.DefaultLockingTaskExecutor;
+import net.javacrumbs.shedlock.core.LockingTaskExecutor;
+import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
 import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.sql.SqlUtils;
@@ -63,5 +66,10 @@ public class DbConfig {
                 return Pingable.Ping.feilet(metadata, e);
             }
         };
+    }
+
+    @Bean
+    public LockingTaskExecutor taskExecutor(DataSource ds) {
+        return new DefaultLockingTaskExecutor(new JdbcLockProvider(ds));
     }
 }
