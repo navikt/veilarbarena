@@ -1,15 +1,14 @@
 package no.nav.fo.veilarbarena.config;
 
+import no.nav.fo.veilarbarena.selftest.KafkaHelsesjekk;
+import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.context.annotation.*;
+import org.springframework.kafka.core.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 @Configuration
+@Import({OppfolgingsbrukerEndringTemplate.class, KafkaHelsesjekk.class})
 public class KafkaConfig {
 
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
@@ -50,7 +50,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
-        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
+    public OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository() {
+        return new OppfolgingsbrukerEndringRepository();
     }
+
+    @Bean
+    public OppfolgingsbrukerEndringTemplate OppfolgingsbrukerEndringTemplate() {
+        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
+    }
+
 }

@@ -7,12 +7,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.kafka.core.KafkaTemplate;
-
-import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import static no.nav.fo.veilarbarena.KafkaTest.SENDER_TOPIC;
+import static no.nav.fo.veilarbarena.Utils.lagNyBruker;
 import static no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate.toDTO;
 import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.json.JsonUtils.toJson;
@@ -21,42 +19,26 @@ import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.*;
 
 class OppfolgingsbrukerEndringTemplateTest {
-    private static final ZonedDateTime TIDSPUNKT = new Timestamp(100000000000L).toLocalDateTime().atZone(ZoneId.systemDefault());
-    private static final User BRUKER = new User(
-            PersonId.aktorId("test"),
-            PersonId.fnr("test"),
-            "test",
-            "test",
-            "test",
-            "test",
-            TIDSPUNKT,
-            "test",
-            "test",
-            "test",
-            "test",
-            "test",
-            false,
-            false,
-            false,
-            TIDSPUNKT,
-            TIDSPUNKT
-    );
 
     @Test
     void serialiseringOgDeserialiseringAvBruker() {
-        final String serialisertBruker = toJson(toDTO(BRUKER));
+        final User user = lagNyBruker();
+        final String serialisertBruker = toJson(toDTO(user));
         ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
         UserDTO deserialisertBruker = fromJson(cr.value(), UserDTO.class);
-        assertThat(BRUKER.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
-        assertThat(BRUKER.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());
-        assertThat(BRUKER.getFodselsnr().get()).isEqualTo(deserialisertBruker.getFodselsnr());
-        assertThat(BRUKER.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
-        assertThat(BRUKER.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
+
+        assertThat(user.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
+        assertThat(user.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());
+        assertThat(user.getFodselsnr().get()).isEqualTo(deserialisertBruker.getFodselsnr());
+        assertThat(user.getDoed_fra_dato()).isEqualTo(deserialisertBruker.getDoed_fra_dato());
+        assertThat(user.getEndret_dato()).isEqualTo(deserialisertBruker.getEndret_dato());
     }
 
     @Test
     void leggerBrukerPaTopic() {
+        final User user = lagNyBruker();
+
         System.setProperty("ENDRING_BRUKER_TOPIC", "topic");
         System.setProperty("KAFKA_BROKERS_URL", "testing.localhost,13337.localhost");
         System.setProperty("SRVVEILARBARENA_USERNAME", "srvveilarbarena");
@@ -64,14 +46,15 @@ class OppfolgingsbrukerEndringTemplateTest {
         String testTopic = "test-topic";
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
-        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template, testTopic);
+        when(template.send(any(), any(), any())).thenReturn(mock(ListenableFuture.class));
+        OppfolgingsbrukerEndringTemplate sender = new OppfolgingsbrukerEndringTemplate(template, mock(OppfolgingsbrukerEndringRepository.class), testTopic);
         ArgumentCaptor<String> aktorId = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> bruker = ArgumentCaptor.forClass(String.class);
 
-        sender.send(BRUKER);
+        sender.send(user);
 
         verify(template, times(1)).send(matches(testTopic), aktorId.capture(), bruker.capture());
-        assertThat(aktorId.getValue()).isEqualTo(BRUKER.getAktoerid().get());
-        assertThat(bruker.getValue()).isEqualTo(toJson(toDTO(BRUKER)));
+        assertThat(aktorId.getValue()).isEqualTo(user.getAktoerid().get());
+        assertThat(bruker.getValue()).isEqualTo(toJson(toDTO(user)));
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
         CacheConfig.class,
         AktorConfig.class,
         ServiceConfig.class,
-        UserChangeConfig.class,
         KafkaConfig.class
 })
 @EnableAspectJAutoProxy(proxyTargetClass = true)

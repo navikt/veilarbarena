@@ -6,35 +6,53 @@ import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.PersonId.AktorId;
 import no.nav.fo.veilarbarena.domain.User;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
 import static java.util.Optional.ofNullable;
+import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.feilVedSendingTilKafkaMetrikk;
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.leggerBrukerPaKafkaMetrikk;
 import static no.nav.json.JsonUtils.toJson;
 
+@Component
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
     private final String topic;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
 
     @Inject
-    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, String topic) {
+    public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository, String topic) {
         this.kafkaTemplate = kafkaTemplate;
         this.topic = topic;
+        this.oppfolgingsbrukerEndringRepository = oppfolgingsbrukerEndringRepository;
     }
 
-    void send(User bruker) {
-        final String serialisertBruker = toJson(toDTO(bruker));
+    void send(User user) {
+        final String serialisertBruker = toJson(toDTO(user));
 
         kafkaTemplate.send(
                 topic,
-                bruker.getAktoerid().get(),
+                user.getAktoerid().get(),
                 serialisertBruker
+        ).addCallback(
+                sendResult -> onSuccess(user),
+                throwable -> onError(throwable, user)
         );
 
-        leggerBrukerPaKafkaMetrikk(bruker);
-        log.debug("Bruker: {} har endringer, legger på kafka", bruker.getAktoerid().get());
+        log.debug("Bruker: {} har endringer, legger på kafka", user.getAktoerid().get());
+    }
+
+    private void onSuccess(User user) {
+        leggerBrukerPaKafkaMetrikk(user);
+        oppfolgingsbrukerEndringRepository.deleteFeiletBruker(user);
+    }
+
+    private void onError(Throwable throwable, User user) {
+        log.error("Kunne ikke publisere melding til kafka-topic", throwable);
+        feilVedSendingTilKafkaMetrikk();
+        oppfolgingsbrukerEndringRepository.insertFeiletBruker(user);
     }
 
     public static UserDTO toDTO(User user) {
