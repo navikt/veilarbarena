@@ -55,7 +55,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public OppfolgingsbrukerEndringTemplate OppfolgingsbrukerEndringTemplate() {
+    public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
         return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
     }
 

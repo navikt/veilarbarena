@@ -15,7 +15,6 @@ import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.feilVedSendingT
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.leggerBrukerPaKafkaMetrikk;
 import static no.nav.json.JsonUtils.toJson;
 
-@Component
 @Slf4j
 public class OppfolgingsbrukerEndringTemplate {
     private final String topic;
