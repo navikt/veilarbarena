@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 public class ServiceConfig {
 
     @Bean
-    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate kafkaTemplate, AktorService aktorService) {
-        return new BrukereMedOppdateringService(kafkaTemplate, aktorService);
+    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktorService aktorService) {
+        return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktorService);
     }
 }
