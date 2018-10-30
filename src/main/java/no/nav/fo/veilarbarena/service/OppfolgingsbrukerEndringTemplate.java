@@ -21,11 +21,10 @@ public class OppfolgingsbrukerEndringTemplate {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
 
-    @Inject
     public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository, String topic) {
         this.kafkaTemplate = kafkaTemplate;
-        this.topic = topic;
         this.oppfolgingsbrukerEndringRepository = oppfolgingsbrukerEndringRepository;
+        this.topic = topic;
     }
 
     void send(User user) {
