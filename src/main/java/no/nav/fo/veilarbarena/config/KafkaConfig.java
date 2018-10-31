@@ -55,13 +55,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public String getTopic(){
-        return "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName();
-    }
-
-    @Bean
     public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
-        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), getTopic());
+        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
     }
 
 }
