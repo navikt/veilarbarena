@@ -20,8 +20,8 @@ public class OppfolgingsbrukerEndringTemplate {
 
     public OppfolgingsbrukerEndringTemplate(KafkaTemplate<String, String> kafkaTemplate, OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository, String topic) {
         this.kafkaTemplate = kafkaTemplate;
-        this.topic = topic;
         this.oppfolgingsbrukerEndringRepository = oppfolgingsbrukerEndringRepository;
+        this.topic = topic;
     }
 
     void send(User user) {

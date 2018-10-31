@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        OppfolgingstatusConfig.class
+        OppfolgingstatusConfig.class,
+        KafkaConfig.class
 })
 public class ServiceConfig {
 
