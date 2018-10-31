@@ -6,9 +6,6 @@ import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.PersonId.AktorId;
 import no.nav.fo.veilarbarena.domain.User;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
 
 import static java.util.Optional.ofNullable;
 import static no.nav.fo.veilarbarena.utils.FunksjonelleMetrikker.feilVedSendingTilKafkaMetrikk;
