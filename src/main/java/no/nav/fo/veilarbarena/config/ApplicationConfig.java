@@ -2,7 +2,6 @@ package no.nav.fo.veilarbarena.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.dialogarena.aktor.AktorConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -11,9 +10,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         DbConfig.class,
         CacheConfig.class,
-        AktorConfig.class,
-        ServiceConfig.class,
-        KafkaConfig.class
+        ServiceConfig.class
 })
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {

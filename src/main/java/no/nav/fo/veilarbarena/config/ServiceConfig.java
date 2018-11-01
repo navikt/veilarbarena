@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
+import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.service.BrukereMedOppdateringService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         OppfolgingstatusConfig.class,
-        KafkaConfig.class
+        KafkaConfig.class,
+        AktorConfig.class
 })
 public class ServiceConfig {
 
