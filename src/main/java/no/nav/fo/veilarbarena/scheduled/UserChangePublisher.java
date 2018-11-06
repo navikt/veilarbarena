@@ -12,6 +12,7 @@ import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
@@ -50,7 +51,8 @@ public class UserChangePublisher {
         );
     }
 
-    private void publisereArenaBrukerEndringer(){
+    @Transactional
+    void publisereArenaBrukerEndringer(){
         try {
             List<User> users = changesSinceLastCheckSql();
 
@@ -61,11 +63,8 @@ public class UserChangePublisher {
             }
 
             List<User> feiledeFnrs = findAllFailedKafkaUsers();
-
-            if(feiledeFnrs != null && !feiledeFnrs.isEmpty()) {
-                List<User> mergedUserList = users.appendAll(feiledeFnrs);
-                mergedUserList.forEach(this::publish);
-            }
+            List<User> mergedUserList = users.appendAll(feiledeFnrs);
+            mergedUserList.forEach(this::publish);
         }
         catch(Exception e) {
             log.error("Feil ved publisere arena endringer", e);
@@ -93,14 +92,11 @@ public class UserChangePublisher {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 
-        if (!feiledeFnrs.isEmpty()){
-            List<User> map = List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
-                    .where(WhereClause.in("FODSELSNR",feiledeFnrs.asJava()))
-                    .executeToList())
-                    .map(User::of);
-            return map;
-        }
-        return null;
+        final List<User> map = List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
+                .where(WhereClause.in("FODSELSNR", feiledeFnrs.asJava()))
+                .executeToList())
+                .map(User::of);
+        return map;
     }
 
     private void updateLastcheck(ZonedDateTime tidspunkt, String fnr) {
