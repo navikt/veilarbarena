@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Import;
 @Import({
         DbConfig.class,
         CacheConfig.class,
-        ServiceConfig.class
+        ServiceConfig.class,
+        UserChangeConfig.class
 })
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class ApplicationConfig implements ApiApplication.NaisApiApplication {
