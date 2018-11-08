@@ -95,7 +95,7 @@ public class UserChangePublisher {
                 .map(User::of);
     }
 
-    private List<User> findAllFailedKafkaUsers() {
+    public List<User> findAllFailedKafkaUsers() {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 
