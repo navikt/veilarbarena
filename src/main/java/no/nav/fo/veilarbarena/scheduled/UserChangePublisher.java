@@ -74,7 +74,7 @@ public class UserChangePublisher {
             }
         }
         catch(Exception e) {
-            log.error("Feil ved publisere arena endringer", e);
+            log.error("Feil ved publisering av arena endringer til kafka", e);
         }
     }
 

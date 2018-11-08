@@ -12,6 +12,7 @@ public class Utils {
     public static User lagNyBruker() {
         ZonedDateTime TIDSPUNKT = new Timestamp(100000000000L).toLocalDateTime().atZone(ZoneId.systemDefault());
         return new User(
+                "123",
                 PersonId.aktorId("test"),
                 PersonId.fnr("test"),
                 "test",
