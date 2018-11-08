@@ -4,7 +4,9 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.fo.veilarbarena.domain.*;
+import no.nav.fo.veilarbarena.domain.PersonId;
+import no.nav.fo.veilarbarena.domain.User;
+import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
@@ -59,15 +61,20 @@ public class UserChangePublisher {
             if (!users.isEmpty()) {
                 User user = users.lastOption().get();
                 updateLastcheck(user.getEndret_dato(), user.getFodselsnr().get());
-                log.info("Legger {} brukere til kafka", users.size());
             }
 
             List<User> feiledeFnrs = findAllFailedKafkaUsers();
-            List<User> mergedUserList = users.appendAll(feiledeFnrs);
-            mergedUserList.forEach(this::publish);
+            if (feiledeFnrs.isEmpty()) {
+                log.info("Legger {} brukere til kafka", users.size());
+                users.forEach(this::publish);
+            } else {
+                List<User> mergedUserList = users.appendAll(feiledeFnrs);
+                log.info("Legger {} brukere til kafka", mergedUserList.size());
+                mergedUserList.forEach(this::publish);
+            }
         }
         catch(Exception e) {
-            log.error("Feil ved publisere arena endringer", e);
+            log.error("Feil ved publisering av arena endringer til kafka", e);
         }
     }
 
@@ -92,11 +99,13 @@ public class UserChangePublisher {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 
-        final List<User> map = List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
-                .where(WhereClause.in("FODSELSNR", feiledeFnrs.asJava()))
-                .executeToList())
-                .map(User::of);
-        return map;
+        if (!feiledeFnrs.isEmpty()) {
+            return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
+                    .where(WhereClause.in("FODSELSNR", feiledeFnrs.asJava()))
+                    .executeToList())
+                    .map(User::of);
+        }
+        return List.empty();
     }
 
     private void updateLastcheck(ZonedDateTime tidspunkt, String fnr) {
