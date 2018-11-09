@@ -32,6 +32,7 @@ public class OppfolgingsbrukerEndringRepository {
 
     public List<FeiletKafkaRecord> hentFeiledeBrukere() {
         return List.ofAll(SqlUtils.select(db, "FEILEDE_KAFKA_BRUKERE", FeiletKafkaRecord.class)
+                .limit(1000)
                 .executeToList());
     }
 }
