@@ -102,6 +102,7 @@ public class UserChangePublisher {
         if (!feiledeFnrs.isEmpty()) {
             return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)
                     .where(WhereClause.in("FODSELSNR", feiledeFnrs.asJava()))
+                    .limit(1000)
                     .executeToList())
                     .map(User::of);
         }
