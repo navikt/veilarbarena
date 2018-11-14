@@ -35,18 +35,18 @@ public class OppfolgingsbrukerEndringTemplate {
                 sendResult -> onSuccess(user),
                 throwable -> onError(throwable, user)
         );
-
-        log.debug("Bruker: {} har endringer, legger på kafka", user.getAktoerid().get());
     }
 
     private void onSuccess(User user) {
         leggerBrukerPaKafkaMetrikk(user);
         oppfolgingsbrukerEndringRepository.deleteFeiletBruker(user);
+        log.info("Bruker med aktorid {} har lagt på kafka", user.getAktoerid().get());
     }
 
     private void onError(Throwable throwable, User user) {
         log.error("Kunne ikke publisere melding til kafka-topic", throwable);
         feilVedSendingTilKafkaMetrikk();
+        log.info("Forsøker å insertere feilede bruker med aktorid {} i FEILEDE_KAFKA_BRUKERE", user.getAktoerid());
         oppfolgingsbrukerEndringRepository.insertFeiletBruker(user);
     }
 

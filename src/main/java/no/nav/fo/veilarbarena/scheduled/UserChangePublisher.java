@@ -69,7 +69,7 @@ public class UserChangePublisher {
                 users.forEach(this::publish);
             } else {
                 List<User> mergedUserList = users.appendAll(feiledeFnrs);
-                log.info("Legger {} brukere til kafka", mergedUserList.size());
+                log.info("Legger {} brukere som også inneholder feilede brukere til kafka", mergedUserList.size());
                 mergedUserList.forEach(this::publish);
             }
         }
@@ -87,6 +87,8 @@ public class UserChangePublisher {
 
         WhereClause tidspunktEqualsOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
+        log.info("Siste sjekket tidspunkt: {} og fnr: {}", sistSjekketTidspunkt, getLastCheckFnr());
+
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
                 .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
@@ -98,6 +100,8 @@ public class UserChangePublisher {
     public List<User> findAllFailedKafkaUsers() {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
+
+        log.info("Antall FeiledeFnr: {}", feiledeFnrs.size());
 
         if (!feiledeFnrs.isEmpty()) {
             return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)

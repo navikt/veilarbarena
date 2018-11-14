@@ -42,7 +42,7 @@ public class OppfolgingstatusService implements UserChangeListener {
     @Override
     @CacheEvict(cacheNames = OppfolgingstatusCache.NAME, key = "#user.fodselsnr")
     public void userChanged(User user) {
-        log.debug("Invalidating user: {}", user);
+        log.debug("Invalidating user: {}", user.toString());
     }
 
     private static Oppfolgingstatus toOppfolgingsstatus(HentOppfoelgingsstatusResponse response) {
