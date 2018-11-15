@@ -4,6 +4,7 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
+import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
@@ -34,6 +35,8 @@ public class UserChangePublisher {
     private java.util.List<UserChangeListener> listeners;
     @Inject
     private OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
+    @Inject
+    private AktorService aktorService;
 
     private LockingTaskExecutor taskExecutor;
     private static final int lockAutomatiskAvslutteOppfolgingSeconds = 3600;
@@ -87,7 +90,7 @@ public class UserChangePublisher {
 
         WhereClause tidspunktEqualsOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
-        log.info("Siste sjekket tidspunkt: {} og fnr: {}", sistSjekketTidspunkt, getLastCheckFnr());
+        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktorService.getAktorId(getLastCheckFnr()));
 
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
                 .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
