@@ -11,7 +11,7 @@ healthcheck:
     path: veilarbarena/internal/isAlive
     initialDelay: 120
   readiness:
-    path: veilarbarena/internal/selftest
+    path: veilarbarena/internal/isReady
     initialDelay: 120
 prometheus:
   enabled: true
@@ -85,3 +85,6 @@ kafka:
   producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+alertProfiles:
+  - common-java-modules
