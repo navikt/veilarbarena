@@ -4,6 +4,7 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
+import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
@@ -34,6 +35,8 @@ public class UserChangePublisher {
     private java.util.List<UserChangeListener> listeners;
     @Inject
     private OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
+    @Inject
+    private AktorService aktorService;
 
     private LockingTaskExecutor taskExecutor;
     private static final int lockAutomatiskAvslutteOppfolgingSeconds = 3600;
@@ -69,7 +72,7 @@ public class UserChangePublisher {
                 users.forEach(this::publish);
             } else {
                 List<User> mergedUserList = users.appendAll(feiledeFnrs);
-                log.info("Legger {} brukere til kafka", mergedUserList.size());
+                log.info("Legger {} brukere som også inneholder feilede brukere til kafka", mergedUserList.size());
                 mergedUserList.forEach(this::publish);
             }
         }
@@ -87,6 +90,8 @@ public class UserChangePublisher {
 
         WhereClause tidspunktEqualsOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
+        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktorService.getAktorId(getLastCheckFnr()));
+
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
                 .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
@@ -98,6 +103,8 @@ public class UserChangePublisher {
     public List<User> findAllFailedKafkaUsers() {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
+
+        log.info("Antall FeiledeFnr: {}", feiledeFnrs.size());
 
         if (!feiledeFnrs.isEmpty()) {
             return List.ofAll(SqlUtils.select(db, "OPPFOLGINGSBRUKER", UserRecord.class)

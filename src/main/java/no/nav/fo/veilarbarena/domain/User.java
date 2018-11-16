@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 @Value
 @Wither
 public class User {
-    String person_id;
     PersonId.AktorId aktoerid;
     PersonId.Fnr fodselsnr;
     String etternavn;
@@ -29,7 +28,6 @@ public class User {
 
     public static User of(UserRecord record) {
         return new User(
-                null,
                 null, // Legges til når man legger melding på kafka-topic
                 record.getFodselsnr().value,
                 record.getEtternavn().value,
