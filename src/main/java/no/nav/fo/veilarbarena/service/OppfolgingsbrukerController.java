@@ -70,6 +70,6 @@ public class OppfolgingsbrukerController {
 
     private static ZonedDateTime convertTimestampToZonedDateTimeIfPresent(Timestamp date){
         return Optional.ofNullable(date).isPresent() ?
-                (date.toLocalDateTime().atZone(ZoneId.systemDefault())) : null ;
+                date.toLocalDateTime().atZone(ZoneId.systemDefault()) : null ;
     }
 }

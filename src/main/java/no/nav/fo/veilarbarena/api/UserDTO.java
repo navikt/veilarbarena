@@ -1,12 +1,13 @@
 package no.nav.fo.veilarbarena.api;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.time.ZonedDateTime;
 
 @Data
 @Accessors(chain = true)
+@Builder
 public class UserDTO {
 
     public String aktoerid;
