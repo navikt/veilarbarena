@@ -15,7 +15,7 @@ public class KafkaHelsesjekk implements Helsesjekk {
 
     @Override
     public void helsesjekk() throws Throwable {
-        if (db.queryForObject("SELECT COUNT(*) FROM FEILEDE_KAFKA_BRUKERE", Long.class) != 0) {
+        if (db.queryForObject("SELECT COUNT(*) FROM FEILEDE_KAFKA_BRUKERE", Long.class) > 0) {
             throw new IllegalStateException();
         }
     }
