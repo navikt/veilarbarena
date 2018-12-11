@@ -61,9 +61,9 @@ public class OppfolgingsbrukerController {
                 .hovedmaalkode(resultSet.getString("hovedmaalkode"))
                 .sikkerhetstiltak_type_kode(resultSet.getString("sikkerhetstiltak_type_kode"))
                 .fr_kode(resultSet.getString("fr_kode"))
-                .har_oppfolgingssak(Boolean.valueOf(resultSet.getString("har_oppfolgingssak").equals("J")))
-                .sperret_ansatt(Boolean.valueOf(resultSet.getString("sperret_ansatt").equals("J")))
-                .er_doed(Boolean.valueOf(resultSet.getString("er_doed").equals("J")))
+                .har_oppfolgingssak(convertStringToBoolean(resultSet.getString("har_oppfolgingssak")))
+                .sperret_ansatt(convertStringToBoolean(resultSet.getString("sperret_ansatt")))
+                .er_doed(convertStringToBoolean(resultSet.getString("er_doed")))
                 .doed_fra_dato(convertTimestampToZonedDateTimeIfPresent(resultSet.getTimestamp("doed_fra_dato")))
                 .build();
     }
@@ -71,5 +71,9 @@ public class OppfolgingsbrukerController {
     private static ZonedDateTime convertTimestampToZonedDateTimeIfPresent(Timestamp date){
         return Optional.ofNullable(date).isPresent() ?
                 date.toLocalDateTime().atZone(ZoneId.systemDefault()) : null ;
+    }
+
+    private static boolean convertStringToBoolean(String flag){
+        return Optional.ofNullable(flag).isPresent() ? flag.equals("J") : false ;
     }
 }
