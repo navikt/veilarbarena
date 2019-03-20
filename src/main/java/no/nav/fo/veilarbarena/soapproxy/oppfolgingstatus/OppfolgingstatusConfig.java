@@ -3,7 +3,8 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 import no.nav.fo.veilarbarena.utils.ServiceUtils;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.OppfoelgingsstatusV1;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,10 +14,10 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 public class OppfolgingstatusConfig {
-    public static final String ENDPOINTURL = "VIRKSOMHET_OPPFOELGINGSSTATUS_V1_ENDPOINTURL";
+    public static final String ENDPOINTURL = "VIRKSOMHET_OPPFOELGINGSSTATUS_V2_ENDPOINTURL";
 
-    private static CXFClient<OppfoelgingsstatusV1> oppfoelgingsstatusV1Factory() {
-        return new CXFClient<>(OppfoelgingsstatusV1.class)
+    private static CXFClient<OppfoelgingsstatusV2> oppfoelgingsstatusV2Factory() {
+        return new CXFClient<>(OppfoelgingsstatusV2.class)
                 .address(getRequiredProperty(ENDPOINTURL))
                 .withMetrics();
     }
@@ -27,25 +28,25 @@ public class OppfolgingstatusConfig {
     }
 
     @Bean
-    public OppfolgingstatusService oppfolgingstatusService(OppfoelgingsstatusV1 service) {
+    public OppfolgingstatusService oppfolgingstatusService(OppfoelgingsstatusV2 service) {
         return new OppfolgingstatusService(service);
     }
 
     @Bean
-    public OppfoelgingsstatusV1 oppfoelgingsstatusV1() {
-        return oppfoelgingsstatusV1Factory()
+    public OppfoelgingsstatusV2 oppfoelgingsstatusV2() {
+        return oppfoelgingsstatusV2Factory()
                 .configureStsForOnBehalfOfWithJWT()
                 .build();
     }
 
     @Bean
-    public Pingable oppfoelgingsstatusV1Ping() {
-        OppfoelgingsstatusV1 service = oppfoelgingsstatusV1Factory()
+    public Pingable oppfoelgingsstatusV2Ping() {
+        OppfoelgingsstatusV2 service = oppfoelgingsstatusV2Factory()
                 .configureStsForSystemUser()
                 .build();
         Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(UUID.randomUUID().toString(),
-                "OPPFOELGINGSTATUS_V1 via " + getRequiredProperty(ENDPOINTURL),
-                "Ping av oppfolgingstatus_v1. Henter informasjon om oppfølgingsstatus fra arena.",
+                "OPPFOELGINGSTATUS_V2 via " + getRequiredProperty(ENDPOINTURL),
+                "Ping av oppfolgingstatus_v2. Henter informasjon om oppfølgingsstatus fra arena.",
                 true
         );
 

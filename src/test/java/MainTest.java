@@ -56,6 +56,6 @@ public class MainTest {
         setProperty(ApplicationConfig.REDIRECT_URL_PROPERTY, redirectUrlService.getUrl());
 
         setProperty(AKTOER_V2_ENDPOINTURL, FasitUtils.getWebServiceEndpoint("Aktoer_v2").getUrl());
-        setProperty(OppfolgingstatusConfig.ENDPOINTURL, FasitUtils.getWebServiceEndpoint("virksomhet:Oppfoelgingsstatus_v1").getUrl());
+        setProperty(OppfolgingstatusConfig.ENDPOINTURL, FasitUtils.getWebServiceEndpoint("virksomhet:Oppfoelgingsstatus_v2").getUrl());
     }
 }

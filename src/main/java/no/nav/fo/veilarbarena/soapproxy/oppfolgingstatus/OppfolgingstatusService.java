@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.scheduled.UserChangeListener;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.binding.OppfoelgingsstatusV1;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.meldinger.HentOppfoelgingsstatusRequest;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v1.meldinger.HentOppfoelgingsstatusResponse;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.informasjon.Person;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusRequest;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusResponse;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -19,10 +20,10 @@ import static no.nav.fo.veilarbarena.utils.DateUtils.xmlGregorianCalendarToLocal
 @Slf4j
 public class OppfolgingstatusService implements UserChangeListener {
 
-    private final OppfoelgingsstatusV1 service;
+    private final OppfoelgingsstatusV2 service;
 
     @Inject
-    public OppfolgingstatusService(OppfoelgingsstatusV1 service) {
+    public OppfolgingstatusService(OppfoelgingsstatusV2 service) {
         this.service = service;
     }
 
