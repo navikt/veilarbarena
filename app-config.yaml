@@ -61,7 +61,7 @@ fasitResources:
   # SOAP-services
   - alias: Aktoer_v2
     resourceType: webserviceendpoint
-  - alias: virksomhet:Oppfoelgingsstatus_v1
+  - alias: virksomhet:Oppfoelgingsstatus_v2
     resourceType: webserviceendpoint
 
   exposed:
