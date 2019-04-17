@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.scheduled.UserChangeListener;
+
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.informasjon.Person;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusRequest;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusResponse;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -53,7 +53,7 @@ public class OppfolgingstatusService implements UserChangeListener {
                 .formidlingsgruppeKode(response.getFormidlingsgruppeKode().getValue())
                 .serviceGruppeKode(response.getServicegruppeKode().getValue())
                 .inaktiveringsdato(xmlGregorianCalendarToLocalDate(response.getInaktiveringsdato()))
-                .harMottaOppgaveIArena(response.getHarOppgaveMottaSelvregPerson())
+                .harMottaOppgaveIArena(response.isHarOppgaveMottaSelvregPerson())
                 .build();
     }
 }

@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>2018.12.02.11.24</version>
+        <version>1.2019.04.06-08.48-f277664c5491</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>no.nav.common</groupId>
                 <artifactId>bom</artifactId>
-                <version>2018.12.02.11.24</version>
+                <version>1.2019.04.06-08.48-f277664c5491</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,10 +85,9 @@
 
         <!-- Tjenester -->
         <dependency>
-            <groupId>no.nav.tjenester</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-oppfoelgingsstatus-v2-tjenestespesifikasjon</artifactId>
-            <version>2.0.0</version>
-            <classifier>jaxws</classifier>
+            <version>1.2019.04.05-09.36-fbdf6a084578</version>
         </dependency>
 
         <!-- javax/spring -->
