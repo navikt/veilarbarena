@@ -8,7 +8,6 @@ import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.service.InternalServlet;
-import no.nav.fo.veilarbarena.service.OppfolgingsbrukerController;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
-        OppfolgingsbrukerController.class,
+        ControllerConfig.class,
         DbConfig.class,
         CacheConfig.class,
         PepConfig.class,

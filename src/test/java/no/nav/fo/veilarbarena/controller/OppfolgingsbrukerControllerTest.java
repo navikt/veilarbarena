@@ -1,11 +1,11 @@
-package no.nav.fo.veilarbarena.service;
+package no.nav.fo.veilarbarena.controller;
 
 import no.nav.brukerdialog.security.domain.IdentType;
 import org.junit.Test;
 
 import javax.ws.rs.WebApplicationException;
 
-import static no.nav.fo.veilarbarena.service.OppfolgingsbrukerController.*;
+import static no.nav.fo.veilarbarena.controller.OppfolgingsbrukerController.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class OppfolgingsbrukerControllerTest {

@@ -17,12 +17,14 @@ import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fasit.FasitUtils.getRestService;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
+import static no.nav.fo.veilarbarena.utils.ArenaOrdsTokenProvider.ARENA_ORDS_CLIENT_SECRET_PROPERTY;
+import static no.nav.fo.veilarbarena.utils.ArenaOrdsTokenProvider.ARENA_ORDS_CLIENT_ID_PROPERTY;
+import static no.nav.fo.veilarbarena.utils.ArenaOrdsUrl.ARENA_ORDS_URL_PROPERTY;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
-import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
+import static no.nav.sbl.util.EnvironmentUtils.*;
 
 public class MainTest {
     private static final String TEST_PORT = "8790";
@@ -56,7 +58,7 @@ public class MainTest {
         RestService redirectUrlService = FasitUtils.getRestService("veilarblogin.redirect-url", FasitUtils.getDefaultEnvironment());
         RestService aktoerregisterService = FasitUtils.getRestService("aktoerregister.api.v1", FasitUtils.getDefaultEnvironment());
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
-        String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
+        String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
         // TODO: Because of a bug in FasitUtils we cannot retrieve the Azure AD config values from Fasit
@@ -76,6 +78,11 @@ public class MainTest {
         setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME, issoHost);
         setProperty(Constants.ISSO_RP_USER_USERNAME_PROPERTY_NAME, isso_rp_user.getUsername());
         setProperty(Constants.ISSO_RP_USER_PASSWORD_PROPERTY_NAME, isso_rp_user.getPassword());
+
+        getOptionalProperty("ords_client_id").ifPresent(ordsUser -> setProperty(ARENA_ORDS_CLIENT_ID_PROPERTY, ordsUser));
+        getOptionalProperty("ords_client_secret").ifPresent(clientSecret -> setProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY, clientSecret));
+        setProperty(ARENA_ORDS_URL_PROPERTY, String.format("https://arena-ords-%s.nais.preprod.local", requireEnvironmentName()));
+
         setProperty(Constants.ISSO_JWKS_URL_PROPERTY_NAME, issoJWS);
         setProperty(Constants.ISSO_ISSUER_URL_PROPERTY_NAME, issoISSUER);
         setProperty(Constants.ISSO_ISALIVE_URL_PROPERTY_NAME, issoIsAlive);
