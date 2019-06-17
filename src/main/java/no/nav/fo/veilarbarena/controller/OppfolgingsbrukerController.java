@@ -1,7 +1,8 @@
-package no.nav.fo.veilarbarena.service;
+package no.nav.fo.veilarbarena.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.api.UserDTO;
+import no.nav.fo.veilarbarena.service.AuthService;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;

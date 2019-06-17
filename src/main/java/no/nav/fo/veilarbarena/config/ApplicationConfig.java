@@ -4,7 +4,6 @@ import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
-import no.nav.fo.veilarbarena.service.OppfolgingsbrukerController;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
 
 @Configuration
 @Import({
-        OppfolgingsbrukerController.class,
+        ControllerConfig.class,
         DbConfig.class,
         CacheConfig.class,
         PepConfig.class,
