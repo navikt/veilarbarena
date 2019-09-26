@@ -64,6 +64,10 @@ fasitResources:
   - alias: virksomhet:Oppfoelgingsstatus_v2
     resourceType: webserviceendpoint
 
+  # STS
+  - alias: security-token-service-openid-configuration
+    resourceType: restservice
+
   exposed:
   - alias: veilarbarenaAPI
     resourceType: restservice

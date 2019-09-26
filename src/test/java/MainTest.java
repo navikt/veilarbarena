@@ -1,7 +1,7 @@
 import no.nav.brukerdialog.security.Constants;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.ServiceUser;
-import no.nav.dialogarena.config.fasit.dto.RestService;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.ServiceUser;
+import no.nav.fasit.dto.RestService;
 import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -10,7 +10,7 @@ import no.nav.testconfig.ApiAppTest;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
@@ -38,6 +38,9 @@ public class MainTest {
         String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
+        RestService stsOpenIdConfig = FasitUtils.getRestService("security-token-service-openid-configuration", FasitUtils.getDefaultEnvironment());
+
+        setProperty("SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL", stsOpenIdConfig.getUrl());
         setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
         setProperty("KAFKA_BROKERS_URL", kafkaBrokers);
         setProperty("SRVVEILARBARENA_USERNAME", srvveilarbarena.getUsername());

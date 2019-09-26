@@ -1,9 +1,9 @@
 package no.nav.fo.veilarbarena;
 
 import io.vavr.control.Option;
-import no.nav.dialogarena.config.fasit.DbCredentials;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.TestEnvironment;
+import no.nav.fasit.DbCredentials;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.TestEnvironment;
 
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_PASSWORD;
