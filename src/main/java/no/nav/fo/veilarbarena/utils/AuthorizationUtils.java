@@ -16,7 +16,7 @@ import static no.nav.brukerdialog.tools.SecurityConstants.SYSTEMUSER_USERNAME;
 public class AuthorizationUtils {
 
     private static final String AUTHENTICATE = "WWW-Authenticate";
-    private static final String BASIC_REALM = "BASIC realm=\"srvveilarbportefolje\"";
+    private static final String BASIC_REALM = "BASIC realm=\"srvveilarbarena\"";
     private static final String AUTHORIZATION = "Authorization";
     private static final Base64.Decoder decoder = Base64.getDecoder();
 

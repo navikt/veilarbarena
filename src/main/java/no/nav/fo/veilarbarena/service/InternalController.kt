@@ -19,7 +19,7 @@ class InternalController @Inject constructor (
 ) : HttpServlet() {
 
     @GET
-    @Path("/startfrascratch")
+    @Path("/publiser_alle_brukere")
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
         if (AuthorizationUtils.isBasicAuthAuthorized(req)) {
             userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere()
