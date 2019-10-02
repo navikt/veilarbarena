@@ -81,6 +81,15 @@ public class UserChangePublisher {
         }
     }
 
+    public void hentOgPubliserAlleOppfolgingsbrukere() {
+        final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
+                .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
+                .executeToList())
+                .map(User::of);
+
+        oppfolgingsbrukere.forEach(this::publish);
+    }
+
     private List<User> changesSinceLastCheckSql() {
         final ZonedDateTime sistSjekketTidspunkt = getLastCheck();
 
