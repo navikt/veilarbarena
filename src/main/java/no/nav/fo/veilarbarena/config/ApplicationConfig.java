@@ -3,9 +3,13 @@ package no.nav.fo.veilarbarena.config;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerController;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+
+import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
 
 @Configuration
 @Import({
@@ -30,5 +34,10 @@ public class ApplicationConfig implements ApiApplication {
                 .issoLogin()
                 .sts()
                 .validateAzureAdInternalUsersTokens();
+    }
+
+    @Bean
+    public UnleashService unleashService() {
+        return new UnleashService(resolveFromEnvironment());
     }
 }

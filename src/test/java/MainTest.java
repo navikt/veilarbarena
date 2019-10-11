@@ -11,7 +11,9 @@ import no.nav.testconfig.ApiAppTest;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.getRestService;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
+import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 public class MainTest {
@@ -48,6 +50,7 @@ public class MainTest {
         setProperty("SRVVEILARBARENA_PASSWORD", srvveilarbarena.getPassword());
         setProperty(SECURITYTOKENSERVICE_URL, securityTokenService);
         setProperty(ABAC_PDP_ENDPOINT_URL, abac.getUrl());
+        setProperty(UNLEASH_API_URL_PROPERTY_NAME, getRestService("unleash-api").getUrl());
 
         setProperty(CredentialConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
         setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());
