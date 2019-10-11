@@ -12,11 +12,12 @@ import org.springframework.context.annotation.Import;
         OppfolgingsbrukerController.class,
         DbConfig.class,
         CacheConfig.class,
+        PepConfig.class,
         ServiceConfig.class,
         UserChangeConfig.class
 })
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-public class ApplicationConfig implements ApiApplication.NaisApiApplication {
+public class ApplicationConfig implements ApiApplication {
     public static final String APPLICATION_NAME = "veilarbarena";
     public static final String AKTOER_V2_ENDPOINTURL = "AKTOER_V2_ENDPOINTURL";
     public static final String REDIRECT_URL_PROPERTY = "VEILARBLOGIN_REDIRECT_URL_URL";
@@ -25,7 +26,9 @@ public class ApplicationConfig implements ApiApplication.NaisApiApplication {
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
-        apiAppConfigurator.issoLogin();
-        apiAppConfigurator.sts();
+        apiAppConfigurator
+                .issoLogin()
+                .sts()
+                .validateAzureAdInternalUsersTokens();
     }
 }

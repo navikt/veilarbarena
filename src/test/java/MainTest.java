@@ -1,7 +1,7 @@
 import no.nav.brukerdialog.security.Constants;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.ServiceUser;
-import no.nav.dialogarena.config.fasit.dto.RestService;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.ServiceUser;
+import no.nav.fasit.dto.RestService;
 import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -10,7 +10,7 @@ import no.nav.testconfig.ApiAppTest;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
@@ -37,6 +37,10 @@ public class MainTest {
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
         String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
+
+        // TODO: Because of a bug in FasitUtils we cannot retrieve the Azure AD config values from Fasit
+        setProperty("LOGINSERVICE_OIDC_DISCOVERYURI", "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration");
+        setProperty("LOGINSERVICE_OIDC_CLIENTID", "38e07d31-659d-4595-939a-f18dce3446c5");
 
         setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
         setProperty("KAFKA_BROKERS_URL", kafkaBrokers);
