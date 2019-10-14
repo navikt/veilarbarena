@@ -46,6 +46,8 @@ public class OppfolgingsbrukerController {
                 .column("sperret_ansatt")
                 .column("er_doed")
                 .column("doed_fra_dato")
+                .column("fornavn")
+                .column("etternavn")
                 .where(harFnr)
                 .execute();
 
@@ -67,6 +69,8 @@ public class OppfolgingsbrukerController {
                 .sperret_ansatt(convertStringToBoolean(resultSet.getString("sperret_ansatt")))
                 .er_doed(convertStringToBoolean(resultSet.getString("er_doed")))
                 .doed_fra_dato(convertTimestampToZonedDateTimeIfPresent(resultSet.getTimestamp("doed_fra_dato")))
+                .fornavn(resultSet.getString("fornavn"))
+                .etternavn(resultSet.getString("etternavn"))
                 .build();
     }
 
