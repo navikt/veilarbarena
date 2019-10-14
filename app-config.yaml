@@ -64,6 +64,12 @@ fasitResources:
   - alias: virksomhet:Oppfoelgingsstatus_v2
     resourceType: webserviceendpoint
 
+  # Internal Azure AD B2C
+  - alias: loginservice_oidc
+    resourceType: AzureOIDC
+
+  - alias: unleash-api
+    resourceType: restservice
   exposed:
   - alias: veilarbarenaAPI
     resourceType: restservice
