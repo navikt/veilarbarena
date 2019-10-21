@@ -1,0 +1,59 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: veilarbarena
+  namespace: {{namespace}}
+  labels:
+    team: pto
+spec:
+  image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
+  ingresses:
+    - https://veilarbarena.nais.preprod.local
+    - https://app-{{namespace}}.adeo.no/veilarbarena
+  liveness:
+    path: veilarbarena/internal/isAlive
+    port: 8080
+    initialDelay: 120
+  port: 8080
+  prometheus:
+    enabled: true
+    path: veilarbarena/internal/metrics
+  readiness:
+    path: veilarbarena/internal/isReady
+    port: 8080
+    initialDelay: 120
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 3
+      memory: 1024Mi
+    requests:
+      memory: 512Mi
+  webproxy: true
+  env:
+    - APPDYNAMICS_AGENT_ACCOUNT_NAME
+    - APPDYNAMICS_CONTROLLER_HOST_NAME
+    - APPDYNAMICS_CONTROLLER_PORT
+    - APPDYNAMICS_CONTROLLER_SSL_ENABLED
+    - KAFKA_BROKERS_URL
+    - SECURITYTOKENSERVICE_URL
+    - ABAC_PDP_ENDPOINT_URL
+    - ABAC_PDP_ENDPOINT_DESCRIPTION
+    - ISSO_HOST_URL
+    - ISSO_JWKS_URL
+    - ISSO_ISSUER_URL
+    - ISSO_ISALIVE_URL
+    - VEILARBLOGIN_REDIRECT_URL_DESCRIPTION
+    - VEILARBLOGIN_REDIRECT_URL_URL
+    - AKTOER_V2_SECURITYTOKEN
+    - AKTOER_V2_ENDPOINTURL
+    - AKTOER_V2_WSDLURL
+    - VIRKSOMHET_OPPFOELGINGSSTATUS_V2_SECURITYTOKEN
+    - VIRKSOMHET_OPPFOELGINGSSTATUS_V2_ENDPOINTURL
+    - VIRKSOMHET_OPPFOELGINGSSTATUS_V2_WSDLURL
+    - LOGINSERVICE_OIDC_CALLBACKURI
+    - LOGINSERVICE_OIDC_DISCOVERYURI
+    - UNLEASH_API_URL
