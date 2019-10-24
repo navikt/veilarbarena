@@ -33,6 +33,15 @@ spec:
     requests:
       memory: 512Mi
   webproxy: true
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvveilarbarena
+        mountPath: /var/run/secrets/nais.io/srvveilarbarena
+      - kvPath: /oracle/data/dev/creds/veilarbarena_{{namespace}}-user
+        mountPath: /var/run/secrets/nais.io/veilarbarenaDataSource
+      - kvPath: /kv/preprod/fss/veilarbarena/{{namespace}}
+        mountPath: /var/run/secrets/nais.io/vault
   env:
     - APPDYNAMICS_AGENT_ACCOUNT_NAME
     - APPDYNAMICS_CONTROLLER_HOST_NAME
