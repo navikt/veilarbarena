@@ -25,8 +25,8 @@ public class PepConfig {
         VeilarbAbacPepClient.Builder builder = VeilarbAbacPepClient.ny()
                 .medPep(pep)
                 .medSystemUserTokenProvider(() -> systemUserTokenProvider.getToken())
-                .brukAktoerId(() -> true)
-                .sammenlikneTilgang(() -> false)
+                .brukAktoerId(()->unleashService.isEnabled("veilarboppfolging.veilarbabac.aktor"))
+                .sammenlikneTilgang(()->unleashService.isEnabled("veilarboppfolging.veilarbabac.sammenlikn"))
                 .foretrekkVeilarbAbacResultat(() -> unleashService.isEnabled("veilarboppfolging.veilarbabac.foretrekk_veilarbabac"));
 
         return builder.bygg();
