@@ -18,6 +18,7 @@ import javax.inject.Inject;
         OppfolgingstatusConfig.class,
         KafkaConfig.class,
         AktoerRegisterClient.class,
+        UnleashService.class
 })
 public class ServiceConfig {
 
@@ -30,7 +31,7 @@ public class ServiceConfig {
     }
 
     @Bean
-    public AuthService authService(AktorService aktorService, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
-        return new AuthService(aktorService, pepClient, unleashService);
+    public AuthService authService(AktoerRegisterClient aktoerRegisterClient, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
+        return new AuthService(aktoerRegisterClient, pepClient, unleashService);
     }
 }

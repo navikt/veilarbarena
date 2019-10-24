@@ -1,12 +1,12 @@
 package no.nav.fo.veilarbarena.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import no.nav.fo.veilarbarena.domain.IdentinfoForAktoer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.AKTOERREGISTER_API_V1_URL;
-import static no.nav.json.JsonUtils.fromJson;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Component
@@ -58,10 +57,8 @@ public class AktoerRegisterClient {
     }
 
     private IdentinfoForAktoer fromResponse(Response response, String ident) {
-        String json = response.readEntity(String.class);
-        TypeReference<Map<String, IdentinfoForAktoer>> type = new TypeReference<Map<String, IdentinfoForAktoer>>() {};
-
-        return fromJson(json, type).get(ident);
+        return response.readEntity(new GenericType<Map<String, IdentinfoForAktoer>>(){})
+                .get(ident);
     }
 
     private MultivaluedMap<String, Object> httpHeaders(String aktorId) {
@@ -79,15 +76,15 @@ public class AktoerRegisterClient {
 
     private void validerRespons(String ident, IdentinfoForAktoer identinfoForAktoer, String type) {
         if (identinfoForAktoer.getIdenter() == null) {
-            throw new RuntimeException("Fant ingen identinfo for id: " + ident + " type " + type);
+            throw new IllegalArgumentException("Fant ingen identinfo for id: " + ident + " type " + type);
         }
 
         if (identinfoForAktoer.getFeilmelding() != null) {
-            throw new RuntimeException("Feil fra aktørregister for id " + ident + " type " + type + ", feilmelding: " + identinfoForAktoer.getFeilmelding());
+            throw new IllegalArgumentException("Feil fra aktørregister for id " + ident + " type " + type + ", feilmelding: " + identinfoForAktoer.getFeilmelding());
         }
 
         if (identinfoForAktoer.getIdenter().size() != 1) {
-            throw new RuntimeException("Forventet 1 fnr for id" + ident + " type " + type + ", fant " + identinfoForAktoer.getIdenter().size());
+            throw new IllegalArgumentException("Forventet 1 fnr for id" + ident + " type " + type + ", fant " + identinfoForAktoer.getIdenter().size());
         }
     }
 }

@@ -43,7 +43,6 @@ public class OppfolgingstatusController {
     public Oppfolgingstatus oppfolgingstatus() {
         PersonId.Fnr fnr = RestUtils.getUserIdent(requestProvider)
                 .map((userid) -> userid.toFnr(aktoerRegisterClient))
-                .map(this::hentOppfolgingsstatus)
                 .getOrElseThrow(() -> new BadRequestException("Missing userid"));
 
         authService.sjekkTilgang(fnr.get());

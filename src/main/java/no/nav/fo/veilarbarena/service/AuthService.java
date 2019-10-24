@@ -2,7 +2,7 @@ package no.nav.fo.veilarbarena.service;
 
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import javax.inject.Inject;
 @Service
 public class AuthService {
 
-    private final AktorService aktorService;
+    private final AktoerRegisterClient aktoerRegisterClient;
     private final VeilarbAbacPepClient pepClient;
     private final UnleashService unleashService;
 
     @Inject
-    public AuthService(AktorService aktorService, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
-        this.aktorService = aktorService;
+    public AuthService(AktoerRegisterClient aktoerRegisterClient, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
+        this.aktoerRegisterClient = aktoerRegisterClient;
         this.pepClient = pepClient;
         this.unleashService = unleashService;
     }
@@ -31,7 +31,6 @@ public class AuthService {
     }
 
     private String getAktorIdOrThrow(String fnr) {
-        return aktorService.getAktorId(fnr)
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke aktør for fnr"));
+        return aktoerRegisterClient.tilAktorId(fnr);
     }
 }
