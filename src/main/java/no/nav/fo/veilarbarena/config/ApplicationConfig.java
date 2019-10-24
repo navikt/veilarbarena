@@ -7,6 +7,8 @@ import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.service.InternalServlet;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerController;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -16,11 +18,14 @@ import javax.servlet.ServletContext;
 
 import static no.nav.apiapp.ServletUtil.leggTilServlet;
 
+import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
+
 @Configuration
 @Import({
         OppfolgingsbrukerController.class,
         DbConfig.class,
         CacheConfig.class,
+        PepConfig.class,
         ServiceConfig.class,
         UserChangeConfig.class,
         InternalServlet.class,
@@ -47,7 +52,14 @@ public class ApplicationConfig implements ApiApplication {
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
-        apiAppConfigurator.issoLogin();
-        apiAppConfigurator.sts();
+        apiAppConfigurator
+                .issoLogin()
+                .sts()
+                .validateAzureAdInternalUsersTokens();
+    }
+
+    @Bean
+    public UnleashService unleashService() {
+        return new UnleashService(resolveFromEnvironment());
     }
 }

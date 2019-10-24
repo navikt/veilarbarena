@@ -7,6 +7,8 @@ import java.time.ZonedDateTime;
 
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserDTO {
 

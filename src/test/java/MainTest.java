@@ -11,7 +11,9 @@ import no.nav.testconfig.ApiAppTest;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.getRestService;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
+import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 public class MainTest {
@@ -39,12 +41,17 @@ public class MainTest {
         String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
 
+        // TODO: Because of a bug in FasitUtils we cannot retrieve the Azure AD config values from Fasit
+        setProperty("LOGINSERVICE_OIDC_DISCOVERYURI", "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration");
+        setProperty("LOGINSERVICE_OIDC_CLIENTID", "38e07d31-659d-4595-939a-f18dce3446c5");
+
         setProperty("ENDRING_BRUKER_TOPIC", endringBrukerTopic);
         setProperty("KAFKA_BROKERS_URL", kafkaBrokers);
         setProperty("SRVVEILARBARENA_USERNAME", srvveilarbarena.getUsername());
         setProperty("SRVVEILARBARENA_PASSWORD", srvveilarbarena.getPassword());
         setProperty(SECURITYTOKENSERVICE_URL, securityTokenService);
         setProperty(ABAC_PDP_ENDPOINT_URL, abac.getUrl());
+        setProperty(UNLEASH_API_URL_PROPERTY_NAME, getRestService("unleash-api").getUrl());
 
         setProperty(CredentialConstants.SYSTEMUSER_USERNAME, srvveilarbarena.getUsername());
         setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, srvveilarbarena.getPassword());

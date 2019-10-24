@@ -24,10 +24,13 @@ public class OppfolgingsbrukerController {
     @Inject
     private JdbcTemplate db;
 
+    @Inject
+    private AuthService authService;
+
     @GET
     public UserDTO getOppfolgingsbruker(@PathParam("fnr") String fnr){
-        UserDTO userDTO = hentOppfolgingsbruker(fnr);
-        return userDTO;
+        authService.sjekkTilgang(fnr);
+        return hentOppfolgingsbruker(fnr);
     }
 
     public UserDTO hentOppfolgingsbruker(String fnr){
