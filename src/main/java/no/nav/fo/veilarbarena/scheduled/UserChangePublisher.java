@@ -4,7 +4,7 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
@@ -21,6 +21,10 @@ import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 public class UserChangePublisher {
@@ -36,10 +40,14 @@ public class UserChangePublisher {
     @Inject
     private OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
     @Inject
-    private AktorService aktorService;
+    private AktoerRegisterClient aktoerRegisterClient;
 
     private LockingTaskExecutor taskExecutor;
     private static final int lockAutomatiskAvslutteOppfolgingSeconds = 3600;
+
+    private static final String ARBEIDSOKER = "ARBS";
+    private static final Set<String> OPPFOLGINGKODER = new HashSet<>(asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG"));
+    private static final String IKKE_ARBEIDSSOKER = "IARBS";
 
     public UserChangePublisher(LockingTaskExecutor taskExecutor){
         this.taskExecutor = taskExecutor;
@@ -83,7 +91,9 @@ public class UserChangePublisher {
 
     public void hentOgPubliserAlleOppfolgingsbrukere() {
         final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
+                .where(erUnderOppfolging())
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
+                .limit(1000)
                 .executeToList())
                 .map(User::of);
 
@@ -99,9 +109,10 @@ public class UserChangePublisher {
 
         WhereClause tidspunktEqualsOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
-        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktorService.getAktorId(getLastCheckFnr()));
+        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktoerRegisterClient.tilAktorId(getLastCheckFnr()));
 
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
+                .where(erUnderOppfolging())
                 .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
                 .limit(1000)
@@ -123,6 +134,13 @@ public class UserChangePublisher {
                     .map(User::of);
         }
         return List.empty();
+    }
+
+    private WhereClause erUnderOppfolging() {
+        WhereClause arbeidssoker = WhereClause.equals("FORMIDLINGSGRUPPEKODE", ARBEIDSOKER);
+        WhereClause erIArbeidOgHarInnsatsbehov = WhereClause.equals("FORMIDLINGSGRUPPEKODE", IKKE_ARBEIDSSOKER)
+                .and(WhereClause.in("KVALIFISERINGSGRUPPEKODE", OPPFOLGINGKODER));
+        return arbeidssoker.or(erIArbeidOgHarInnsatsbehov);
     }
 
     private void updateLastcheck(ZonedDateTime tidspunkt, String fnr) {

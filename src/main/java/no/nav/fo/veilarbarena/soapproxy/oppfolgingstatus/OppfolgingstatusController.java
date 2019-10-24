@@ -2,7 +2,7 @@ package no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
 import no.nav.fo.veilarbarena.utils.RestUtils;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusPersonIkkeFunnet;
@@ -29,7 +29,7 @@ public class OppfolgingstatusController {
     private OppfolgingstatusService service;
 
     @Inject
-    private AktorService aktorService;
+    private AktoerRegisterClient aktoerRegisterClient;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fnr", dataType = "string", paramType = "query"),
@@ -38,7 +38,7 @@ public class OppfolgingstatusController {
     @GET
     public Oppfolgingstatus oppfolgingstatus() {
         return RestUtils.getUserIdent(requestProvider)
-                .map((userid) -> userid.toFnr(aktorService))
+                .map((userid) -> userid.toFnr(aktoerRegisterClient))
                 .map(this::hentOppfolgingsstatus)
                 .getOrElseThrow(() -> new BadRequestException("Missing userid"));
     }

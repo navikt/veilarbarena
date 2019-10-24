@@ -1,7 +1,7 @@
 import no.nav.brukerdialog.security.Constants;
-import no.nav.dialogarena.config.fasit.FasitUtils;
-import no.nav.dialogarena.config.fasit.ServiceUser;
-import no.nav.dialogarena.config.fasit.dto.RestService;
+import no.nav.fasit.FasitUtils;
+import no.nav.fasit.ServiceUser;
+import no.nav.fasit.dto.RestService;
 import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -10,7 +10,7 @@ import no.nav.testconfig.ApiAppTest;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
+import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
@@ -19,7 +19,7 @@ public class MainTest {
 
     public static void main(String[] args) {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
-        DatabaseTestContext.setupContext(getProperty("database", "Q6"));
+        DatabaseTestContext.setupContext(getProperty("database", "Q0"));
         setupSecurity();
 
         Main.main(TEST_PORT);
@@ -34,6 +34,7 @@ public class MainTest {
         ServiceUser isso_rp_user = FasitUtils.getServiceUser("isso-rp-user", APPLICATION_NAME);
         String securityTokenService = FasitUtils.getBaseUrl("securityTokenService", FSS);
         RestService redirectUrlService = FasitUtils.getRestService("veilarblogin.redirect-url", FasitUtils.getDefaultEnvironment());
+        RestService aktoerregisterService = FasitUtils.getRestService("aktoerregister.api.v1", FasitUtils.getDefaultEnvironment());
         RestService abac = FasitUtils.getRestService("abac.pdp.endpoint", FasitUtils.getDefaultEnvironment());
         String endringBrukerTopic = "aapen-fo-endringPaaOppfoelgingsBruker-v1-"+ requireEnvironmentName();
         String kafkaBrokers = FasitUtils.getBaseUrl("kafka-brokers");
@@ -55,6 +56,7 @@ public class MainTest {
         setProperty(Constants.ISSO_ISALIVE_URL_PROPERTY_NAME, issoIsAlive);
         setProperty(ApplicationConfig.REDIRECT_URL_PROPERTY, redirectUrlService.getUrl());
 
+        setProperty(AKTOERREGISTER_API_V1_URL, aktoerregisterService.getUrl());
         setProperty(AKTOER_V2_ENDPOINTURL, FasitUtils.getWebServiceEndpoint("Aktoer_v2").getUrl());
         setProperty(OppfolgingstatusConfig.ENDPOINTURL, FasitUtils.getWebServiceEndpoint("virksomhet:Oppfoelgingsstatus_v2").getUrl());
     }

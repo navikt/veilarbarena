@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.dialogarena.aktor.AktorConfig;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
 import no.nav.fo.veilarbarena.service.BrukereMedOppdateringService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -13,12 +12,12 @@ import org.springframework.context.annotation.Import;
 @Import({
         OppfolgingstatusConfig.class,
         KafkaConfig.class,
-        AktorConfig.class
+        AktoerRegisterClient.class,
 })
 public class ServiceConfig {
 
     @Bean
-    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktorService aktorService) {
-        return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktorService);
+    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktoerRegisterClient aktoerRegisterClient) {
+        return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktoerRegisterClient);
     }
 }

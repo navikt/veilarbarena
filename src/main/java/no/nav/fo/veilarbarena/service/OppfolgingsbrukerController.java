@@ -1,6 +1,5 @@
 package no.nav.fo.veilarbarena.service;
 
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.api.UserDTO;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
@@ -8,8 +7,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
-import java.sql.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;

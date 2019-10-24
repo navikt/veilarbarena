@@ -1,16 +1,15 @@
 package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
-import no.nav.dialogarena.aktor.AktorServiceImpl;
 import no.nav.fo.veilarbarena.DbTest;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
+import no.nav.fo.veilarbarena.client.RestClientConfig;
+import no.nav.fo.veilarbarena.config.ApplicationTestConfig;
 import no.nav.fo.veilarbarena.domain.User;
-import no.nav.fo.veilarbarena.service.AktorServiceMock;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
 import no.nav.sbl.sql.SqlUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
@@ -30,11 +29,13 @@ class UserChangePublisherTest extends DbTest {
 
     @BeforeAll
     static void setup() {
+        ApplicationTestConfig.setupTestConfig();
         initSpringContext(
                 OppfolgingsbrukerEndringRepository.class,
                 UserChangePublisher.class,
                 UserChangeListenerMock.class,
-                AktorServiceMock.class
+                AktoerRegisterClient.class,
+                RestClientConfig.class
         );
     }
 

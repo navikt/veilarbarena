@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.EqualsAndHashCode;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
 
 import java.io.IOException;
 
@@ -33,8 +33,8 @@ public abstract class PersonId {
         return new AktorId(aktorId);
     }
 
-    public abstract Fnr toFnr(AktorService service);
-    public abstract AktorId toAktorId(AktorService service);
+    public abstract Fnr toFnr(AktoerRegisterClient aktoerRegisterClient);
+    public abstract AktorId toAktorId(AktoerRegisterClient aktoerRegisterClient);
 
     @JsonDeserialize(using = PersonId.PersonIdDeserializer.class)
     public static class Fnr extends PersonId {
@@ -43,15 +43,17 @@ public abstract class PersonId {
         }
 
         @Override
-        public Fnr toFnr(AktorService service) {
+        public Fnr toFnr(AktoerRegisterClient aktoerRegisterClient) {
             return this;
         }
 
         @Override
-        public AktorId toAktorId(AktorService service) {
-            return service.getAktorId(this.get())
-                    .map(PersonId::aktorId)
-                    .orElseThrow(() -> new FnrAktorIdConvertionException("Fant ikke aktorId for " + this.get()));
+        public AktorId toAktorId(AktoerRegisterClient aktoerRegisterClient) {
+            String aktoerId = aktoerRegisterClient.tilAktorId(this.get());
+            if (aktoerId.isEmpty()) {
+                throw new FnrAktorIdConvertionException("Fant ikke aktorId for " + this.get());
+            }
+            else return new PersonId.AktorId(aktoerId);
         }
     }
 
@@ -63,14 +65,16 @@ public abstract class PersonId {
         }
 
         @Override
-        public Fnr toFnr(AktorService service) {
-            return service.getFnr(this.get())
-                    .map(PersonId::fnr)
-                    .orElseThrow(() -> new FnrAktorIdConvertionException("Fant ikke fnr for " + this.get()));
+        public Fnr toFnr(AktoerRegisterClient aktoerRegisterClient) {
+            String fnr = aktoerRegisterClient.tilFnr(this.get());
+            if (fnr.isEmpty()) {
+                throw new FnrAktorIdConvertionException("Fant ikke fnr for " + this.get());
+            }
+            return PersonId.fnr(fnr);
         }
 
         @Override
-        public AktorId toAktorId(AktorService service) {
+        public AktorId toAktorId(AktoerRegisterClient aktoerRegisterClient) {
             return this;
         }
     }
