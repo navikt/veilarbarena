@@ -1,7 +1,2 @@
-FROM docker.adeo.no:5000/fo/maven as builder
-ADD / /source
-WORKDIR /source
-RUN mvn package -DskipTests
-
-FROM docker.adeo.no:5000/pus/nais-java-app
-COPY --from=builder /source/target/veilarbarena /app
+FROM navikt/java:8-appdynamics
+COPY /target/veilarbarena /app
