@@ -22,6 +22,7 @@ public class OppfolgingsbrukerEndringTemplate {
         this.kafkaTemplate = kafkaTemplate;
         this.oppfolgingsbrukerEndringRepository = oppfolgingsbrukerEndringRepository;
         this.topic = topic;
+        log.info("OppfolgingsbrukerEndringTemplate topic: {}", topic);
     }
 
     void send(User user) {
