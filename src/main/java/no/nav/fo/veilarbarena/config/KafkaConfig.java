@@ -16,6 +16,8 @@ import org.springframework.kafka.support.LoggingProducerListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
+import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
@@ -23,8 +25,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 public class KafkaConfig {
 
     private static final String KAFKA_BROKERS = getRequiredProperty("KAFKA_BROKERS_URL");
-    private static final String USERNAME = getRequiredProperty("SRVVEILARBARENA_USERNAME");
-    private static final String PASSWORD = getRequiredProperty("SRVVEILARBARENA_PASSWORD");
+    private static final String USERNAME = getRequiredProperty(SYSTEMUSER_USERNAME);
+    private static final String PASSWORD = getRequiredProperty(SYSTEMUSER_PASSWORD);
 
     @Bean
     public static Map<String, Object> producerConfigs() {
