@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
+import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
 import no.nav.fo.veilarbarena.service.AuthService;
 import no.nav.fo.veilarbarena.service.BrukereMedOppdateringService;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 @Import({
         OppfolgingstatusConfig.class,
         KafkaConfig.class,
-        AktoerRegisterClient.class,
+        AktoerRegisterService.class,
         UnleashService.class
 })
 public class ServiceConfig {
@@ -26,12 +26,12 @@ public class ServiceConfig {
     private UnleashService unleashService;
 
     @Bean
-    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktoerRegisterClient aktoerRegisterClient) {
-        return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktoerRegisterClient);
+    public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktoerRegisterService aktoerRegisterService) {
+        return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktoerRegisterService);
     }
 
     @Bean
-    public AuthService authService(AktoerRegisterClient aktoerRegisterClient, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
-        return new AuthService(aktoerRegisterClient, pepClient, unleashService);
+    public AuthService authService(AktoerRegisterService aktoerRegisterService, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
+        return new AuthService(aktoerRegisterService, pepClient, unleashService);
     }
 }

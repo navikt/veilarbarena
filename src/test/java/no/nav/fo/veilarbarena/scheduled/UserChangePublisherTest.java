@@ -2,7 +2,7 @@ package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
 import no.nav.fo.veilarbarena.DbTest;
-import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
+import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.config.ApplicationTestConfig;
 import no.nav.fo.veilarbarena.domain.User;
@@ -34,7 +34,7 @@ class UserChangePublisherTest extends DbTest {
                 OppfolgingsbrukerEndringRepository.class,
                 UserChangePublisher.class,
                 UserChangeListenerMock.class,
-                AktoerRegisterClient.class,
+                AktoerRegisterService.class,
                 RestClientConfig.class
         );
     }

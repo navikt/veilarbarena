@@ -2,7 +2,7 @@ package no.nav.fo.veilarbarena.service;
 
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.utils.AuthorizationUtils;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServlet;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
 
-@Configuration
+@Component
 public class InternalServlet extends HttpServlet {
 
     private UserChangePublisher userChangePublisher;

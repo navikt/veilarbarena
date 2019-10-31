@@ -4,7 +4,7 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
+import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
@@ -40,7 +40,7 @@ public class UserChangePublisher {
     @Inject
     private OppfolgingsbrukerEndringRepository oppfolgingsbrukerEndringRepository;
     @Inject
-    private AktoerRegisterClient aktoerRegisterClient;
+    private AktoerRegisterService aktoerRegisterService;
 
     private LockingTaskExecutor taskExecutor;
     private static final int lockAutomatiskAvslutteOppfolgingSeconds = 3600;
@@ -109,7 +109,7 @@ public class UserChangePublisher {
 
         WhereClause tidspunktEqualsOgFnr = tidspunktEquals.and(sistSjekketFnrGreater);
 
-        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktoerRegisterClient.tilAktorId(getLastCheckFnr()));
+        log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktoerRegisterService.tilAktorId(getLastCheckFnr()));
 
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
                 .where(erUnderOppfolging())

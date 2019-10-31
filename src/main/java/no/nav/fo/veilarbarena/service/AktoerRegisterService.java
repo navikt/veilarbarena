@@ -1,4 +1,4 @@
-package no.nav.fo.veilarbarena.client;
+package no.nav.fo.veilarbarena.service;
 
 import no.nav.fo.veilarbarena.domain.IdentinfoForAktoer;
 import org.springframework.stereotype.Component;
@@ -17,12 +17,12 @@ import static no.nav.fo.veilarbarena.config.ApplicationConfig.AKTOERREGISTER_API
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Component
-public class AktoerRegisterClient {
+public class AktoerRegisterService {
     private final String aktorRegisterUrl = getRequiredProperty(AKTOERREGISTER_API_V1_URL);
     private Client client;
 
     @Inject
-    public AktoerRegisterClient(Client client) {
+    public AktoerRegisterService(Client client) {
         this.client = client;
     }
 

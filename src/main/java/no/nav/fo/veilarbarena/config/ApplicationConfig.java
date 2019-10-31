@@ -2,7 +2,7 @@ package no.nav.fo.veilarbarena.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.fo.veilarbarena.client.AktoerRegisterClient;
+import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.service.InternalServlet;
@@ -29,7 +29,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         ServiceConfig.class,
         UserChangeConfig.class,
         InternalServlet.class,
-        AktoerRegisterClient.class,
+        AktoerRegisterService.class,
         RestClientConfig.class
 })
 

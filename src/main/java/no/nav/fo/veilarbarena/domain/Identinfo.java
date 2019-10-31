@@ -1,12 +1,8 @@
 package no.nav.fo.veilarbarena.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class Identinfo {
     public String ident;
     public String identgruppe;
