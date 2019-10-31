@@ -12,7 +12,6 @@ workflows:
               only: dev
       - pus/bygg-og-deploy-backend:
           context: pus
-          cluster: dev-fss
           filepath: ./nais-q.yaml
           filters:
             branches:

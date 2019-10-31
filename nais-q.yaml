@@ -5,6 +5,8 @@ metadata:
   namespace: q1
   labels:
     team: pto
+  cluster:
+    - dev-fss
 spec:
   image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
   ingresses:
