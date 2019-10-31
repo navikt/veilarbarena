@@ -19,6 +19,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 public class Main {
     public static void main(String... args) {
+        readFromConfigMap();
+
         NaiseratorUtils.Credentials serviceUser = getCredentials(getDefaultSecretPath("service_user"));
         System.setProperty(SYSTEMUSER_USERNAME, serviceUser.username);
         System.setProperty(SYSTEMUSER_PASSWORD, serviceUser.password);
@@ -29,6 +31,16 @@ public class Main {
         System.setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty(REDIRECT_URL_PROPERTY));
         System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
 
+        NaiseratorUtils.Credentials oracleCreds = getCredentials(getDefaultSecretPath("oracle_creds"));
+        System.setProperty(VEILARBARENADB_USERNAME, oracleCreds.username);
+        System.setProperty(VEILARBARENADB_PASSWORD, oracleCreds.password);
+
+        MigrationUtils.createTables(DbConfig.getDataSource());
+
+        ApiApp.runApp(ApplicationConfig.class, args);
+    }
+
+    private static void readFromConfigMap() {
         NaiseratorUtils.addConfigMapToEnv("pto-config",
                 "APPDYNAMICS_AGENT_ACCOUNT_NAME",
                 "APPDYNAMICS_CONTROLLER_HOST_NAME",
@@ -54,13 +66,5 @@ public class Main {
                 "LOGINSERVICE_OIDC_DISCOVERYURI",
                 "UNLEASH_API_URL"
         );
-
-        NaiseratorUtils.Credentials oracleCreds = getCredentials(getDefaultSecretPath("oracle_creds"));
-        System.setProperty(VEILARBARENADB_USERNAME, oracleCreds.username);
-        System.setProperty(VEILARBARENADB_PASSWORD, oracleCreds.password);
-
-        MigrationUtils.createTables(DbConfig.getDataSource());
-
-        ApiApp.runApp(ApplicationConfig.class, args);
     }
 }
