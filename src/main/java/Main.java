@@ -29,7 +29,7 @@ public class Main {
         System.setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty(REDIRECT_URL_PROPERTY));
         System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
 
-        /*NaiseratorUtils.addConfigMapToEnv("pto-config",
+        NaiseratorUtils.addConfigMapToEnv("pto-config",
                 "APPDYNAMICS_AGENT_ACCOUNT_NAME",
                 "APPDYNAMICS_CONTROLLER_HOST_NAME",
                 "APPDYNAMICS_CONTROLLER_PORT",
@@ -53,7 +53,7 @@ public class Main {
                 "LOGINSERVICE_OIDC_CALLBACKURI",
                 "LOGINSERVICE_OIDC_DISCOVERYURI",
                 "UNLEASH_API_URL"
-        );*/
+        );
 
         NaiseratorUtils.Credentials oracleCreds = getCredentials(getDefaultSecretPath("oracle_creds"));
         System.setProperty(VEILARBARENADB_USERNAME, oracleCreds.username);

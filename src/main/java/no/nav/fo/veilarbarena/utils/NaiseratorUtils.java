@@ -93,6 +93,8 @@ public class NaiseratorUtils {
     public static Map<String, String> readConfigMap(String configMap, String... keys) {
         Map<String, String> configMapMap = readConfigMap(configMap);
 
+        System.out.println("CONFIGMAP:\n" + configMap);
+
         return Arrays.stream(keys).map(key ->
                 Optional.ofNullable(configMapMap.get(key))
                         .map(value -> Pair.of(key, value))
