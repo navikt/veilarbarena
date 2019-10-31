@@ -5,6 +5,8 @@ metadata:
   namespace: default
   labels:
     team: pto
+    cluster:
+      - prod-fss
 spec:
   image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
   ingresses:
