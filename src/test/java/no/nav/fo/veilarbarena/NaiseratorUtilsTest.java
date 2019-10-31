@@ -91,6 +91,19 @@ public class NaiseratorUtilsTest {
         assertThat(configMap.get("KEY_3")).isEqualTo("VALUE 3");
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void cherryPickFromConfigMapFailsWhenKeyIsNotFound() {
+        createFolder("configMaps", "configMap");
+        systemPropertiesRule.setProperty(CONFIG_MAPS_PATH, tempPath("configMaps"));
+
+        writeFile("configMaps/configMap/KEY_1", "VALUE 1");
+        writeFile("configMaps/configMap/KEY_2", "VALUE 2");
+        writeFile("configMaps/configMap/KEY_3", "VALUE 3");
+
+        Map<String, String> configMap = NaiseratorUtils.readConfigMap("configMap", "KEY_1", "KEY_4");
+    }
+
+
     @SneakyThrows
     private void createFolder(String... folderNames) {
         tmp.newFolder(folderNames);
