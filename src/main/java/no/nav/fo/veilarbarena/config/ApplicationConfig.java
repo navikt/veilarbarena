@@ -37,7 +37,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
 public class ApplicationConfig implements ApiApplication {
     public static final String APPLICATION_NAME = "veilarbarena";
     public static final String AKTOER_V2_ENDPOINTURL = "AKTOER_V2_ENDPOINTURL";
-    public static final String REDIRECT_URL_PROPERTY = "VEILARBLOGIN_REDIRECT_URL";
+    public static final String REDIRECT_URL_PROPERTY = "VEILARBLOGIN_REDIRECT_URL_URL";
     public static final String SECURITYTOKENSERVICE_URL = "SECURITYTOKENSERVICE_URL";
     public static final String ABAC_PDP_ENDPOINT_URL = "ABAC_PDP_ENDPOINT_URL";
     public static final String AKTOERREGISTER_API_V1_URL = "AKTOERREGISTER_API_V1_URL";
