@@ -53,7 +53,7 @@ public class OppfolgingstatusService implements UserChangeListener {
                 .formidlingsgruppeKode(response.getFormidlingsgruppeKode().getValue())
                 .serviceGruppeKode(response.getServicegruppeKode().getValue())
                 .inaktiveringsdato(xmlGregorianCalendarToLocalDate(response.getInaktiveringsdato()))
-                .harMottaOppgaveIArena(response.getHarOppgaveMottaSelvregPerson())
+                .harMottaOppgaveIArena(response.isHarOppgaveMottaSelvregPerson())
                 .build();
     }
 }
