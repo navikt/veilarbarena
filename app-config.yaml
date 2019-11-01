@@ -37,6 +37,9 @@ fasitResources:
     propertyMap:
       url: KAFKA_BROKERS_URL
 
+  - alias: aktoerregister.api.v1
+    resourceType: restservice
+
   # stolen resources
   - alias: veilarbarenaDataSource
     resourceType: datasource

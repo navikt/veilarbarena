@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 import javax.inject.Inject;
 
 @Configuration
-@Import({AbacContext.class})
+@Import({AbacContext.class, UnleashConfig.class})
 public class PepConfig {
 
     private SystemUserTokenProvider systemUserTokenProvider = new SystemUserTokenProvider();
@@ -25,8 +25,8 @@ public class PepConfig {
         VeilarbAbacPepClient.Builder builder = VeilarbAbacPepClient.ny()
                 .medPep(pep)
                 .medSystemUserTokenProvider(() -> systemUserTokenProvider.getToken())
-                .brukAktoerId(()->unleashService.isEnabled("veilarboppfolging.veilarbabac.aktor"))
-                .sammenlikneTilgang(()->unleashService.isEnabled("veilarboppfolging.veilarbabac.sammenlikn"))
+                .brukAktoerId(() -> unleashService.isEnabled("veilarboppfolging.veilarbabac.aktor"))
+                .sammenlikneTilgang(() -> unleashService.isEnabled("veilarboppfolging.veilarbabac.sammenlikn"))
                 .foretrekkVeilarbAbacResultat(() -> unleashService.isEnabled("veilarboppfolging.veilarbabac.foretrekk_veilarbabac"));
 
         return builder.bygg();
