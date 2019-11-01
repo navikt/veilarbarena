@@ -18,7 +18,7 @@ import javax.inject.Inject;
         OppfolgingstatusConfig.class,
         KafkaConfig.class,
         AktoerRegisterService.class,
-        UnleashService.class
+        UnleashConfig.class
 })
 public class ServiceConfig {
 
