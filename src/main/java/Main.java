@@ -30,6 +30,7 @@ public class Main {
         System.setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty(AKTOER_V2_ENDPOINTURL));
         System.setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty(REDIRECT_URL_PROPERTY));
         System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
+        System.setProperty(AKTOERREGISTER_API_V1_URL, getRequiredProperty(AKTOERREGISTER_API_V1_URL));
 
         NaisUtils.Credentials oracleCreds = getCredentials(getDefaultSecretPath("oracle_creds"));
         System.setProperty(VEILARBARENADB_USERNAME, oracleCreds.username);
