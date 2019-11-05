@@ -11,7 +11,6 @@ import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_PASSWORD;
 import static no.nav.fo.veilarbarena.config.DbConfig.VEILARBARENADB_USERNAME;
 import static no.nav.common.utils.NaisUtils.getCredentials;
-import static no.nav.common.utils.NaisUtils.getDefaultSecretPath;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
@@ -21,7 +20,7 @@ public class Main {
     public static void main(String... args) {
         readFromConfigMap();
 
-        NaisUtils.Credentials serviceUser = getCredentials(getDefaultSecretPath("service_user"));
+        NaisUtils.Credentials serviceUser = getCredentials("service_user");
         System.setProperty(SYSTEMUSER_USERNAME, serviceUser.username);
         System.setProperty(SYSTEMUSER_PASSWORD, serviceUser.password);
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, serviceUser.username);
@@ -32,7 +31,7 @@ public class Main {
         System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
         System.setProperty(AKTOERREGISTER_API_V1_URL, getRequiredProperty(AKTOERREGISTER_API_V1_URL));
 
-        NaisUtils.Credentials oracleCreds = getCredentials(getDefaultSecretPath("oracle_creds"));
+        NaisUtils.Credentials oracleCreds = getCredentials("oracle_creds");
         System.setProperty(VEILARBARENADB_USERNAME, oracleCreds.username);
         System.setProperty(VEILARBARENADB_PASSWORD, oracleCreds.password);
 
