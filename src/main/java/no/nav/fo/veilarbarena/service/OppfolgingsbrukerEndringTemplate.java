@@ -5,6 +5,8 @@ import no.nav.fo.veilarbarena.api.UserDTO;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.PersonId.AktorId;
 import no.nav.fo.veilarbarena.domain.User;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import static java.util.Optional.ofNullable;
@@ -27,24 +29,26 @@ public class OppfolgingsbrukerEndringTemplate {
 
     void send(User user) {
         final String serialisertBruker = toJson(toDTO(user));
-
+        Timer timer = MetricsFactory.createTimer("bruker.kafka.send").start();
         kafkaTemplate.send(
                 topic,
                 user.getAktoerid().get(),
                 serialisertBruker
         ).addCallback(
-                sendResult -> onSuccess(user),
-                throwable -> onError(throwable, user)
+                sendResult -> onSuccess(user, timer),
+                throwable -> onError(throwable, user, timer)
         );
     }
 
-    private void onSuccess(User user) {
+    private void onSuccess(User user, Timer timer) {
+        timer.stop().setSuccess().report();
         leggerBrukerPaKafkaMetrikk(user);
         oppfolgingsbrukerEndringRepository.deleteFeiletBruker(user);
         log.info("Bruker med aktorid {} har lagt på kafka", user.getAktoerid().get());
     }
 
-    private void onError(Throwable throwable, User user) {
+    private void onError(Throwable throwable, User user, Timer timer) {
+        timer.stop().setFailed().report();
         log.error("Kunne ikke publisere melding til kafka-topic", throwable);
         feilVedSendingTilKafkaMetrikk();
         log.info("Forsøker å insertere feilede bruker med aktorid {} i FEILEDE_KAFKA_BRUKERE", user.getAktoerid());
