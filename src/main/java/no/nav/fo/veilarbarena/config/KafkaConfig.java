@@ -19,6 +19,7 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 @Configuration
 @Import({KafkaHelsesjekk.class})
@@ -66,16 +67,6 @@ public class KafkaConfig {
 
     @Bean
     public OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate() {
-        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + environmentName());
-    }
-
-
-    private String environmentName() {
-        String naisClusterName = getRequiredProperty("NAIS_CLUSTER_NAME");
-        if (naisClusterName.startsWith("prod")) {
-            return "p";
-        } else {
-            return getRequiredProperty("NAIS_NAMESPACE");
-        }
+        return new OppfolgingsbrukerEndringTemplate(kafkaTemplate(), oppfolgingsbrukerEndringRepository(), "aapen-fo-endringPaaOppfoelgingsBruker-v1-" + requireEnvironmentName());
     }
 }
