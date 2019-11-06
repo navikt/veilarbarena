@@ -64,7 +64,8 @@ public class Main {
                 "VIRKSOMHET_OPPFOELGINGSSTATUS_V2_WSDLURL",
                 "LOGINSERVICE_OIDC_CALLBACKURI",
                 "LOGINSERVICE_OIDC_DISCOVERYURI",
-                "UNLEASH_API_URL"
+                "UNLEASH_API_URL",
+                "AKTOERREGISTER_API_V1_URL"
         );
     }
 }
