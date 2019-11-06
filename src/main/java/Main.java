@@ -42,10 +42,10 @@ public class Main {
 
     private static void readFromConfigMap() {
         NaisUtils.addConfigMapToEnv("pto-config",
-                "APPDYNAMICS_AGENT_ACCOUNT_NAME",
-                "APPDYNAMICS_CONTROLLER_HOST_NAME",
-                "APPDYNAMICS_CONTROLLER_PORT",
-                "APPDYNAMICS_CONTROLLER_SSL_ENABLED",
+//                "APPDYNAMICS_AGENT_ACCOUNT_NAME",
+//                "APPDYNAMICS_CONTROLLER_HOST_NAME",
+//                "APPDYNAMICS_CONTROLLER_PORT",
+//                "APPDYNAMICS_CONTROLLER_SSL_ENABLED",
                 "KAFKA_BROKERS_URL",
                 "SECURITYTOKENSERVICE_URL",
                 "ABAC_PDP_ENDPOINT_URL",
