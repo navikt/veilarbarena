@@ -1,2 +1,2 @@
-FROM navikt/java:8-appdynamics
+FROM navikt/pus-nais-java-app
 COPY /target/veilarbarena /app
