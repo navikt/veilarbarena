@@ -4,11 +4,13 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.fo.veilarbarena.service.AktoerRegisterService;
+import no.nav.fo.veilarbarena.domain.IdentinfoForAktoer;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
+import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -22,9 +24,11 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static no.nav.fo.veilarbarena.domain.PersonId.aktorId;
 
 @Slf4j
 public class UserChangePublisher {
@@ -96,7 +100,27 @@ public class UserChangePublisher {
                 .executeToList())
                 .map(User::of);
 
-        oppfolgingsbrukere.forEach(this::publish);
+        hentOgleggTilAktoerId(oppfolgingsbrukere)
+                .forEach(this::publish);
+    }
+
+    @Timed(name = "bruker.hent.alle.aktorid")
+    private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {
+        List<String> alleFnrs = oppfolgingsbrukere
+                .map(user -> user.getFodselsnr().get())
+                .collect(List.collector());
+
+        return alleFnrs.sliding(300, 300)
+                .map(fnrs -> aktoerRegisterService.tilAktorIdList(fnrs.asJava()))
+                .flatMap((aktoerMap) -> leggTilAktorIdPaOppfolgingsbrukere(aktoerMap, oppfolgingsbrukere))
+                .collect(List.collector());
+    }
+
+    private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
+        return oppfolgingsbrukere.map(bruker -> {
+            final PersonId.AktorId aktoerid = aktorId(aktoerMap.get(bruker.getFodselsnr()).getIdenter().get(0).ident);
+            return bruker.withAktoerid(aktoerid);
+        });
     }
 
     private List<User> changesSinceLastCheckSql() {
@@ -111,15 +135,14 @@ public class UserChangePublisher {
         log.info("Siste sjekket tidspunkt: {} og aktorid: {}", sistSjekketTidspunkt, aktoerRegisterService.tilAktorId(getLastCheckFnr()));
 
         return List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
-                .where(erUnderOppfolging())
-                .where(tidspunktEqualsOgFnr.or(tidspunktGreater))
+                .where(erUnderOppfolging().and(tidspunktEqualsOgFnr.or(tidspunktGreater)))
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
                 .limit(1000)
                 .executeToList())
                 .map(User::of);
     }
 
-    public List<User> findAllFailedKafkaUsers() {
+    private List<User> findAllFailedKafkaUsers() {
         List<String> feiledeFnrs = oppfolgingsbrukerEndringRepository.hentFeiledeBrukere()
                 .map(feiletBruker -> feiletBruker.getFodselsnr().value);
 

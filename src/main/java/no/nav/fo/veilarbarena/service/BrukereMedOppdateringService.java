@@ -22,11 +22,15 @@ public class BrukereMedOppdateringService implements UserChangeListener {
 
     @Override
     public void userChanged(User user) {
-        final String aktorId = aktoerRegisterService.tilAktorId(user.getFodselsnr().get());
-        if (!aktorId.isEmpty()) {
-            kafkaTemplate.send(user.withAktoerid(aktorId(aktorId)));
+        if (user != null && user.getAktoerid() == null) {
+            final String aktorId = aktoerRegisterService.tilAktorId(user.getFodselsnr().get());
+            if (aktorId != null) {
+                kafkaTemplate.send(user.withAktoerid(aktorId(aktorId)));
+            } else {
+                log.warn("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
+            }
         } else {
-            log.warn("Couldnt find aktorId for fnr: {}", user.getFodselsnr().get());
+            kafkaTemplate.send(user);
         }
     }
 }
