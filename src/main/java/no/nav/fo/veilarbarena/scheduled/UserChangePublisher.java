@@ -97,6 +97,7 @@ public class UserChangePublisher {
         final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
                 .where(erUnderOppfolging())
                 .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
+                .limit(10_000)
                 .executeToList())
                 .map(User::of);
 
