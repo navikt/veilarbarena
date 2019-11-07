@@ -1,10 +1,10 @@
 package no.nav.fo.veilarbarena.scheduled;
 
 import io.vavr.collection.List;
+import no.nav.brukerdialog.security.Constants;
 import no.nav.fo.veilarbarena.DbTest;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
-import no.nav.fo.veilarbarena.config.ApplicationTestConfig;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
 import no.nav.sbl.sql.SqlUtils;
@@ -14,7 +14,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 
+import static java.lang.System.setProperty;
+import static no.nav.brukerdialog.security.Constants.OIDC_REDIRECT_URL_PROPERTY_NAME;
 import static no.nav.fo.veilarbarena.Utils.lagNyBruker;
+import static no.nav.fo.veilarbarena.config.ApplicationConfig.AKTOERREGISTER_API_V1_URL;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
@@ -29,7 +32,7 @@ class UserChangePublisherTest extends DbTest {
 
     @BeforeAll
     static void setup() {
-        ApplicationTestConfig.setupTestConfig();
+        setupTestConfig();
         initSpringContext(
                 OppfolgingsbrukerEndringRepository.class,
                 UserChangePublisher.class,
@@ -62,5 +65,18 @@ class UserChangePublisherTest extends DbTest {
                 .value("RETTIGHETSGRUPPEKODE", "VLONN")
                 .value("ER_DOED", "N")
                 .execute();
+    }
+
+    public static void setupTestConfig() {
+        setProperty("no.nav.modig.security.systemuser.username", "test");
+        setProperty("no.nav.modig.security.systemuser.password", "test");
+        setProperty(AKTOERREGISTER_API_V1_URL,"test");
+        setProperty(Constants.ISSO_HOST_URL_PROPERTY_NAME,"test");
+        setProperty(Constants.ISSO_RP_USER_USERNAME_PROPERTY_NAME,"test");
+        setProperty(Constants.ISSO_RP_USER_PASSWORD_PROPERTY_NAME,"test");
+        setProperty(Constants.ISSO_JWKS_URL_PROPERTY_NAME,"test");
+        setProperty(Constants.ISSO_ISSUER_URL_PROPERTY_NAME,"test");
+        setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME,"test");
+        setProperty("NAIS_APP_NAME","test");
     }
 }
