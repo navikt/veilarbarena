@@ -9,10 +9,18 @@ workflows:
           context: pus
           filters:
             branches:
-              only: dev
+              ignore:
+                - master
+                - dev
       - pus/bygg-og-deploy-backend:
           context: pus
           filepath: ./nais-q.yaml
           filters:
             branches:
               only: dev
+      - pus/bygg-og-deploy-backend:
+          context: pus
+          filepath: ./nais.yaml
+          filters:
+            branches:
+              only: master
