@@ -1,0 +1,52 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: veilarbarena
+  namespace: default
+  labels:
+    team: pto
+  cluster: prod-fss
+spec:
+  image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
+  ingresses:
+    - https://veilarbarena.nais.adeo.no
+  liveness:
+    path: veilarbarena/internal/isAlive
+    port: 8080
+    initialDelay: 120
+  port: 8080
+  prometheus:
+    enabled: true
+    path: veilarbarena/internal/metrics
+  readiness:
+    path: veilarbarena/internal/isReady
+    port: 8080
+    initialDelay: 120
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: "3"
+      memory: 1024Mi
+    requests:
+      memory: 512Mi
+  webproxy: true
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /serviceuser/data/prod/srvveilarbarena
+        mountPath: /var/run/secrets/nais.io/service_user
+      - kvPath: /oracle/data/prod/creds/veilarbarena-user
+        mountPath: /var/run/secrets/nais.io/oracle_creds
+      - kvPath: /kv/prod/fss/veilarbarena/default
+        mountPath: /var/run/secrets/nais.io/vault
+  configMaps:
+    files:
+      - pto-config
+  env:
+    - APPDYNAMICS_CONTROLLER_HOST_NAME
+    - APPDYNAMICS_AGENT_ACCOUNT_NAME
+    - APPDYNAMICS_CONTROLLER_PORT
+    - APPDYNAMICS_CONTROLLER_SSL_ENABLED
