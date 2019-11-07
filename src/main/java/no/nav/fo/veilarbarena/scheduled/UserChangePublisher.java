@@ -118,8 +118,14 @@ public class UserChangePublisher {
 
     private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
         return oppfolgingsbrukere.map(bruker -> {
-            final PersonId.AktorId aktoerid = aktorId(aktoerMap.get(bruker.getFodselsnr()).getIdenter().get(0).ident);
-            return bruker.withAktoerid(aktoerid);
+            final PersonId.AktorId aktoerid;
+            final IdentinfoForAktoer identinfoForAktoer = aktoerMap.get(bruker.getFodselsnr());
+            if (identinfoForAktoer != null) {
+                aktoerid = aktorId(identinfoForAktoer.getIdenter().get(0).ident);
+                return bruker.withAktoerid(aktoerid);
+            } else {
+                return bruker;
+            }
         });
     }
 
