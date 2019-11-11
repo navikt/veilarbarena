@@ -1,3 +1,4 @@
+import no.nav.apiapp.ApiApp;
 import no.nav.brukerdialog.security.Constants;
 import no.nav.fasit.FasitUtils;
 import no.nav.fasit.ServiceUser;
@@ -6,14 +7,21 @@ import no.nav.fo.veilarbarena.DatabaseTestContext;
 import no.nav.fo.veilarbarena.config.ApplicationConfig;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
 import no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants;
+import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 import no.nav.testconfig.ApiAppTest;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+import static no.nav.brukerdialog.security.Constants.OIDC_REDIRECT_URL_PROPERTY_NAME;
+import static no.nav.dialogarena.aktor.AktorConfig.AKTOER_ENDPOINT_URL;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fasit.FasitUtils.getRestService;
 import static no.nav.fo.veilarbarena.config.ApplicationConfig.*;
+import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_PASSWORD;
+import static no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants.SYSTEMUSER_USERNAME;
+import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 import static no.nav.sbl.util.EnvironmentUtils.requireEnvironmentName;
 
 public class MainTest {
@@ -24,7 +32,16 @@ public class MainTest {
         DatabaseTestContext.setupContext(getProperty("database", "Q0"));
         setupSecurity();
 
-        Main.main(TEST_PORT);
+        System.setProperty(SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBARENA_USERNAME"));
+        System.setProperty(SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBARENA_PASSWORD"));
+        System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, getRequiredProperty("SRVVEILARBARENA_USERNAME"));
+        System.setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, getRequiredProperty("SRVVEILARBARENA_PASSWORD"));
+        System.setProperty(StsSecurityConstants.STS_URL_KEY, getRequiredProperty(SECURITYTOKENSERVICE_URL));
+        System.setProperty(AKTOER_ENDPOINT_URL, getRequiredProperty(AKTOER_V2_ENDPOINTURL));
+        System.setProperty(OIDC_REDIRECT_URL_PROPERTY_NAME, getRequiredProperty(REDIRECT_URL_PROPERTY));
+        System.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, getRequiredProperty(ABAC_PDP_ENDPOINT_URL));
+
+        ApiApp.runApp(ApplicationConfig.class, new String[]{TEST_PORT});
     }
 
     private static void setupSecurity() {
