@@ -10,7 +10,8 @@ import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
-import no.nav.metrics.aspects.Timed;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -92,6 +93,12 @@ public class UserChangePublisher {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
     }
+    public void testOmDetFaktiskErKafkaSomErTreigSomFaen() {
+        for (int i = 0; i < 10_000; i++) {
+            final User user = new User(aktorId("123123123"), PersonId.fnr(String.valueOf(i)), "null", "null", null, null, null, null, null, null, null, null, null, null, null, null, null);
+            publish(user);
+        }
+    }
 
     public void hentOgPubliserAlleOppfolgingsbrukere() {
         final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
@@ -100,20 +107,26 @@ public class UserChangePublisher {
                 .executeToList())
                 .map(User::of);
 
-        hentOgleggTilAktoerId(oppfolgingsbrukere)
-                .forEach(this::publish);
+        final List<User> users = hentOgleggTilAktoerId(oppfolgingsbrukere);
+        log.info(String.format("KafkaDebug: Legger til %d på topic fra metode hentOgPubliserAlleOppfolgingsbrukere", users.size()));
+        users.forEach(this::publish);
     }
 
-    @Timed(name = "bruker.hent.alle.aktorid")
     private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {
+        Timer timer = MetricsFactory.createTimer("bruker.hent.alle.aktorid").start();
+
         List<String> alleFnrs = oppfolgingsbrukere
                 .map(user -> user.getFodselsnr().get())
                 .collect(List.collector());
 
-        return alleFnrs.sliding(300, 300)
+        final List<User> brukereMedAktoerId = alleFnrs.sliding(300, 300)
                 .map(fnrs -> aktoerRegisterService.tilAktorIdList(fnrs.asJava()))
                 .flatMap((aktoerMap) -> leggTilAktorIdPaOppfolgingsbrukere(aktoerMap, oppfolgingsbrukere))
                 .collect(List.collector());
+
+        timer.stop().report();
+
+        return brukereMedAktoerId;
     }
 
     private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {

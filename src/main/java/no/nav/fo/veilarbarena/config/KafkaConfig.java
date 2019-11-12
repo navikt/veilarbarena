@@ -34,7 +34,8 @@ public class KafkaConfig {
         HashMap<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         props.put(ProducerConfig.ACKS_CONFIG, "1");
-        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 2);
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 10);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 200); // batch opp i ett halvt sekund eller 16_384 * 4 byte før man sender
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16_384 * 4); // 4 ganger default
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
