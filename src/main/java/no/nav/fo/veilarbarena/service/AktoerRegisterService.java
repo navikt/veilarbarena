@@ -116,6 +116,7 @@ public class AktoerRegisterService {
         identinfoForAktoer.forEach((fnr, identinfo) -> {
             if (identinfo.getFeilmelding() != null) {
                 feilende.add(fnr.get());
+                log.warn(String.format("Feil ved henting av aktør-id fra akørregisteret: %s", identinfo.getFeilmelding()));
             }
         });
 

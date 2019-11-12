@@ -25,7 +25,8 @@ public class InternalServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         if (AuthorizationUtils.isBasicAuthAuthorized(req)) {
-            userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere();
+            userChangePublisher.testOmDetFaktiskErKafkaSomErTreigSomFaen();
+//            userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere(); TODO: fix this
         } else {
             AuthorizationUtils.writeUnauthorized(res);
         }
