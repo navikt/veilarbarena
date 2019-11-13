@@ -26,15 +26,12 @@ public class InternalServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         if (AuthorizationUtils.isBasicAuthAuthorized(req)) {
-
             String jobId = BatchJob.runAsync(() -> {
-                userChangePublisher.testOmDetFaktiskErKafkaSomErTreigSomFaen();
+                userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere();
             });
 
             res.getWriter().write(String.format("Jobb med jobId %s startet", jobId));
             res.setStatus(200);
-
-//            userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere(); TODO: fix this
         } else {
             AuthorizationUtils.writeUnauthorized(res);
         }
