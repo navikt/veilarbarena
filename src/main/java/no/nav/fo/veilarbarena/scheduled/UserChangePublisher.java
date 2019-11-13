@@ -101,8 +101,9 @@ public class UserChangePublisher {
                 .executeToList())
                 .map(User::of);
 
-        hentOgleggTilAktoerId(oppfolgingsbrukere)
-                .forEach(this::publish);
+        final List<User> users = hentOgleggTilAktoerId(oppfolgingsbrukere);
+        log.info(String.format("KafkaDebug: Legger til %d på topic fra metode hentOgPubliserAlleOppfolgingsbrukere", users.size()));
+        users.forEach(this::publish);
     }
 
     private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {

@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
+import no.nav.batch.BatchJob;
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
 import no.nav.fo.veilarbarena.utils.AuthorizationUtils;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,15 @@ public class InternalServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         if (AuthorizationUtils.isBasicAuthAuthorized(req)) {
-            userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere();
+
+            String jobId = BatchJob.runAsync(() -> {
+                userChangePublisher.testOmDetFaktiskErKafkaSomErTreigSomFaen();
+            });
+
+            res.getWriter().write(String.format("Jobb med jobId %s startet", jobId));
+            res.setStatus(200);
+
+//            userChangePublisher.hentOgPubliserAlleOppfolgingsbrukere(); TODO: fix this
         } else {
             AuthorizationUtils.writeUnauthorized(res);
         }
