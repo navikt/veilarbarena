@@ -10,7 +10,8 @@ import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
-import no.nav.metrics.aspects.Timed;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -104,29 +105,32 @@ public class UserChangePublisher {
                 .forEach(this::publish);
     }
 
-    @Timed(name = "bruker.hent.alle.aktorid")
     private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {
+        Timer timer = MetricsFactory.createTimer("bruker.hent.alle.aktorid").start();
+
         List<String> alleFnrs = oppfolgingsbrukere
                 .map(user -> user.getFodselsnr().get())
                 .collect(List.collector());
 
-        return alleFnrs.sliding(300, 300)
+        final List<User> brukereMedAktoerId = alleFnrs.sliding(300, 300)
                 .map(fnrs -> aktoerRegisterService.tilAktorIdList(fnrs.asJava()))
                 .flatMap((aktoerMap) -> leggTilAktorIdPaOppfolgingsbrukere(aktoerMap, oppfolgingsbrukere))
                 .collect(List.collector());
+
+        timer.stop().report();
+        log.info(String.format("KafkaDebug: har hentet %d brukere fra aktørregisteret ", brukereMedAktoerId.size()));
+        return brukereMedAktoerId;
     }
 
     private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
-        return oppfolgingsbrukere.map(bruker -> {
-            final PersonId.AktorId aktoerid;
-            final IdentinfoForAktoer identinfoForAktoer = aktoerMap.get(bruker.getFodselsnr());
-            if (identinfoForAktoer != null) {
-                aktoerid = aktorId(identinfoForAktoer.getIdenter().get(0).ident);
-                return bruker.withAktoerid(aktoerid);
-            } else {
-                return bruker;
-            }
-        });
+        return aktoerMap
+                .entrySet()
+                .stream()
+                .map((aktoerEntry) -> oppfolgingsbrukere
+                        .find(bruker -> bruker.getFodselsnr().equals(aktoerEntry.getKey()))
+                        .get()
+                        .withAktoerid(aktorId(aktoerEntry.getValue().getIdenter().get(0).getIdent())))
+                .collect(List.collector());
     }
 
     private List<User> changesSinceLastCheckSql() {
