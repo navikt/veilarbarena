@@ -95,6 +95,11 @@ public class UserChangePublisher {
     }
     public void testOmDetFaktiskErKafkaSomErTreigSomFaen() {
         for (int i = 0; i < 10_000; i++) {
+
+            if (i % 100 == 0) {
+                log.info(String.format("Har publisert %s av 10 0000 brukere på kafka"), i);
+            }
+
             final User user = new User(aktorId("123123123"), PersonId.fnr(String.valueOf(i)), "null", "null", null, null, null, null, null, null, null, null, null, null, null, null, null);
             publish(user);
         }
