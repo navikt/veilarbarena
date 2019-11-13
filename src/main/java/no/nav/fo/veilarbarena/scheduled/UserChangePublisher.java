@@ -93,17 +93,6 @@ public class UserChangePublisher {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
     }
-    public void testOmDetFaktiskErKafkaSomErTreigSomFaen() {
-        for (int i = 0; i < 10_000; i++) {
-
-            if (i % 100 == 0) {
-                log.info(String.format("Har publisert %s av 10 0000 brukere på kafka"), i);
-            }
-
-            final User user = new User(aktorId("123123123"), PersonId.fnr(String.valueOf(i)), "null", "null", null, null, null, null, null, null, null, null, null, null, null, null, null);
-            publish(user);
-        }
-    }
 
     public void hentOgPubliserAlleOppfolgingsbrukere() {
         final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
@@ -130,21 +119,19 @@ public class UserChangePublisher {
                 .collect(List.collector());
 
         timer.stop().report();
-
+        log.info(String.format("KafkaDebug: har hentet %d brukere fra aktørregisteret ", brukereMedAktoerId.size()));
         return brukereMedAktoerId;
     }
 
     private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
-        return oppfolgingsbrukere.map(bruker -> {
-            final PersonId.AktorId aktoerid;
-            final IdentinfoForAktoer identinfoForAktoer = aktoerMap.get(bruker.getFodselsnr());
-            if (identinfoForAktoer != null) {
-                aktoerid = aktorId(identinfoForAktoer.getIdenter().get(0).ident);
-                return bruker.withAktoerid(aktoerid);
-            } else {
-                return bruker;
-            }
-        });
+        return aktoerMap
+                .entrySet()
+                .stream()
+                .map((aktoerEntry) -> oppfolgingsbrukere
+                        .find(bruker -> bruker.getFodselsnr().equals(aktoerEntry.getKey()))
+                        .get()
+                        .withAktoerid(aktorId(aktoerEntry.getValue().getIdenter().get(0).getIdent())))
+                .collect(List.collector());
     }
 
     private List<User> changesSinceLastCheckSql() {
