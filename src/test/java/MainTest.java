@@ -28,6 +28,7 @@ public class MainTest {
     private static final String TEST_PORT = "8790";
 
     public static void main(String[] args) {
+
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
         DatabaseTestContext.setupContext(getProperty("database", "Q0"));
         setupSecurity();
