@@ -70,7 +70,8 @@ public class Main {
                 "LOGINSERVICE_OIDC_CALLBACKURI",
                 "LOGINSERVICE_OIDC_DISCOVERYURI",
                 "UNLEASH_API_URL",
-                "AKTOERREGISTER_API_V1_URL"
+                "AKTOERREGISTER_API_V1_URL",
+                "SECURITY_TOKEN_SERVICE_OPENID_CONFIGURATION_URL"
         );
     }
 }
