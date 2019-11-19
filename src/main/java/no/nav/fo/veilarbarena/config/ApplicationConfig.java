@@ -2,6 +2,8 @@ package no.nav.fo.veilarbarena.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProvider;
+import no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProviderConfig;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.scheduled.UserChangePublisher;
@@ -18,7 +20,9 @@ import javax.servlet.ServletContext;
 
 import static no.nav.apiapp.ServletUtil.leggTilServlet;
 
+import static no.nav.brukerdialog.security.oidc.provider.SecurityTokenServiceOidcProviderConfig.STS_OIDC_CONFIGURATION_URL_PROPERTY;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
@@ -52,10 +56,16 @@ public class ApplicationConfig implements ApiApplication {
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
+
+        SecurityTokenServiceOidcProvider securityTokenServiceOidcProvider = new SecurityTokenServiceOidcProvider(SecurityTokenServiceOidcProviderConfig.builder()
+                .discoveryUrl(getRequiredProperty(STS_OIDC_CONFIGURATION_URL_PROPERTY))
+                .build());
+
         apiAppConfigurator
                 .issoLogin()
                 .sts()
-                .validateAzureAdInternalUsersTokens();
+                .validateAzureAdInternalUsersTokens()
+                .oidcProvider(securityTokenServiceOidcProvider);
     }
 
     @Bean
