@@ -11,10 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -65,16 +62,16 @@ public class OppfolgingsbrukerController {
     }
 
     private void autoriserBruker() {
-        IdentType identType = SubjectHandler.getIdentType().orElseThrow(() -> new WebApplicationException(404));
-        String ident = SubjectHandler.getIdent().orElseThrow(() -> new WebApplicationException(404));
+        IdentType identType = SubjectHandler.getIdentType().orElseThrow(NotFoundException::new);
+        String ident = SubjectHandler.getIdent().orElseThrow(NotFoundException::new);
 
-        if (!identType.equals(Systemressurs)) {
-            throw new WebApplicationException(401);
+        if (ugyldigIdent(identType, ident)) {
+            throw new NotFoundException();
         }
+    }
 
-        if (!"srvveilarboppfolging".equals(ident)) {
-            throw new WebApplicationException(401);
-        }
+    static boolean ugyldigIdent(IdentType identType, String ident) {
+        return !identType.equals(Systemressurs) || !"srvveilarboppfolging".equals(ident);
     }
 
     private Optional<Integer> getTotalNumberOfUsers() {

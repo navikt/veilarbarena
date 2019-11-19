@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
+import no.nav.brukerdialog.security.domain.IdentType;
 import org.junit.Test;
 
 import javax.ws.rs.WebApplicationException;
@@ -37,6 +38,18 @@ public class OppfolgingsbrukerControllerTest {
             int status = getStatus(e);
             assertThat(status).isEqualTo(400);
         }
+    }
+
+    @Test
+    public void skal_returnere_true_ved_ugyldig_ident() {
+        boolean result = ugyldigIdent(IdentType.Systemressurs, "srvveilarbportefolje");
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void skal_returnere_true_ved_ugyldig_ident_type() {
+        boolean result = ugyldigIdent(IdentType.InternBruker, "srvveilarboppfolging");
+        assertThat(result).isTrue();
     }
 
     private int getStatus(WebApplicationException e) {
