@@ -6,7 +6,7 @@ import java.util.List;
 
 @Value
 public class UserPageDTO {
-    int page;
-    int pages_total;
+    int page_number;
+    int page_number_total;
     List<UserDTO> users;
 }
