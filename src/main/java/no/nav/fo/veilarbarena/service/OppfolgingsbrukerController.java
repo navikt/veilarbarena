@@ -47,7 +47,7 @@ public class OppfolgingsbrukerController {
     }
 
     @GET
-    public UserPageDTO getOppfolgingsbruker(@PathParam("page_number") int pageNumber, @PathParam("page_size") int pageSize) {
+    public UserPageDTO getOppfolgingsbruker(@DefaultValue("1") @QueryParam("page_number") int pageNumber, @DefaultValue("10") @QueryParam("page_size") int pageSize) {
 
         autoriserBruker();
 
