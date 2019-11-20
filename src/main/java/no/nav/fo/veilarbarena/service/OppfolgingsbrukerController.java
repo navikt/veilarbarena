@@ -54,12 +54,11 @@ public class OppfolgingsbrukerController {
         autoriserBruker();
 
         int totalNumberOfUsers = getTotalNumberOfUsers().orElseThrow(() -> new WebApplicationException(503));
-
+        int totalNumberOfPages = totalNumberOfUsers / pageSize;
 
         validatePageSize(pageSize);
-        validatePageNumber(pageNumber, totalNumberOfUsers);
+        validatePageNumber(pageNumber, totalNumberOfPages);
 
-        int totalNumberOfPages = totalNumberOfUsers / pageSize;
         List<UserDTO> users = hentOppfolgingsbrukere(pageNumber, pageSize);
 
         String msg = String.format("totalNumberOfUsers: %s, users.size(): %s", totalNumberOfPages, users.size());
