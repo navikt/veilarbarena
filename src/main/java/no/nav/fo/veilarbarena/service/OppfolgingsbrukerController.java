@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbarena.api.UserDTO;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static no.nav.brukerdialog.security.domain.IdentType.Systemressurs;
 
+@Slf4j
 @Component
 @Path("/oppfolgingsbruker")
 public class OppfolgingsbrukerController {
@@ -53,11 +55,15 @@ public class OppfolgingsbrukerController {
 
         int totalNumberOfUsers = getTotalNumberOfUsers().orElseThrow(() -> new WebApplicationException(503));
 
+
         validatePageSize(pageSize);
         validatePageNumber(pageNumber, totalNumberOfUsers);
 
         int totalNumberOfPages = totalNumberOfUsers / pageSize;
         List<UserDTO> users = hentOppfolgingsbrukere(pageNumber, pageSize);
+
+        String msg = String.format("totalNumberOfUsers: %s, users.size(): %s", totalNumberOfPages, users.size());
+        log.info(msg);
 
         return new UserPageDTO(pageNumber, totalNumberOfPages, users);
     }
@@ -110,6 +116,9 @@ public class OppfolgingsbrukerController {
 
         int rowNum = calculateRowNum(page, pageSize);
 
+        String msg = String.format("rowNum: %s, page: %s, pageSize: %s", rowNum, page, pageSize);
+        log.info(msg);
+
         return SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
                 .column("fodselsnr")
                 .column("formidlingsgruppekode")
@@ -126,7 +135,7 @@ public class OppfolgingsbrukerController {
                 .column("doed_fra_dato")
                 .limit(pageSize)
                 .orderBy(OrderClause.asc("fodselsnr"))
-                .where(WhereClause.gt("ROWNUM", rowNum))
+                .where(WhereClause.lt("ROWNUM", rowNum))
                 .executeToList();
     }
 
