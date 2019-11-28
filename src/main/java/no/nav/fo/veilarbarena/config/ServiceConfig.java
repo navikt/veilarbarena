@@ -6,12 +6,9 @@ import no.nav.fo.veilarbarena.service.AuthService;
 import no.nav.fo.veilarbarena.service.BrukereMedOppdateringService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringTemplate;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
-import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 @Configuration
 @Import({
@@ -22,16 +19,13 @@ import javax.inject.Inject;
 })
 public class ServiceConfig {
 
-    @Inject
-    private UnleashService unleashService;
-
     @Bean
     public BrukereMedOppdateringService brukereMedOppdateringService(OppfolgingsbrukerEndringTemplate oppfolgingsbrukerEndringTemplate, AktoerRegisterService aktoerRegisterService) {
         return new BrukereMedOppdateringService(oppfolgingsbrukerEndringTemplate, aktoerRegisterService);
     }
 
     @Bean
-    public AuthService authService(AktoerRegisterService aktoerRegisterService, VeilarbAbacPepClient pepClient, UnleashService unleashService) {
-        return new AuthService(aktoerRegisterService, pepClient, unleashService);
+    public AuthService authService(AktoerRegisterService aktoerRegisterService, VeilarbAbacPepClient pepClient) {
+        return new AuthService(aktoerRegisterService, pepClient);
     }
 }
