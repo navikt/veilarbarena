@@ -37,10 +37,10 @@ public class OppfolgingsbrukerController {
     @Path("/{fnr}")
     public UserDTO getOppfolgingsbruker(@PathParam("fnr") String fnr){
         authService.sjekkTilgang(fnr);
-        return hentOppfolgingsbrukere(fnr);
+        return hentOppfolgingsbruker(fnr);
     }
 
-    private UserDTO hentOppfolgingsbrukere(String fnr){
+    private UserDTO hentOppfolgingsbruker(String fnr){
         WhereClause harFnr = WhereClause.equals("fodselsnr", fnr);
 
         UserDTO userDTO =  SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
