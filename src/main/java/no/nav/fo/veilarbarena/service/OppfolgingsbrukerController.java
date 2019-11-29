@@ -23,9 +23,6 @@ import java.util.Optional;
 @Path("/oppfolgingsbruker")
 public class OppfolgingsbrukerController {
 
-    static final int PAGE_SIZE_MAX = 1000;
-    private static final int PAGE_NUMBER_MAX = 500_000;
-
     private final JdbcTemplate db;
     private final AuthService authService;
 
