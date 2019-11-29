@@ -4,14 +4,11 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.fo.veilarbarena.domain.IdentinfoForAktoer;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -25,11 +22,9 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static no.nav.fo.veilarbarena.domain.PersonId.aktorId;
 
 @Slf4j
 public class UserChangePublisher {
@@ -92,46 +87,6 @@ public class UserChangePublisher {
         catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
-    }
-
-    public void hentOgPubliserAlleOppfolgingsbrukere() {
-        final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
-                .where(erUnderOppfolging())
-                .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
-                .executeToList())
-                .map(User::of);
-
-        final List<User> users = hentOgleggTilAktoerId(oppfolgingsbrukere);
-        log.info(String.format("KafkaDebug: Legger til %d på topic fra metode hentOgPubliserAlleOppfolgingsbrukere", users.size()));
-        users.forEach(this::publish);
-    }
-
-    private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {
-        Timer timer = MetricsFactory.createTimer("bruker.hent.alle.aktorid").start();
-
-        List<String> alleFnrs = oppfolgingsbrukere
-                .map(user -> user.getFodselsnr().get())
-                .collect(List.collector());
-
-        final List<User> brukereMedAktoerId = alleFnrs.sliding(300, 300)
-                .map(fnrs -> aktoerRegisterService.tilAktorIdList(fnrs.asJava()))
-                .flatMap((aktoerMap) -> leggTilAktorIdPaOppfolgingsbrukere(aktoerMap, oppfolgingsbrukere))
-                .collect(List.collector());
-
-        timer.stop().report();
-        log.info(String.format("KafkaDebug: har hentet %d brukere fra aktørregisteret ", brukereMedAktoerId.size()));
-        return brukereMedAktoerId;
-    }
-
-    private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
-        return aktoerMap
-                .entrySet()
-                .stream()
-                .map((aktoerEntry) -> oppfolgingsbrukere
-                        .find(bruker -> bruker.getFodselsnr().equals(aktoerEntry.getKey()))
-                        .get()
-                        .withAktoerid(aktorId(aktoerEntry.getValue().getIdenter().get(0).getIdent())))
-                .collect(List.collector());
     }
 
     private List<User> changesSinceLastCheckSql() {

@@ -1,27 +1,22 @@
 package no.nav.fo.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarbarena.api.UserDTO;
-import no.nav.fo.veilarbarena.api.UserPageDTO;
 import no.nav.sbl.sql.SqlUtils;
-import no.nav.sbl.sql.order.OrderClause;
 import no.nav.sbl.sql.where.WhereClause;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
-
-import static no.nav.brukerdialog.security.domain.IdentType.Systemressurs;
 
 @Slf4j
 @Component
@@ -48,46 +43,6 @@ public class OppfolgingsbrukerController {
         return hentOppfolgingsbrukere(fnr);
     }
 
-    @GET
-    public UserPageDTO getOppfolgingsbruker(@DefaultValue("1") @QueryParam("page_number") int pageNumber, @DefaultValue("10") @QueryParam("page_size") int pageSize) {
-
-        autoriserBruker();
-
-        int totalNumberOfUsers = getTotalNumberOfUsers().orElseThrow(() -> new WebApplicationException(503));
-        int totalNumberOfPages = totalNumberOfUsers / pageSize;
-
-        validatePageSize(pageSize);
-        validatePageNumber(pageNumber, totalNumberOfPages);
-
-        List<UserDTO> users = hentOppfolgingsbrukere(pageNumber, pageSize);
-
-        String msg = String.format("totalNumberOfUsers: %s, users.size(): %s", totalNumberOfPages, users.size());
-        log.info(msg);
-
-        return new UserPageDTO(pageNumber, totalNumberOfPages, users);
-    }
-
-    private void autoriserBruker() {
-        IdentType identType = SubjectHandler.getIdentType().orElseThrow(NotFoundException::new);
-        String ident = SubjectHandler.getIdent().orElseThrow(NotFoundException::new);
-
-        if (ugyldigIdent(identType, ident)) {
-            throw new NotFoundException();
-        }
-    }
-
-    static boolean ugyldigIdent(IdentType identType, String ident) {
-        return !identType.equals(Systemressurs) || !"srvveilarboppfolging".equals(ident);
-    }
-
-    private Optional<Integer> getTotalNumberOfUsers() {
-        Integer count = db.query("SELECT COUNT(*) FROM OPPFOLGINGSBRUKER", rs -> {
-            rs.next();
-            return rs.getInt(1);
-        });
-        return Optional.ofNullable(count);
-    }
-
     private UserDTO hentOppfolgingsbrukere(String fnr){
         WhereClause harFnr = WhereClause.equals("fodselsnr", fnr);
 
@@ -110,38 +65,6 @@ public class OppfolgingsbrukerController {
 
         return userDTO;
     }
-
-    private List<UserDTO> hentOppfolgingsbrukere(int page, int pageSize){
-
-        int rowNum = calculateRowNum(page, pageSize);
-
-        String msg = String.format("rowNum: %s, page: %s, pageSize: %s", rowNum, page, pageSize);
-        log.info(msg);
-
-        return SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
-                .column("fodselsnr")
-                .column("formidlingsgruppekode")
-                .column("iserv_fra_dato")
-                .column("nav_kontor")
-                .column("kvalifiseringsgruppekode")
-                .column("rettighetsgruppekode")
-                .column("hovedmaalkode")
-                .column("sikkerhetstiltak_type_kode")
-                .column("fr_kode")
-                .column("har_oppfolgingssak")
-                .column("sperret_ansatt")
-                .column("er_doed")
-                .column("doed_fra_dato")
-                .limit(pageSize)
-                .orderBy(OrderClause.asc("fodselsnr"))
-                .where(WhereClause.lt("ROWNUM", rowNum))
-                .executeToList();
-    }
-
-    private static int calculateRowNum(int page, int pageSize) {
-        return (page * pageSize) + 1;
-    }
-
 
     private static UserDTO mapper(ResultSet resultSet) throws SQLException{
         return UserDTO.builder()
@@ -168,33 +91,5 @@ public class OppfolgingsbrukerController {
 
     private static boolean convertStringToBoolean(String flag){
         return Optional.ofNullable(flag).isPresent() && flag.equals("J");
-    }
-
-    static void validatePageNumber(int pageNumber, int pagesTotal) {
-
-        if (pageNumber < 1) {
-            throw new WebApplicationException("Page number is below 1", 400);
-        }
-
-        if (pageNumber > pagesTotal) {
-            throw new WebApplicationException("Page number is higher than total number of pages", 404);
-        }
-
-        if (pageNumber > PAGE_NUMBER_MAX) {
-            throw new WebApplicationException("Page number exceeds max limit", 400);
-        }
-    }
-
-    static int validatePageSize(int pageSize) {
-
-        if (pageSize < 1) {
-            throw new WebApplicationException("Page size too small", 400);
-        }
-
-        if (pageSize > PAGE_SIZE_MAX) {
-            throw new WebApplicationException("Page size exceeds max limit", 400);
-        }
-
-        return pageSize;
     }
 }
