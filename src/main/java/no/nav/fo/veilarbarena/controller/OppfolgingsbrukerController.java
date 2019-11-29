@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbarena.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbarena.api.UserDTO;
+import no.nav.fo.veilarbarena.api.OppfolgingsbrukerDTO;
 import no.nav.fo.veilarbarena.service.AuthService;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
@@ -36,15 +36,15 @@ public class OppfolgingsbrukerController {
 
     @GET
     @Path("/{fnr}")
-    public UserDTO getOppfolgingsbruker(@PathParam("fnr") String fnr){
+    public OppfolgingsbrukerDTO getOppfolgingsbruker(@PathParam("fnr") String fnr){
         authService.sjekkTilgang(fnr);
         return hentOppfolgingsbruker(fnr);
     }
 
-    private UserDTO hentOppfolgingsbruker(String fnr){
+    private OppfolgingsbrukerDTO hentOppfolgingsbruker(String fnr){
         WhereClause harFnr = WhereClause.equals("fodselsnr", fnr);
 
-        UserDTO userDTO =  SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
+        OppfolgingsbrukerDTO userDTO =  SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
                 .column("fodselsnr")
                 .column("formidlingsgruppekode")
                 .column("iserv_fra_dato")
@@ -64,8 +64,8 @@ public class OppfolgingsbrukerController {
         return userDTO;
     }
 
-    private static UserDTO mapper(ResultSet resultSet) throws SQLException{
-        return UserDTO.builder()
+    private static OppfolgingsbrukerDTO mapper(ResultSet resultSet) throws SQLException{
+        return OppfolgingsbrukerDTO.builder()
                 .fodselsnr(resultSet.getString("fodselsnr"))
                 .formidlingsgruppekode(resultSet.getString("formidlingsgruppekode"))
                 .iserv_fra_dato(convertTimestampToZonedDateTimeIfPresent(resultSet.getTimestamp("iserv_fra_dato")))

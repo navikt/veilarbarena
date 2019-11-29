@@ -1,7 +1,7 @@
 package no.nav.fo.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarbarena.api.UserDTO;
+import no.nav.fo.veilarbarena.api.OppfolgingsbrukerEndretDTO;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.PersonId.AktorId;
 import no.nav.fo.veilarbarena.domain.User;
@@ -55,8 +55,8 @@ public class OppfolgingsbrukerEndringTemplate {
         oppfolgingsbrukerEndringRepository.insertFeiletBruker(user);
     }
 
-    public static UserDTO toDTO(User user) {
-        return UserDTO.builder()
+    public static OppfolgingsbrukerEndretDTO toDTO(User user) {
+        return OppfolgingsbrukerEndretDTO.builder()
                 .aktoerid(ofNullable(user.getAktoerid()).map(AktorId::get).orElse(null))
                 .fodselsnr(ofNullable(user.getFodselsnr()).map(PersonId::get).orElse(null))
                 .formidlingsgruppekode(user.getFormidlingsgruppekode())
