@@ -1,5 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarbarena.api.UserDTO;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.where.WhereClause;
@@ -17,23 +18,29 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Component
-@Path("/oppfolgingsbruker/{fnr}")
+@Path("/oppfolgingsbruker")
 public class OppfolgingsbrukerController {
 
-    @Inject
-    private JdbcTemplate db;
+    private final JdbcTemplate db;
+    private final AuthService authService;
 
     @Inject
-    private AuthService authService;
+    public OppfolgingsbrukerController(JdbcTemplate db, AuthService authService) {
+        this.db = db;
+        this.authService = authService;
+    }
+
 
     @GET
+    @Path("/{fnr}")
     public UserDTO getOppfolgingsbruker(@PathParam("fnr") String fnr){
         authService.sjekkTilgang(fnr);
         return hentOppfolgingsbruker(fnr);
     }
 
-    public UserDTO hentOppfolgingsbruker(String fnr){
+    private UserDTO hentOppfolgingsbruker(String fnr){
         WhereClause harFnr = WhereClause.equals("fodselsnr", fnr);
 
         UserDTO userDTO =  SqlUtils.select(db, "OPPFOLGINGSBRUKER", OppfolgingsbrukerController::mapper)
@@ -56,7 +63,7 @@ public class OppfolgingsbrukerController {
         return userDTO;
     }
 
-    public static UserDTO mapper(ResultSet resultSet) throws SQLException{
+    private static UserDTO mapper(ResultSet resultSet) throws SQLException{
         return UserDTO.builder()
                 .fodselsnr(resultSet.getString("fodselsnr"))
                 .formidlingsgruppekode(resultSet.getString("formidlingsgruppekode"))
@@ -80,6 +87,6 @@ public class OppfolgingsbrukerController {
     }
 
     private static boolean convertStringToBoolean(String flag){
-        return Optional.ofNullable(flag).isPresent() ? flag.equals("J") : false ;
+        return Optional.ofNullable(flag).isPresent() && flag.equals("J");
     }
 }

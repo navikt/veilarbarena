@@ -4,13 +4,11 @@ import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.fo.veilarbarena.domain.IdentinfoForAktoer;
 import no.nav.fo.veilarbarena.domain.PersonId;
 import no.nav.fo.veilarbarena.domain.User;
 import no.nav.fo.veilarbarena.domain.UserRecord;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.fo.veilarbarena.service.OppfolgingsbrukerEndringRepository;
-import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.sql.SqlUtils;
 import no.nav.sbl.sql.mapping.QueryMapping;
 import no.nav.sbl.sql.order.OrderClause;
@@ -24,11 +22,9 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static no.nav.fo.veilarbarena.domain.PersonId.aktorId;
 
 @Slf4j
 public class UserChangePublisher {
@@ -91,42 +87,6 @@ public class UserChangePublisher {
         catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
-    }
-
-    public void hentOgPubliserAlleOppfolgingsbrukere() {
-        final List<User> oppfolgingsbrukere = List.ofAll(SqlUtils.select(db, "oppfolgingsbruker", UserRecord.class)
-                .where(erUnderOppfolging())
-                .orderBy(OrderClause.asc("tidsstempel, fodselsnr"))
-                .executeToList())
-                .map(User::of);
-
-        hentOgleggTilAktoerId(oppfolgingsbrukere)
-                .forEach(this::publish);
-    }
-
-    @Timed(name = "bruker.hent.alle.aktorid")
-    private List<User> hentOgleggTilAktoerId(List<User> oppfolgingsbrukere) {
-        List<String> alleFnrs = oppfolgingsbrukere
-                .map(user -> user.getFodselsnr().get())
-                .collect(List.collector());
-
-        return alleFnrs.sliding(300, 300)
-                .map(fnrs -> aktoerRegisterService.tilAktorIdList(fnrs.asJava()))
-                .flatMap((aktoerMap) -> leggTilAktorIdPaOppfolgingsbrukere(aktoerMap, oppfolgingsbrukere))
-                .collect(List.collector());
-    }
-
-    private List<User> leggTilAktorIdPaOppfolgingsbrukere(Map<PersonId.Fnr, IdentinfoForAktoer> aktoerMap, List<User> oppfolgingsbrukere) {
-        return oppfolgingsbrukere.map(bruker -> {
-            final PersonId.AktorId aktoerid;
-            final IdentinfoForAktoer identinfoForAktoer = aktoerMap.get(bruker.getFodselsnr());
-            if (identinfoForAktoer != null) {
-                aktoerid = aktorId(identinfoForAktoer.getIdenter().get(0).ident);
-                return bruker.withAktoerid(aktoerid);
-            } else {
-                return bruker;
-            }
-        });
     }
 
     private List<User> changesSinceLastCheckSql() {

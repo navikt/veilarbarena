@@ -33,9 +33,7 @@ public class KafkaConfig {
     public static Map<String, Object> producerConfigs() {
         HashMap<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
-        props.put(ProducerConfig.ACKS_CONFIG, "1");
-        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 2);
-        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16_384 * 4); // 4 ganger default
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-producer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
