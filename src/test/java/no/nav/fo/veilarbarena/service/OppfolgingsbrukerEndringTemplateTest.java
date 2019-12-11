@@ -1,7 +1,6 @@
 package no.nav.fo.veilarbarena.service;
 
-import no.nav.fo.veilarbarena.api.UserDTO;
-import no.nav.fo.veilarbarena.domain.PersonId;
+import no.nav.fo.veilarbarena.api.OppfolgingsbrukerEndretDTO;
 import no.nav.fo.veilarbarena.domain.User;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class OppfolgingsbrukerEndringTemplateTest {
         final String serialisertBruker = toJson(toDTO(user));
         ConsumerRecord<String, String> cr = new ConsumerRecord<>(SENDER_TOPIC, 1, 1, "testKey", serialisertBruker);
 
-        UserDTO deserialisertBruker = fromJson(cr.value(), UserDTO.class);
+        OppfolgingsbrukerEndretDTO deserialisertBruker = fromJson(cr.value(), OppfolgingsbrukerEndretDTO.class);
 
         assertThat(user.getIserv_fra_dato()).isEqualTo(deserialisertBruker.getIserv_fra_dato());
         assertThat(user.getAktoerid().get()).isEqualTo(deserialisertBruker.getAktoerid());

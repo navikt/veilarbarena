@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class OppfolgingsbrukerEndretDTO {
 
     public String aktoerid;
     public String fodselsnr;
