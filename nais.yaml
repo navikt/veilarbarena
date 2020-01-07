@@ -42,9 +42,8 @@ spec:
         mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /kv/prod/fss/veilarbarena/default
         mountPath: /var/run/secrets/nais.io/vault
-  configMaps:
-    files:
-      - pto-config
+  filesFrom:
+    - configmap: pto-config
   env:
     - APPDYNAMICS_CONTROLLER_HOST_NAME
     - APPDYNAMICS_AGENT_ACCOUNT_NAME
