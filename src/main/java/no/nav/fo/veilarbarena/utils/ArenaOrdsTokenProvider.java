@@ -3,6 +3,7 @@ package no.nav.fo.veilarbarena.utils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.sbl.rest.RestUtils;
 
 import javax.ws.rs.client.Client;
@@ -18,6 +19,7 @@ import static javax.ws.rs.core.HttpHeaders.CACHE_CONTROL;
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
+@Slf4j
 public class ArenaOrdsTokenProvider {
 
     public static final String ARENA_ORDS_CLIENT_ID_PROPERTY = "ARENA_ORDS_CLIENT_ID";
@@ -64,6 +66,10 @@ public class ArenaOrdsTokenProvider {
                         getRequiredProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY)))
                 .header(CACHE_CONTROL, "no-cache")
                 .post(Entity.entity("grant_type=client_credentials", APPLICATION_FORM_URLENCODED_TYPE));
+
+        if (response.getStatus() >= 300) {
+            log.error("Uventet respons ved henting av token: status = " + response.getStatus());
+        }
 
         OrdsToken ordsToken = response.readEntity(OrdsToken.class);
 
