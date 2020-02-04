@@ -39,7 +39,8 @@ public class ApplicationConfig implements ApiApplication {
         apiAppConfigurator
                 .issoLogin()
                 .sts()
-                .validateAzureAdInternalUsersTokens();
+                .validateAzureAdInternalUsersTokens()
+                .validateAzureAdExternalUserTokens();
     }
 
     @Bean
