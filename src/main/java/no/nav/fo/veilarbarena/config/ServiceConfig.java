@@ -1,6 +1,6 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbarena.service.*;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
@@ -27,7 +27,7 @@ public class ServiceConfig {
     }
 
     @Bean
-    public AuthService authService(AktoerRegisterService aktoerRegisterService, VeilarbAbacPepClient pepClient) {
+    public AuthService authService(AktoerRegisterService aktoerRegisterService, PepClient pepClient) {
         return new AuthService(aktoerRegisterService, pepClient);
     }
 
