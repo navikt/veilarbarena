@@ -2,6 +2,7 @@ package no.nav.fo.veilarbarena.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarbarena.client.RestClientConfig;
 import no.nav.fo.veilarbarena.service.AktoerRegisterService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
@@ -21,7 +22,8 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         ServiceConfig.class,
         UserChangeConfig.class,
         AktoerRegisterService.class,
-        RestClientConfig.class
+        RestClientConfig.class,
+        AktorConfig.class
 })
 
 @EnableAspectJAutoProxy(proxyTargetClass = true)
