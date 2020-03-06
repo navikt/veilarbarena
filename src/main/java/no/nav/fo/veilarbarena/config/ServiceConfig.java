@@ -1,7 +1,8 @@
 package no.nav.fo.veilarbarena.config;
 
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarbarena.service.*;
 import no.nav.fo.veilarbarena.soapproxy.oppfolgingstatus.OppfolgingstatusConfig;
 import no.nav.fo.veilarbarena.utils.ArenaOrdsTokenProvider;
@@ -17,7 +18,8 @@ import org.springframework.context.annotation.Import;
         AktorConfig.class,
         OppfolgingssakService.class,
         OppfolgingsstatusService.class,
-        UnleashConfig.class
+        UnleashConfig.class,
+        AktorConfig.class
 })
 public class ServiceConfig {
 
@@ -27,8 +29,8 @@ public class ServiceConfig {
     }
 
     @Bean
-    public AuthService authService(AktoerRegisterService aktoerRegisterService, VeilarbAbacPepClient pepClient) {
-        return new AuthService(aktoerRegisterService, pepClient);
+    public AuthService authService(AktorService aktorService, PepClient pepClient) {
+        return new AuthService(aktorService, pepClient);
     }
 
     @Bean
