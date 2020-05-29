@@ -32,55 +32,17 @@ public abstract class PersonId {
         return new AktorId(aktorId);
     }
 
-    public abstract Fnr toFnr(AktoerRegisterService aktoerRegisterService);
-    public abstract AktorId toAktorId(AktoerRegisterService aktoerRegisterService);
-
     @JsonDeserialize(using = PersonId.PersonIdDeserializer.class)
     public static class Fnr extends PersonId {
         private Fnr(String id) {
             super(id, "fnr");
         }
-
-        @Override
-        public Fnr toFnr(AktoerRegisterService aktoerRegisterService) {
-            return this;
-        }
-
-        @Override
-        public AktorId toAktorId(AktoerRegisterService aktoerRegisterService) {
-            String aktoerId = aktoerRegisterService.tilAktorId(this.get());
-            if (aktoerId.isEmpty()) {
-                throw new FnrAktorIdConvertionException("Fant ikke aktorId for " + this.get());
-            }
-            else return new PersonId.AktorId(aktoerId);
-        }
     }
 
     @JsonDeserialize(using = PersonId.PersonIdDeserializer.class)
     public static class AktorId extends PersonId {
-
         private AktorId(String id) {
             super(id, "aktorId");
-        }
-
-        @Override
-        public Fnr toFnr(AktoerRegisterService aktoerRegisterService) {
-            String fnr = aktoerRegisterService.tilFnr(this.get());
-            if (fnr.isEmpty()) {
-                throw new FnrAktorIdConvertionException("Fant ikke fnr for " + this.get());
-            }
-            return PersonId.fnr(fnr);
-        }
-
-        @Override
-        public AktorId toAktorId(AktoerRegisterService aktoerRegisterService) {
-            return this;
-        }
-    }
-
-    static class FnrAktorIdConvertionException extends RuntimeException {
-        FnrAktorIdConvertionException(String message) {
-            super(message);
         }
     }
 

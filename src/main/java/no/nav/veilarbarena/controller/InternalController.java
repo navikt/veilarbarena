@@ -1,6 +1,9 @@
 package no.nav.veilarbarena.controller;
 
+import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckResult;
+import no.nav.common.health.HealthCheckUtils;
+import no.nav.common.health.HealthChecker;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestUtils;
 import no.nav.common.health.selftest.SelftTestCheckResult;
@@ -29,27 +32,33 @@ public class InternalController {
 
     private final ArenaOrdsService arenaOrdsService;
 
+    private final HealthCheck oppfoelgingsstatusV2HealthCheck;
+
     private final List<SelfTestCheck> selftestChecks;
 
-    public InternalController(JdbcTemplate db, ArenaOrdsService arenaOrdsService) {
+    public InternalController(JdbcTemplate db, ArenaOrdsService arenaOrdsService, HealthCheck oppfoelgingsstatusV2HealthCheck) {
         this.db = db;
         this.arenaOrdsService = arenaOrdsService;
+        this.oppfoelgingsstatusV2HealthCheck = oppfoelgingsstatusV2HealthCheck;
         this.selftestChecks = Arrays.asList(
                 new SelfTestCheck("Arena ORDS ping", true, arenaOrdsService),
-                new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db))
+                new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db)),
+                new SelfTestCheck("Ping oppfolgingstatus_v2", true, oppfoelgingsstatusV2HealthCheck)
         );
     }
 
     @GetMapping("/isReady")
     public void isReady() {
-        if (!arenaOrdsService.checkHealth().isHealthy()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<HealthCheck> healthChecks = List.of(
+                arenaOrdsService,
+                () -> DatabaseUtils.checkDbHealth(db),
+                oppfoelgingsstatusV2HealthCheck
+        );
 
-        HealthCheckResult dbHealthCheckResult = DatabaseUtils.checkDbHealth(db);
-        if (!dbHealthCheckResult.isHealthy()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        HealthChecker.findFirstFailingCheck(healthChecks)
+                .ifPresent((failedCheck) -> {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+                });
     }
 
     @GetMapping("/isAlive")

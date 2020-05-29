@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.soapproxy.oppfolgingstatus;
+package no.nav.veilarbarena.domain;
 
 import lombok.Builder;
 import lombok.Value;

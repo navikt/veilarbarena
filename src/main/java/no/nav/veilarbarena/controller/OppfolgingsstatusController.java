@@ -15,17 +15,17 @@ public class OppfolgingsstatusController {
 
     private final AuthService authService;
 
-    private final OppfolgingsstatusService service;
+    private final OppfolgingsstatusService oppfolgingsstatusService;
 
     @Autowired
-    public OppfolgingsstatusController(AuthService authService, OppfolgingsstatusService service) {
+    public OppfolgingsstatusController(AuthService authService, OppfolgingsstatusService oppfolgingsstatusService) {
         this.authService = authService;
-        this.service = service;
+        this.oppfolgingsstatusService = oppfolgingsstatusService;
     }
 
     @GetMapping("/{fnr}")
     public OppfolgingsstatusDTO oppfolgingsstatus(@PathVariable("fnr") String fnr) {
         authService.sjekkTilgang(fnr);
-        return service.hentOppfolgingsstatus(fnr);
+        return oppfolgingsstatusService.hentOppfolgingsstatus(fnr);
     }
 }
