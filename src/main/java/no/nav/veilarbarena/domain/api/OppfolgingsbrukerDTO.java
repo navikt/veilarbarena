@@ -2,6 +2,7 @@ package no.nav.veilarbarena.domain.api;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import no.nav.veilarbarena.domain.PersonId;
 
 import java.time.ZonedDateTime;
 
@@ -25,5 +26,6 @@ public class OppfolgingsbrukerDTO {
     public Boolean sperret_ansatt;
     public Boolean er_doed;
     public ZonedDateTime doed_fra_dato;
+
 }
 

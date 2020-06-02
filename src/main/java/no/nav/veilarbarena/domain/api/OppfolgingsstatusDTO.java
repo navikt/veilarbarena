@@ -1,22 +1,29 @@
 package no.nav.veilarbarena.domain.api;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.google.gson.annotations.SerializedName;
 import lombok.Value;
 
 import java.time.LocalDate;
 
 @Value
 public class OppfolgingsstatusDTO {
-    @JsonAlias("rettighetsgruppeKode")
+
+    @SerializedName("rettighetsgruppeKode")
     String rettighetsgruppe;
-    @JsonAlias("formidlingsgruppeKode")
+
+    @SerializedName("formidlingsgruppeKode")
     String formidlingsgruppe;
-    @JsonAlias("servicegruppeKode")
+
+    @SerializedName("servicegruppeKode")
     String servicegruppe;
-    @JsonAlias("navOppfoelgingsenhet")
+
+    @SerializedName("navOppfoelgingsenhet")
     String oppfolgingsenhet;
-    @JsonAlias("inaktiveringsdato")
+
+    @SerializedName("inaktiveringsdato")
     LocalDate inaktiveringsdato;
-    @JsonAlias("kanEnkeltReaktiveres")
+
+    @SerializedName("kanEnkeltReaktiveres")
     Boolean kanEnkeltReaktiveres;
+
 }

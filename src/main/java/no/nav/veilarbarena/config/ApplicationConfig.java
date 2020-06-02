@@ -6,6 +6,8 @@ import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.client.aktorregister.AktorregisterHttpClient;
 import no.nav.common.client.aktorregister.CachedAktorregisterClient;
 import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.common.leaderelection.LeaderElectionHttpClient;
 import no.nav.common.metrics.InfluxClient;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.metrics.SensuConfig;
@@ -49,6 +51,11 @@ public class ApplicationConfig {
     @Bean
     public UnleashService unleashService() {
         return new UnleashService(resolveFromEnvironment());
+    }
+
+    @Bean
+    public LeaderElectionClient leaderElectionClient() {
+        return new LeaderElectionHttpClient();
     }
 
     @Bean

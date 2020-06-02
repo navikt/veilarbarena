@@ -2,7 +2,7 @@ package no.nav.veilarbarena.service;
 
 import io.vavr.collection.List;
 import no.nav.veilarbarena.DbTest;
-import no.nav.veilarbarena.domain.FeiletKafkaRecord;
+import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import no.nav.veilarbarena.domain.User;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +28,7 @@ class KafkaRepositoryTest extends DbTest {
         User user = lagNyBruker();
         kafkaRepository.insertFeiletBruker(user);
 
-        final List<FeiletKafkaRecord> feiletKafkaRecord = kafkaRepository.hentFeiledeBrukere();
+        final List<FeiletKafkaBruker> feiletKafkaRecord = kafkaRepository.hentFeiledeBrukere();
         assertThat(feiletKafkaRecord.size()).isEqualTo(1);
         assertThat(feiletKafkaRecord.get(0).getFodselsnr().value).isEqualTo(user.getFodselsnr().get());
     }
@@ -37,7 +37,7 @@ class KafkaRepositoryTest extends DbTest {
     void deleteFeiletBruker() {
         User user = lagNyBruker();
         kafkaRepository.insertFeiletBruker(user);
-        List<FeiletKafkaRecord> feiletKafkaRecord = kafkaRepository.hentFeiledeBrukere();
+        List<FeiletKafkaBruker> feiletKafkaRecord = kafkaRepository.hentFeiledeBrukere();
 
         assertThat(feiletKafkaRecord.size()).isEqualTo(1);
         kafkaRepository.deleteFeiletBruker(user);

@@ -33,6 +33,7 @@ spec:
     requests:
       memory: 512Mi
   webproxy: true
+  leaderElection: true
   vault:
     enabled: true
     paths:

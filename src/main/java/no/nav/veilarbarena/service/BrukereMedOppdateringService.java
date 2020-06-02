@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.veilarbarena.domain.User;
 import no.nav.veilarbarena.kafka.OppfolgingsbrukerEndringTemplate;
 import no.nav.veilarbarena.scheduled.UserChangeListener;
-
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static no.nav.veilarbarena.domain.PersonId.aktorId;
 
@@ -15,7 +14,7 @@ public class BrukereMedOppdateringService implements UserChangeListener {
     private final OppfolgingsbrukerEndringTemplate kafkaTemplate;
     private final AktoerRegisterService aktoerRegisterService;
 
-    @Inject
+    @Autowired
     public BrukereMedOppdateringService(OppfolgingsbrukerEndringTemplate kafkaTemplate, AktoerRegisterService aktoerRegisterService) {
         this.kafkaTemplate = kafkaTemplate;
         this.aktoerRegisterService = aktoerRegisterService;

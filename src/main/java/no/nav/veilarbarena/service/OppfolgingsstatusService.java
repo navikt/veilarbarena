@@ -1,22 +1,20 @@
 package no.nav.veilarbarena.service;
 
 import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 
 @Service
 public class OppfolgingsstatusService {
 
     private ArenaOrdsService arenaOrdsService;
 
-    @Inject
+    @Autowired
     public OppfolgingsstatusService(ArenaOrdsService arenaOrdsService) {
         this.arenaOrdsService = arenaOrdsService;
     }
 
     public OppfolgingsstatusDTO hentOppfolgingsstatus(String fnr) {
-        return arenaOrdsService
-                .get("oppfoelgingsstatus", fnr, OppfolgingsstatusDTO.class);
+        return arenaOrdsService.get("oppfoelgingsstatus", fnr, OppfolgingsstatusDTO.class);
     }
 }

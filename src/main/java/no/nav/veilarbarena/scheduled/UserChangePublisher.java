@@ -1,66 +1,59 @@
 package no.nav.veilarbarena.scheduled;
 
-import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.core.LockConfiguration;
-import net.javacrumbs.shedlock.core.LockingTaskExecutor;
-import no.nav.veilarbarena.domain.PersonId;
+import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import no.nav.veilarbarena.domain.User;
 import no.nav.veilarbarena.domain.UserRecord;
 import no.nav.veilarbarena.repository.KafkaRepository;
-import no.nav.sbl.sql.SqlUtils;
-import no.nav.sbl.sql.mapping.QueryMapping;
-import no.nav.sbl.sql.order.OrderClause;
-import no.nav.sbl.sql.where.WhereClause;
-import org.springframework.jdbc.core.JdbcTemplate;
+import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
 @Slf4j
+@Component
 public class UserChangePublisher {
-    static {
-        QueryMapping.register(String.class, PersonId.AktorId.class, PersonId::aktorId);
-        QueryMapping.register(String.class, PersonId.Fnr.class, PersonId::fnr);
-    }
 
-    @Inject
-    private JdbcTemplate db;
-    @Inject
-    private java.util.List<UserChangeListener> listeners;
-    @Inject
-    private KafkaRepository kafkaRepository;
-    @Inject
-    private AktoerRegisterService aktoerRegisterService;
+    private final LeaderElectionClient leaderElectionClient;
 
-    private LockingTaskExecutor taskExecutor;
-    private static final int lockAutomatiskAvslutteOppfolgingSeconds = 3600;
+    private final KafkaRepository kafkaRepository;
+
+    private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
+
+    private final AktorregisterClient aktorregisterClient;
 
     private static final String ARBEIDSOKER = "ARBS";
     private static final Set<String> OPPFOLGINGKODER = new HashSet<>(asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG"));
     private static final String IKKE_ARBEIDSSOKER = "IARBS";
 
-    public UserChangePublisher(LockingTaskExecutor taskExecutor){
-        this.taskExecutor = taskExecutor;
+    @Autowired
+    public UserChangePublisher(
+            LeaderElectionClient leaderElectionClient, KafkaRepository kafkaRepository,
+            OppfolgingsbrukerRepository oppfolgingsbrukerRepository, AktorregisterClient aktorregisterClient
+    ){
+        this.leaderElectionClient = leaderElectionClient;
+        this.kafkaRepository = kafkaRepository;
+        this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
+        this.aktorregisterClient = aktorregisterClient;
     }
 
-    @Scheduled(fixedDelay = 10000L, initialDelay = 1000L)
+    @Scheduled(fixedDelay = 10_000L, initialDelay = 1000L)
     public void findChangesSinceLastCheck() {
-        Instant lockAtMostUntil = Instant.now().plusSeconds(lockAutomatiskAvslutteOppfolgingSeconds);
-        Instant lockAtLeastUntil = Instant.now().plusSeconds(10);
-
-        taskExecutor.executeWithLock(
-                this::publisereArenaBrukerEndringer,
-                new LockConfiguration("produserArenaBrukerEndringer", lockAtMostUntil, lockAtLeastUntil)
-        );
+        if (leaderElectionClient.isLeader()) {
+            publisereArenaBrukerEndringer();
+        }
     }
 
     @Transactional
@@ -69,7 +62,7 @@ public class UserChangePublisher {
             List<User> users = changesSinceLastCheckSql();
 
             if (!users.isEmpty()) {
-                User user = users.lastOption().get();
+                User user = users.get(users.size() - 1);
                 updateLastcheck(user.getEndret_dato(), user.getFodselsnr().get());
             }
 
@@ -109,7 +102,9 @@ public class UserChangePublisher {
 
     public List<User> findAllFailedKafkaUsers() {
         List<String> feiledeFnrs = kafkaRepository.hentFeiledeBrukere()
-                .map(feiletBruker -> feiletBruker.getFodselsnr().value);
+                .stream()
+                .map(FeiletKafkaBruker::getFodselsnr)
+                .collect(Collectors.toList());
 
         log.info("Antall FeiledeFnr: {}", feiledeFnrs.size());
 

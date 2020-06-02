@@ -26,25 +26,19 @@ public class User {
     ZonedDateTime doed_fra_dato;
     ZonedDateTime endret_dato;
 
-    public static User of(UserRecord record) {
-        return new User(
-                null, // Legges til når man legger melding på kafka-topic
-                record.getFodselsnr().value,
-                record.getEtternavn().value,
-                record.getFornavn().value,
-                record.getNav_kontor().value,
-                record.getFormidlingsgruppekode().value,
-                record.getIserv_fra_dato().value,
-                record.getKvalifiseringsgruppekode().value,
-                record.getRettighetsgruppekode().value,
-                record.getHovedmaalkode().value,
-                record.getSikkerhetstiltak_type_kode().value,
-                record.getFr_kode().value,
-                record.getHar_oppfolgingssak().value,
-                record.getSperret_ansatt().value,
-                record.getEr_doed().value,
-                record.getDoed_fra_dato().value,
-                record.getTidsstempel().value
-        );
-    }
+    public String fodselsnr;
+    public String formidlingsgruppekode;
+    public ZonedDateTime iserv_fra_dato;
+    public String nav_kontor;
+    public String kvalifiseringsgruppekode;
+    public String rettighetsgruppekode;
+    public String hovedmaalkode;
+    public String sikkerhetstiltak_type_kode;
+    public String fr_kode;
+    public Boolean har_oppfolgingssak;
+    public Boolean sperret_ansatt;
+    public Boolean er_doed;
+    public ZonedDateTime doed_fra_dato;
+    public ZonedDateTime timestamp; // Sist endret
+
 }

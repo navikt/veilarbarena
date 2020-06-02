@@ -1,6 +1,8 @@
 package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
+import no.nav.veilarbarena.domain.User;
+import no.nav.veilarbarena.domain.UserRecord;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,6 +29,11 @@ public class OppfolgingsbrukerRepository {
         String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE fodselsnr = ?";
         List<OppfolgingsbrukerDTO> brukere = db.query(sql, new Object[]{fnr}, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
         return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
+    }
+
+    public List<OppfolgingsbrukerDTO> hentOppfolgingsbrukere(List<String> fnrs) {
+        String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE FODSELSNR in (?)";
+        return db.query(sql, new Object[]{String.join(",", fnrs)}, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
 
     @SneakyThrows

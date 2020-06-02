@@ -1,8 +1,8 @@
 package no.nav.veilarbarena.domain.api;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.google.gson.annotations.SerializedName;
 
 public class OppfolgingssakDTO {
-    @JsonAlias("saksId")
+    @SerializedName("saksId")
     String oppfolgingssakId;
 }

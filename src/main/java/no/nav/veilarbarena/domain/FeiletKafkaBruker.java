@@ -5,7 +5,7 @@ import lombok.Value;
 import java.time.LocalDateTime;
 
 @Value
-public class FeiletKafkaRecord {
+public class FeiletKafkaBruker {
     String fodselsnr;
-    LocalDateTime tidspunkt_feilet;
+    LocalDateTime tidspunktFeilet;
 }
