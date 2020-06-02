@@ -1,6 +1,7 @@
 package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.veilarbarena.domain.User;
 import no.nav.veilarbarena.domain.UserRecord;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
@@ -12,13 +13,24 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static no.nav.veilarbarena.utils.DateUtils.convertTimestampToZonedDateTimeIfPresent;
+
+@Slf4j
 @Repository
 public class OppfolgingsbrukerRepository {
 
     private final JdbcTemplate db;
+
+    private static final String ARBEIDSOKER = "ARBS";
+    private static final Set<String> OPPFOLGINGKODER = new HashSet<>(asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG"));
+    private static final String IKKE_ARBEIDSSOKER = "IARBS";
 
     @Autowired
     public OppfolgingsbrukerRepository(JdbcTemplate db) {
@@ -34,6 +46,27 @@ public class OppfolgingsbrukerRepository {
     public List<OppfolgingsbrukerDTO> hentOppfolgingsbrukere(List<String> fnrs) {
         String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE FODSELSNR in (?)";
         return db.query(sql, new Object[]{String.join(",", fnrs)}, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
+    }
+
+    public List<OppfolgingsbrukerDTO> changesSinceLastCheckSql(String lastCheckedFnr, ZonedDateTime sistSjekketTidspunkt) {
+        log.info("Siste sjekket tidspunkt: {}", sistSjekketTidspunkt);
+
+        String tidOgFnrSql = "tidsstempel > ? OR (fodselsnr > ? AND tidsstempel >= ?)";
+        String erUnderOppfolgingSql = format(
+                "FORMIDLINGSGRUPPEKODE = %s OR (FORMIDLINGSGRUPPEKODE = %s AND KVALIFISERINGSGRUPPEKODE in (%s)",
+                ARBEIDSOKER, IKKE_ARBEIDSSOKER, String.join(",", OPPFOLGINGKODER)
+                );
+
+        String sql = format(
+                "SELECT * FROM OPPFOLGINGSBRUKER WHERE (%s) AND (%s) ORDER BY tidsstempel, fodselsnr ASC LIMIT 1000",
+                tidOgFnrSql, erUnderOppfolgingSql
+                );
+
+        return db.query(
+                sql,
+                new Object[]{lastCheckedFnr, Timestamp.from(sistSjekketTidspunkt.toInstant())},
+                OppfolgingsbrukerRepository::mapOppfolgingsbruker
+        );
     }
 
     @SneakyThrows
@@ -53,11 +86,6 @@ public class OppfolgingsbrukerRepository {
                 .er_doed(convertStringToBoolean(rs.getString("er_doed")))
                 .doed_fra_dato(convertTimestampToZonedDateTimeIfPresent(rs.getTimestamp("doed_fra_dato")))
                 .build();
-    }
-
-    private static ZonedDateTime convertTimestampToZonedDateTimeIfPresent(Timestamp date){
-        return Optional.ofNullable(date).isPresent() ?
-                date.toLocalDateTime().atZone(ZoneId.systemDefault()) : null ;
     }
 
     private static boolean convertStringToBoolean(String flag){

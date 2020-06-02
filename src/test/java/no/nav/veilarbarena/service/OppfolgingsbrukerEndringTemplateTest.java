@@ -3,7 +3,6 @@ package no.nav.veilarbarena.service;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.domain.User;
 import no.nav.veilarbarena.KafkaTest;
-import no.nav.veilarbarena.kafka.OppfolgingsbrukerEndringTemplate;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;

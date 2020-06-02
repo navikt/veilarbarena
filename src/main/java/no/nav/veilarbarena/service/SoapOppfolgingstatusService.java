@@ -8,7 +8,6 @@ import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgings
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusUgyldigInput;
 import no.nav.veilarbarena.domain.Oppfolgingstatus;
 import no.nav.veilarbarena.domain.User;
-import no.nav.veilarbarena.scheduled.UserChangeListener;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.informasjon.Person;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusRequest;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusResponse;
@@ -23,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static no.nav.veilarbarena.utils.DateUtils.xmlGregorianCalendarToLocalDate;
 
 @Slf4j
-public class SoapOppfolgingstatusService implements UserChangeListener {
+public class SoapOppfolgingstatusService {
 
     private final OppfoelgingsstatusV2 service;
 
@@ -61,10 +60,8 @@ public class SoapOppfolgingstatusService implements UserChangeListener {
         }
     }
 
-    @Override
-    public void userChanged(User user) {
-        log.debug("Invalidating user: {}", user.toString());
-        cache.invalidate(user.getFodselsnr());
+    public void invalidateCachedUser(String fnr) {
+        cache.invalidate(fnr);
     }
 
     private static Oppfolgingstatus toOppfolgingsstatus(HentOppfoelgingsstatusResponse response) {
