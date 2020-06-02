@@ -2,7 +2,10 @@ package no.nav.veilarbarena.scheduled;
 
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
+import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
+import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.kafka.KafkaProducer;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.service.KafkaService;
@@ -48,9 +51,11 @@ public class KafkaFeilSchedule {
                     .map(FeiletKafkaBruker::getFodselsnr)
                     .collect(Collectors.toList());
 
-            List<OppfolgingsbrukerDTO> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
-            // TODO: Send bruker
-            oppfolgingsbrukere.forEach(b -> kafkaService.sendBrukerEndret(null));
+            List<Oppfolgingsbruker> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
+
+            oppfolgingsbrukere.forEach(bruker ->
+                    kafkaService.sendTidligereFeiletBrukerEndret(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker))
+            );
         }
     }
 

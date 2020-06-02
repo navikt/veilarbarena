@@ -1,12 +1,11 @@
 package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
-import no.nav.veilarbarena.domain.User;
-import no.nav.veilarbarena.domain.UserRecord;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
+import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
 import no.nav.veilarbarena.service.KafkaService;
@@ -16,13 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static java.util.Arrays.asList;
 
 @Slf4j
 @Component
@@ -65,23 +58,24 @@ public class OppfolgingsbrukerEndretSchedule {
     void publisereArenaBrukerEndringer() {
         try {
             OppfolgingsbrukerSistEndret sistEndret = oppfolgingsbrukerSistEndringRepository.hentSistEndret();
-            List<OppfolgingsbrukerDTO> users = oppfolgingsbrukerRepository.changesSinceLastCheckSql(sistEndret.getFodselsnr(), sistEndret.getOppfolgingsbrukerSistEndring());
+            List<Oppfolgingsbruker> brukere = oppfolgingsbrukerRepository.changesSinceLastCheckSql(
+                    sistEndret.getFodselsnr(), sistEndret.getOppfolgingsbrukerSistEndring()
+            );
 
-            if (!users.isEmpty()) {
-                OppfolgingsbrukerDTO sisteBruekr = users.get(users.size() - 1);
-                oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruekr.getFodselsnr(), sisteBruekr.getEndret_dato());
+            if (!brukere.isEmpty()) {
+                Oppfolgingsbruker sisteBruker = brukere.get(brukere.size() - 1);
+                oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
+                log.info("Legger {} brukere til kafka", brukere.size());
+                brukere.forEach(bruker -> {
+                    soapOppfolgingstatusService.invalidateCachedUser(bruker.getFodselsnr());
+                    kafkaService.sendBrukerEndret(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker));
+                });
+            } else {
+                log.info("Ingen nye endringer å publisere på kafka");
             }
-
-            log.info("Legger {} brukere til kafka", users.size());
-            users.forEach(this::publish);
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
-    }
-
-    private void publish(OppfolgingsbrukerDTO oppfolgingsbrukerDTO) {
-        soapOppfolgingstatusService.invalidateCachedUser(oppfolgingsbrukerDTO.getFodselsnr());
-        kafkaService.sendBrukerEndret(oppfolgingsbrukerDTO);
     }
 
 }

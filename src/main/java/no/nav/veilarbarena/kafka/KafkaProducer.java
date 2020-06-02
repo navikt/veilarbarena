@@ -1,8 +1,9 @@
 package no.nav.veilarbarena.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.veilarbarena.domain.User;
+import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.KafkaRepository;
+import no.nav.veilarbarena.service.MetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -21,31 +22,56 @@ public class KafkaProducer {
 
     private final KafkaRepository kafkaRepository;
 
+    private final MetricsService metricsService;
+
     @Autowired
-    public KafkaProducer(KafkaTopics kafkaTopics, KafkaTemplate<String, String> kafkaTemplate, KafkaRepository kafkaRepository) {
+    public KafkaProducer(
+            KafkaTopics kafkaTopics,
+            KafkaTemplate<String, String> kafkaTemplate,
+            KafkaRepository kafkaRepository,
+            MetricsService metricsService
+    ) {
         this.kafkaTopics = kafkaTopics;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaRepository = kafkaRepository;
+        this.metricsService = metricsService;
     }
 
-    public void sendEndringPaOppfolgingsbruker(User user) {
-        send(kafkaTopics.getEndringPaOppfolgingBruker(), user.getAktoerid().get(), toJson(user));
-    }
+    public void sendEndringPaOppfolgingsbruker(OppfolgingsbrukerEndretDTO bruker, boolean harFeiletTidligere) {
+        String brukerFnr = bruker.getFodselsnr();
+        String topic = kafkaTopics.getEndringPaOppfolgingBruker();
+        String key = bruker.getAktoerid();
+        String payload = toJson(bruker);
 
-    private void send(String topic, String key, String jsonPayload) {
-        kafkaTemplate.send(topic, key, jsonPayload)
+        if (!harFeiletTidligere) {
+            metricsService.leggerBrukerPaKafkaMetrikk(bruker);
+        }
+
+        kafkaTemplate.send(topic, key, payload)
                 .addCallback(
-                        sendResult -> onSuccess(topic, key),
-                        throwable -> onError(topic, key, throwable)
+                        sendResult -> onSuccess(brukerFnr, harFeiletTidligere, topic, key),
+                        throwable -> onError(brukerFnr, harFeiletTidligere, topic, key, throwable)
                 );
     }
 
-    private void onSuccess(String topic, String key) {
+    private void onSuccess(String brukerFnr, boolean harFeiletTidligere, String topic, String key) {
         log.info(format("Publiserte melding på topic %s med key %s", topic, key));
+
+        if (harFeiletTidligere) {
+            log.info(format("Sletter tidligere feilet bruker fra topic %s med key %s", topic, key));
+            kafkaRepository.deleteFeiletBruker(brukerFnr);
+        }
     }
 
-    private void onError(String topic, String key, Throwable throwable) {
+    private void onError(String brukerFnr, boolean harFeiletTidligere, String topic, String key, Throwable throwable) {
         log.error(format("Kunne ikke publisere melding på topic %s med key %s \nERROR: %s", topic, key, throwable));
+
+        metricsService.feilVedSendingTilKafkaMetrikk();
+
+        if (!harFeiletTidligere) {
+            log.info(format("Lagrer feilet melding for topic %s med key %s", topic, key));
+            kafkaRepository.insertFeiletBruker(brukerFnr);
+        }
     }
 
 }

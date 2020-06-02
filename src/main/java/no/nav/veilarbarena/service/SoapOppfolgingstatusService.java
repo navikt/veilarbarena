@@ -7,7 +7,6 @@ import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgings
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusUgyldigInput;
 import no.nav.veilarbarena.domain.Oppfolgingstatus;
-import no.nav.veilarbarena.domain.User;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.informasjon.Person;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusRequest;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusResponse;

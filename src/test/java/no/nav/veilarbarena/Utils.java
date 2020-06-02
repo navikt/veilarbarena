@@ -1,8 +1,5 @@
 package no.nav.veilarbarena;
 
-import no.nav.veilarbarena.domain.PersonId;
-import no.nav.veilarbarena.domain.User;
-
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -2,7 +2,6 @@ package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
-import no.nav.veilarbarena.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,14 +19,14 @@ public class KafkaRepository {
         this.db = db;
     }
 
-    public void insertFeiletBruker(User user) {
+    public void insertFeiletBruker(String brukerFnr) {
         String sql = "INSERT INTO FEILEDE_KAFKA_BRUKERE(FODSELSNR, TIDSPUNKT_FEILET) values(?, CURRENT_TIMESTAMP)";
-        db.update(sql, user.getFodselsnr().get());
+        db.update(sql, brukerFnr);
     }
 
-    public void deleteFeiletBruker(User user) {
+    public void deleteFeiletBruker(String brukerFnr) {
         String sql = "DELETE FROM FEILEDE_KAFKA_BRUKERE WHERE FODSELSNR = ?";
-        db.update(sql, user.getFodselsnr().get());
+        db.update(sql, brukerFnr);
     }
 
     public List<FeiletKafkaBruker> hentFeiledeBrukere() {

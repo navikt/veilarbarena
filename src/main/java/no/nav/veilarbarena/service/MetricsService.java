@@ -2,7 +2,8 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.metrics.Event;
 import no.nav.common.metrics.MetricsClient;
-import no.nav.veilarbarena.domain.User;
+import no.nav.veilarbarena.domain.Oppfolgingsbruker;
+import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,8 @@ public class MetricsService {
         this.metricsClient = metricsClient;
     }
 
-    public void leggerBrukerPaKafkaMetrikk(User user) {
-        final ZonedDateTime iservFraDato = user.getIserv_fra_dato();
+    public void leggerBrukerPaKafkaMetrikk(OppfolgingsbrukerEndretDTO bruker) {
+        final ZonedDateTime iservFraDato = bruker.getIserv_fra_dato();
         boolean erIserv28 = false;
 
         if (iservFraDato != null) {
@@ -30,12 +31,12 @@ public class MetricsService {
         }
 
         Event event = new Event("bruker.kafka.send")
-            .addTagToReport("formidlingsgruppekode", user.getFormidlingsgruppekode())
-            .addTagToReport("kvalifiseringsgruppekode", user.getKvalifiseringsgruppekode())
-            .addTagToReport("rettighetsgruppekode", user.getRettighetsgruppekode())
-            .addFieldToReport("kontor", user.getNav_kontor())
+            .addTagToReport("formidlingsgruppekode", bruker.getFormidlingsgruppekode())
+            .addTagToReport("kvalifiseringsgruppekode", bruker.getKvalifiseringsgruppekode())
+            .addTagToReport("rettighetsgruppekode", bruker.getRettighetsgruppekode())
+            .addFieldToReport("kontor", bruker.getNav_kontor())
             .addTagToReport("iserv28", valueOf(erIserv28))
-            .addFieldToReport("endringstidspunkt", user.getEndret_dato().toInstant());
+            .addFieldToReport("endringstidspunkt", bruker.getEndret_dato().toInstant());
 
         metricsClient.report(event);
     }

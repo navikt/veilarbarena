@@ -28,6 +28,7 @@ public class OppfolgingsbrukerController {
     public OppfolgingsbrukerDTO getOppfolgingsbruker(@PathVariable("fnr") String fnr){
         authService.sjekkTilgang(fnr);
         return oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr)
+                .map(OppfolgingsbrukerDTO::fraOppfolgingsbruker)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
