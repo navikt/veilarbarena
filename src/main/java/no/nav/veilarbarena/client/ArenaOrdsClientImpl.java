@@ -5,7 +5,6 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
-import no.nav.veilarbarena.utils.ArenaOrdsUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -43,6 +42,6 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(ArenaOrdsUrl.get("arena/api/v1/test/ping"), client);
+        return HealthCheckUtils.pingUrl(joinPaths(arenaOrdsUrl, "arena/api/v1/test/ping"), client);
     }
 }

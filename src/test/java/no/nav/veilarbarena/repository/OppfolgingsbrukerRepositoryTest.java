@@ -3,8 +3,10 @@ package no.nav.veilarbarena.repository;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.utils.TestUtils;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
@@ -19,11 +21,12 @@ import static org.junit.Assert.assertTrue;
 
 public class OppfolgingsbrukerRepositoryTest {
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void cleanup() {
         JdbcTemplate db = LocalH2Database.getDb();
         String insertBrukere = TestUtils.readTestResourceFile("oppfolgingsbrukere.sql");
-        db.update(insertBrukere);
+        db.execute("DELETE FROM OPPFOLGINGSBRUKER");
+        db.execute(insertBrukere);
     }
 
     @Test

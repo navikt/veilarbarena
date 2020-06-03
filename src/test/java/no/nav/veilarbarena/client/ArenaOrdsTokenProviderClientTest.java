@@ -1,44 +1,32 @@
 package no.nav.veilarbarena.client;
 
-import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
-import okhttp3.OkHttpClient;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.google.gson.Gson;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static java.lang.System.setProperty;
 import static no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient.*;
-import static no.nav.veilarbarena.utils.ArenaOrdsUrl.ARENA_ORDS_URL_PROPERTY;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ArenaOrdsTokenProviderClientTest {
 
-    private OkHttpClient client = mock(OkHttpClient.class);
-    private WebTarget webTarget = mock(WebTarget.class);
-    private Builder requestBuilder = mock(Builder.class);
-    private Response response = mock(Response.class);
-
-    private ArenaOrdsTokenProviderClient tokenProvider = new ArenaOrdsTokenProviderClient("", client);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(0);
 
     @Before
     public void setup() {
-//        when(client.target(anyString())).thenReturn(webTarget);
-        when(webTarget.request()).thenReturn(requestBuilder);
-        when(requestBuilder.header(any(), any())).thenReturn(requestBuilder);
-        when(requestBuilder.post(any())).thenReturn(response);
         setProperty(ARENA_ORDS_CLIENT_ID_PROPERTY, "client_id");
         setProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY, "client_secret");
-        setProperty(ARENA_ORDS_URL_PROPERTY, "ords_url");
     }
 
     @Test
     public void henterGyldigTokenFraCache() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        ArenaOrdsTokenProviderClient tokenProvider = new ArenaOrdsTokenProviderClient(apiUrl);
 
         OrdsToken token1 = new OrdsToken("token1", "", 120);
         OrdsToken token2 = new OrdsToken("token2", "", 120);
@@ -58,6 +46,8 @@ public class ArenaOrdsTokenProviderClientTest {
 
     @Test
     public void henterNyttTokenDersomTokenFraCacheGammelt() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        ArenaOrdsTokenProviderClient tokenProvider = new ArenaOrdsTokenProviderClient(apiUrl);
 
         OrdsToken token1 = new OrdsToken("token1", "", 50);
         OrdsToken token2 = new OrdsToken("token2", "", 120);
@@ -76,6 +66,10 @@ public class ArenaOrdsTokenProviderClientTest {
     }
 
     private void gittResponseMedToken(OrdsToken ordsToken) {
-        when(response.readEntity(OrdsToken.class)).thenReturn(ordsToken);
+        givenThat(post(urlEqualTo("/arena/api/oauth/token"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(new Gson().toJson(ordsToken)))
+        );
     }
 }

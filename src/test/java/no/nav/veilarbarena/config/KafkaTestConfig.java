@@ -44,8 +44,7 @@ public class KafkaTestConfig {
 
     @Bean
     public EmbeddedKafkaBroker embeddedKafkaBroker() {
-        EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1, true, kafkaTopics.getAllTopics());
-        return embeddedKafkaBroker;
+        return new EmbeddedKafkaBroker(1, true, kafkaTopics.getAllTopics());
     }
 
     @Bean
