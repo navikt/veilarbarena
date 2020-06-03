@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.utils;
 
+import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 public class ArenaOrdsTokenProviderTest {
 
-    private Client client = mock(Client.class);
+    private OkHttpClient client = mock(OkHttpClient.class);
     private WebTarget webTarget = mock(WebTarget.class);
     private Builder requestBuilder = mock(Builder.class);
     private Response response = mock(Response.class);
@@ -28,7 +29,7 @@ public class ArenaOrdsTokenProviderTest {
 
     @Before
     public void setup() {
-        when(client.target(anyString())).thenReturn(webTarget);
+//        when(client.target(anyString())).thenReturn(webTarget);
         when(webTarget.request()).thenReturn(requestBuilder);
         when(requestBuilder.header(any(), any())).thenReturn(requestBuilder);
         when(requestBuilder.post(any())).thenReturn(response);

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
@@ -84,7 +85,7 @@ public class ArenaOrdsTokenProvider {
         }
     }
 
-    @Data
+    @Value
     static class OrdsToken {
         @SerializedName("access_token")
         String accessToken;

@@ -1,18 +1,9 @@
 package no.nav.veilarbarena.scheduled;
 
-import no.nav.veilarbarena.DbTest;
-import no.nav.veilarbarena.repository.KafkaRepository;
-import no.nav.veilarbarena.config.ApplicationConfig;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import static java.lang.System.setProperty;
-import static no.nav.veilarbarena.Utils.lagNyBruker;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
-class UserChangePublisherTest extends DbTest {
+class UserChangePublisherTest {
 
 //    @Inject
 //    private KafkaRepository kafkaRepository;

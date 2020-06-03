@@ -9,7 +9,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import static no.nav.veilarbarena.Utils.lagNyBruker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.*;

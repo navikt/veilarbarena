@@ -10,13 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static no.nav.veilarbarena.utils.DatabaseUtils.toSqlStringArray;
 import static no.nav.veilarbarena.utils.DateUtils.convertTimestampToZonedDateTimeIfPresent;
 
 @Slf4j
@@ -26,7 +25,7 @@ public class OppfolgingsbrukerRepository {
     private final JdbcTemplate db;
 
     private static final String ARBEIDSOKER = "ARBS";
-    private static final Set<String> OPPFOLGINGKODER = new HashSet<>(asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG"));
+    private static final List<String> OPPFOLGINGKODER = asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG");
     private static final String IKKE_ARBEIDSSOKER = "IARBS";
 
     @Autowired
@@ -41,17 +40,18 @@ public class OppfolgingsbrukerRepository {
     }
 
     public List<Oppfolgingsbruker> hentOppfolgingsbrukere(List<String> fnrs) {
-        String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE FODSELSNR in (?)";
-        return db.query(sql, new Object[]{String.join(",", fnrs)}, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
+        String sql = format("SELECT * FROM OPPFOLGINGSBRUKER WHERE FODSELSNR IN %s", toSqlStringArray(fnrs));
+        return db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
 
     public List<Oppfolgingsbruker> changesSinceLastCheckSql(String lastCheckedFnr, ZonedDateTime sistSjekketTidspunkt) {
         log.info("Siste sjekket tidspunkt: {}", sistSjekketTidspunkt);
 
+        Timestamp timestamp = Timestamp.from(sistSjekketTidspunkt.toInstant());
         String tidOgFnrSql = "tidsstempel > ? OR (fodselsnr > ? AND tidsstempel >= ?)";
         String erUnderOppfolgingSql = format(
-                "FORMIDLINGSGRUPPEKODE = %s OR (FORMIDLINGSGRUPPEKODE = %s AND KVALIFISERINGSGRUPPEKODE in (%s)",
-                ARBEIDSOKER, IKKE_ARBEIDSSOKER, String.join(",", OPPFOLGINGKODER)
+                "FORMIDLINGSGRUPPEKODE = '%s' OR (FORMIDLINGSGRUPPEKODE = '%s' AND KVALIFISERINGSGRUPPEKODE in %s)",
+                ARBEIDSOKER, IKKE_ARBEIDSSOKER, toSqlStringArray(OPPFOLGINGKODER)
                 );
 
         String sql = format(
@@ -61,7 +61,7 @@ public class OppfolgingsbrukerRepository {
 
         return db.query(
                 sql,
-                new Object[]{lastCheckedFnr, Timestamp.from(sistSjekketTidspunkt.toInstant())},
+                new Object[]{timestamp, lastCheckedFnr, timestamp},
                 OppfolgingsbrukerRepository::mapOppfolgingsbruker
         );
     }
