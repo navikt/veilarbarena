@@ -3,9 +3,7 @@ package no.nav.veilarbarena.scheduled;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
-import no.nav.veilarbarena.kafka.KafkaProducer;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.service.KafkaService;
@@ -44,7 +42,7 @@ public class KafkaFeilSchedule {
     }
 
     @Scheduled(fixedDelay = FIVE_MINUTES, initialDelay = ONE_MINUTE)
-    public void sendVedtakSendtFeiledeKafkaMeldinger() {
+    public void publiserTidligereFeiletBrukerePaKafka() {
         if (leaderElectionClient.isLeader()) {
             List<String> feiledeBrukereFnr = kafkaRepository.hentFeiledeBrukere()
                     .stream()

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
@@ -48,7 +47,7 @@ public class OppfolgingsbrukerEndretSchedule {
     }
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
-    public void sendVedtakSendtFeiledeKafkaMeldinger() {
+    public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
             publisereArenaBrukerEndringer();
         }

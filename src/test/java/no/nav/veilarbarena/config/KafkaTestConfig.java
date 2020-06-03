@@ -58,7 +58,7 @@ public class KafkaTestConfig {
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(GROUP_ID_CONFIG, "veilarbvedtaksstotte-consumer");
+        props.put(GROUP_ID_CONFIG, "veilarbarena-test-consumer");
         props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(MAX_POLL_INTERVAL_MS_CONFIG, 1000);
 
@@ -69,7 +69,7 @@ public class KafkaTestConfig {
         HashMap<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbvedtaksstotte-producer");
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-test-producer");
         props.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
