@@ -3,7 +3,6 @@ package no.nav.veilarbarena.config;
 import no.nav.veilarbarena.kafka.KafkaHelsesjekk;
 import no.nav.veilarbarena.kafka.KafkaProducer;
 import no.nav.veilarbarena.kafka.KafkaTopics;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -12,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -48,13 +45,6 @@ public class KafkaTestConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory kafkaListenerContainerFactory(EmbeddedKafkaBroker embeddedKafkaBroker) {
-        ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory(embeddedKafkaBroker.getBrokersAsString()));
-        return factory;
-    }
-
-    @Bean
     public KafkaTemplate<String, String> kafkaTemplate(EmbeddedKafkaBroker embeddedKafkaBroker) {
         KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory(embeddedKafkaBroker.getBrokersAsString()));
         LoggingProducerListener<String, String> producerListener = new LoggingProducerListener<>();
@@ -63,7 +53,7 @@ public class KafkaTestConfig {
         return template;
     }
 
-    private static DefaultKafkaConsumerFactory consumerFactory(String kafkaBrokersUrl) {
+    public static DefaultKafkaConsumerFactory<String, String> consumerFactory(String kafkaBrokersUrl) {
         HashMap<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
