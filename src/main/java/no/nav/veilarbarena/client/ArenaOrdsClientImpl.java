@@ -1,40 +1,38 @@
-package no.nav.veilarbarena.service;
+package no.nav.veilarbarena.client;
 
 import lombok.SneakyThrows;
-import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
-import no.nav.veilarbarena.utils.ArenaOrdsTokenProvider;
 import no.nav.veilarbarena.utils.ArenaOrdsUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import java.util.function.Supplier;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.common.utils.UrlUtils.joinPaths;
 
-@Service
-public class ArenaOrdsService implements HealthCheck {
+public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
-    private final ArenaOrdsTokenProvider arenaOrdsTokenProvider;
+    private final String arenaOrdsUrl;
+    private final Supplier<String> arenaOrdsTokenProvider;
     private final OkHttpClient client = RestClient.baseClient();
 
-    @Autowired
-    public ArenaOrdsService(ArenaOrdsTokenProvider arenaOrdsTokenProvider) {
+    public ArenaOrdsClientImpl(String arenaOrdsUrl, Supplier<String> arenaOrdsTokenProvider) {
+        this.arenaOrdsUrl = arenaOrdsUrl;
         this.arenaOrdsTokenProvider = arenaOrdsTokenProvider;
     }
 
     @SneakyThrows
     public <T> T get(String path, String fnr, Class<T> clazz) {
-        String url = joinPaths(ArenaOrdsUrl.get("arena/api/v1/person/oppfoelging"), path) + "?p_fnr=" + fnr;
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging", path) + "?p_fnr=" + fnr;
 
         Request request = new Request.Builder()
                 .url(url)
-                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.getToken())
+                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

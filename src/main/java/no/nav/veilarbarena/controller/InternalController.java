@@ -1,15 +1,15 @@
 package no.nav.veilarbarena.controller;
 
 import no.nav.common.health.HealthCheck;
-import no.nav.common.health.HealthCheckResult;
-import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.health.HealthChecker;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestUtils;
 import no.nav.common.health.selftest.SelftTestCheckResult;
 import no.nav.common.health.selftest.SelftestHtmlGenerator;
-import no.nav.veilarbarena.service.ArenaOrdsService;
+import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.utils.DatabaseUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +30,19 @@ public class InternalController {
 
     private final JdbcTemplate db;
 
-    private final ArenaOrdsService arenaOrdsService;
+    private final ArenaOrdsClient arenaOrdsClient;
 
     private final HealthCheck oppfoelgingsstatusV2HealthCheck;
 
     private final List<SelfTestCheck> selftestChecks;
 
-    public InternalController(JdbcTemplate db, ArenaOrdsService arenaOrdsService, HealthCheck oppfoelgingsstatusV2HealthCheck) {
+    @Autowired
+    public InternalController(JdbcTemplate db, ArenaOrdsClient arenaOrdsClient, @Qualifier("oppfoelgingsstatusV2HealthCheck") HealthCheck oppfoelgingsstatusV2HealthCheck) {
         this.db = db;
-        this.arenaOrdsService = arenaOrdsService;
+        this.arenaOrdsClient = arenaOrdsClient;
         this.oppfoelgingsstatusV2HealthCheck = oppfoelgingsstatusV2HealthCheck;
         this.selftestChecks = Arrays.asList(
-                new SelfTestCheck("Arena ORDS ping", true, arenaOrdsService),
+                new SelfTestCheck("Arena ORDS ping", true, arenaOrdsClient),
                 new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db)),
                 new SelfTestCheck("Ping oppfolgingstatus_v2", true, oppfoelgingsstatusV2HealthCheck)
         );
@@ -50,7 +51,7 @@ public class InternalController {
     @GetMapping("/isReady")
     public void isReady() {
         List<HealthCheck> healthChecks = List.of(
-                arenaOrdsService,
+                arenaOrdsClient,
                 () -> DatabaseUtils.checkDbHealth(db),
                 oppfoelgingsstatusV2HealthCheck
         );

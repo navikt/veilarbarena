@@ -1,31 +1,30 @@
-package no.nav.veilarbarena.utils;
+package no.nav.veilarbarena.client;
 
+import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
 import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.setProperty;
-import static no.nav.veilarbarena.utils.ArenaOrdsTokenProvider.*;
+import static no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient.*;
 import static no.nav.veilarbarena.utils.ArenaOrdsUrl.ARENA_ORDS_URL_PROPERTY;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ArenaOrdsTokenProviderTest {
+public class ArenaOrdsTokenProviderClientTest {
 
     private OkHttpClient client = mock(OkHttpClient.class);
     private WebTarget webTarget = mock(WebTarget.class);
     private Builder requestBuilder = mock(Builder.class);
     private Response response = mock(Response.class);
 
-    private ArenaOrdsTokenProvider tokenProvider = new ArenaOrdsTokenProvider(client);
+    private ArenaOrdsTokenProviderClient tokenProvider = new ArenaOrdsTokenProviderClient("", client);
 
     @Before
     public void setup() {

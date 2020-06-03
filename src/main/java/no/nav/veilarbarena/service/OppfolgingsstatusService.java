@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.service;
 
+import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,14 +8,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class OppfolgingsstatusService {
 
-    private ArenaOrdsService arenaOrdsService;
+    private ArenaOrdsClient arenaOrdsClient;
 
     @Autowired
-    public OppfolgingsstatusService(ArenaOrdsService arenaOrdsService) {
-        this.arenaOrdsService = arenaOrdsService;
+    public OppfolgingsstatusService(ArenaOrdsClient arenaOrdsClient) {
+        this.arenaOrdsClient = arenaOrdsClient;
     }
 
     public OppfolgingsstatusDTO hentOppfolgingsstatus(String fnr) {
-        return arenaOrdsService.get("oppfoelgingsstatus", fnr, OppfolgingsstatusDTO.class);
+        return arenaOrdsClient.get("oppfoelgingsstatus", fnr, OppfolgingsstatusDTO.class);
     }
 }

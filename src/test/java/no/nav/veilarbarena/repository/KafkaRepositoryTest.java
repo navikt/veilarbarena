@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.repository;
 
-import no.nav.veilarbarena.LocalH2Database;
+import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import org.junit.Test;
 

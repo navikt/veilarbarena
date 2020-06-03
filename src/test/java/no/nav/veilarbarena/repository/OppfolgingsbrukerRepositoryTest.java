@@ -1,20 +1,15 @@
 package no.nav.veilarbarena.repository;
 
-import no.nav.veilarbarena.LocalH2Database;
-import no.nav.veilarbarena.domain.FeiletKafkaBruker;
+import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.utils.TestUtils;
-import org.apache.tomcat.jni.Local;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 

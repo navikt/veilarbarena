@@ -37,4 +37,6 @@ public class EnvironmentProperties {
 
     private String kafkaBrokersUrl;
 
+    private String arenaOrdsUrl;
+
 }

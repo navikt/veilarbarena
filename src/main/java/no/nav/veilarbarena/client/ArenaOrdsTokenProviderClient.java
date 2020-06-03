@@ -1,7 +1,6 @@
-package no.nav.veilarbarena.utils;
+package no.nav.veilarbarena.client;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.Data;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -18,21 +17,27 @@ import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.HttpHeaders.CACHE_CONTROL;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
 import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
+import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 
 @Slf4j
-public class ArenaOrdsTokenProvider {
+public class ArenaOrdsTokenProviderClient {
 
     public static final String ARENA_ORDS_CLIENT_ID_PROPERTY = "ARENA_ORDS_CLIENT_ID";
     public static final String ARENA_ORDS_CLIENT_SECRET_PROPERTY = "ARENA_ORDS_CLIENT_SECRET";
 
     private static final int MINIMUM_TIME_TO_EXPIRE_BEFORE_REFRESH = 60;
+
     private final OkHttpClient client;
 
-    public ArenaOrdsTokenProvider() {
-        this(RestClient.baseClient());
+    private final String arenaOrdsUrl;
+
+    public ArenaOrdsTokenProviderClient(String arenaOrdsUrl) {
+        this(arenaOrdsUrl, RestClient.baseClient());
     }
 
-    public ArenaOrdsTokenProvider(OkHttpClient client) {
+    public ArenaOrdsTokenProviderClient(String arenaOrdsUrl, OkHttpClient client) {
+        this.arenaOrdsUrl = arenaOrdsUrl;
         this.client = client;
     }
 
@@ -52,7 +57,7 @@ public class ArenaOrdsTokenProvider {
                 getRequiredProperty(ARENA_ORDS_CLIENT_SECRET_PROPERTY));
 
         Request request = new Request.Builder()
-                .url(ArenaOrdsUrl.get("arena/api/oauth/token"))
+                .url(joinPaths(arenaOrdsUrl, "arena/api/oauth/token"))
                 .header(CACHE_CONTROL, "no-cache")
                 .header(AUTHORIZATION, basicAuth)
                 .post(RequestBody.create(MediaType.get("application/x-www-form-urlencoded"), "grant_type=client_credentials"))

@@ -28,7 +28,7 @@ public class OppfolgingstatusConfig {
                 .build();
     }
 
-    @Bean
+    @Bean("oppfoelgingsstatusV2HealthCheck")
     public HealthCheck oppfoelgingsstatusV2HealthCheck() {
         return () -> {
             OppfoelgingsstatusV2 service = oppfoelgingsstatusV2Factory()

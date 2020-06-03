@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.05.28_13.26-8e581baa1ccb</common.version>
+        <common.version>2.2020.05.29_11.07-5849331d146f</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -96,6 +96,12 @@
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <version>19.3.0.0</version>
+        </dependency>
+        <!--  Overskriv gammel avhengighet fra nimbus -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
         </dependency>
 
         <!-- Tjenester -->
