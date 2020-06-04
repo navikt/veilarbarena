@@ -4,10 +4,11 @@ import no.nav.common.cxf.StsSecurityConstants;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.SslUtils;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import static no.nav.common.utils.NaisUtils.getCredentials;
 
-
+@SpringBootApplication
 public class VeilarbarenaApp {
     public static void main(String... args) {
         Credentials serviceUser = getCredentials("service_user");
