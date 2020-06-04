@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.scheduled;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
+@Slf4j
 @Component
 public class KafkaFeilSchedule {
 
@@ -50,6 +54,11 @@ public class KafkaFeilSchedule {
                     .collect(Collectors.toList());
 
             List<Oppfolgingsbruker> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
+
+            log.info(format(
+                    "Publiser tidligere feilede brukere på kafka. Feilede brukere: %d Brukere fra database: %d",
+                    feiledeBrukereFnr.size(), oppfolgingsbrukere.size())
+            );
 
             oppfolgingsbrukere.forEach(bruker ->
                     kafkaService.sendTidligereFeiletBrukerEndret(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker))
