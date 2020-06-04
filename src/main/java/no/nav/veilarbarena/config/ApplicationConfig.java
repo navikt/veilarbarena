@@ -8,6 +8,8 @@ import no.nav.common.client.aktorregister.CachedAktorregisterClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.common.leaderelection.LeaderElectionHttpClient;
+import no.nav.common.metrics.InfluxClient;
+import no.nav.common.metrics.MetricsClient;
 import no.nav.common.sts.NaisSystemUserTokenProvider;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.common.utils.Credentials;
@@ -45,6 +47,11 @@ public class ApplicationConfig {
     @Bean
     public LeaderElectionClient leaderElectionClient() {
         return new LeaderElectionHttpClient();
+    }
+
+    @Bean
+    public MetricsClient metricsClient() {
+        return new InfluxClient();
     }
 
     @Bean
