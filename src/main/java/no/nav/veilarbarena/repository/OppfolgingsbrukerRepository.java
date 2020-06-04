@@ -55,7 +55,7 @@ public class OppfolgingsbrukerRepository {
                 );
 
         String sql = format(
-                "SELECT * FROM OPPFOLGINGSBRUKER WHERE (%s) AND (%s) ORDER BY tidsstempel, fodselsnr ASC LIMIT 1000",
+                "SELECT * FROM OPPFOLGINGSBRUKER WHERE (%s) AND (%s) ORDER BY tidsstempel, fodselsnr ASC FETCH NEXT 1000 ROWS ONLY",
                 tidOgFnrSql, erUnderOppfolgingSql
                 );
 

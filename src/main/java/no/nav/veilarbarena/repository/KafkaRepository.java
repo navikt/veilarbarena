@@ -30,7 +30,7 @@ public class KafkaRepository {
     }
 
     public List<FeiletKafkaBruker> hentFeiledeBrukere() {
-        String sql = "SELECT * FROM FEILEDE_KAFKA_BRUKERE LIMIT 1000";
+        String sql = "SELECT * FROM FEILEDE_KAFKA_BRUKERE FETCH NEXT 1000 ROWS ONLY";
         return db.query(sql, KafkaRepository::mapFeiletKafkaRecord);
     }
 
