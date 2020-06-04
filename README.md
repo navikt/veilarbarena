@@ -30,7 +30,7 @@ mvn clean install
 mvn test
 
 # starte
-# Kjør main-metoden i Main.java
+# Kjør main-metoden i no.nav.veilarbarena.VeilarbarenaApp.java
 # For lokal test kjøring kjør MainTest.java
 ```
 
