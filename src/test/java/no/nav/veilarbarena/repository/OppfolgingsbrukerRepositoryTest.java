@@ -1,17 +1,16 @@
 package no.nav.veilarbarena.repository;
 
-import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
+import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +44,16 @@ public class OppfolgingsbrukerRepositoryTest {
         List<Oppfolgingsbruker> brukere = repository.hentOppfolgingsbrukere(List.of("12345678900", "12345678901"));
 
         assertEquals(2, brukere.size());
+    }
+
+
+    @Test
+    public void skal_fungere_hvis_ingen_brukere() {
+        OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(LocalH2Database.getDb());
+
+        List<Oppfolgingsbruker> brukere = repository.hentOppfolgingsbrukere(Collections.emptyList());
+
+        assertTrue(brukere.isEmpty());
     }
 
     @Test

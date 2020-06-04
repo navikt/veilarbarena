@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,10 @@ public class OppfolgingsbrukerRepository {
     }
 
     public List<Oppfolgingsbruker> hentOppfolgingsbrukere(List<String> fnrs) {
+        if (fnrs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         String sql = format("SELECT * FROM OPPFOLGINGSBRUKER WHERE FODSELSNR IN %s", toSqlStringArray(fnrs));
         return db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
