@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.HentOppfoelgingsstatusUgyldigInput;
-import no.nav.veilarbarena.domain.Oppfolgingstatus;
+import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.informasjon.Person;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusRequest;
 import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.meldinger.HentOppfoelgingsstatusResponse;
-import no.nav.tjeneste.virksomhet.oppfoelgingsstatus.v2.binding.OppfoelgingsstatusV2;
-
+import no.nav.veilarbarena.domain.Oppfolgingstatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.concurrent.TimeUnit;
@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static no.nav.veilarbarena.utils.DateUtils.xmlGregorianCalendarToLocalDate;
 
 @Slf4j
+@Service
 public class SoapOppfolgingstatusService {
 
     private final OppfoelgingsstatusV2 service;
