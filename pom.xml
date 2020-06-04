@@ -104,13 +104,6 @@
             <version>2.3</version>
         </dependency>
 
-        <!-- Tjenester -->
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-oppfoelgingsstatus-v2-tjenestespesifikasjon</artifactId>
-            <version>1.2019.09.25-00.21-49b69f0625e0</version>
-        </dependency>
-
         <!-- Common Dependencies -->
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -125,11 +118,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>client</artifactId>
-            <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>

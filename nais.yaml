@@ -15,10 +15,10 @@ spec:
     path: veilarbarena/internal/metrics
   readiness:
     path: veilarbarena/internal/isReady
-    initialDelay: 30
+    initialDelay: 60
   liveness:
     path: veilarbarena/internal/isAlive
-    initialDelay: 30
+    initialDelay: 60
   replicas:
     min: 2
     max: 4

@@ -8,7 +8,6 @@ import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
 import no.nav.veilarbarena.service.KafkaService;
-import no.nav.veilarbarena.service.SoapOppfolgingstatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,8 +21,6 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final static long TEN_SECONDS = 10 * 1000;
 
-    private final SoapOppfolgingstatusService soapOppfolgingstatusService;
-
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
 
     private final OppfolgingsbrukerSistEndringRepository oppfolgingsbrukerSistEndringRepository;
@@ -34,12 +31,10 @@ public class OppfolgingsbrukerEndretSchedule {
 
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
-            SoapOppfolgingstatusService soapOppfolgingstatusService,
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
             OppfolgingsbrukerSistEndringRepository oppfolgingsbrukerSistEndringRepository,
             KafkaService kafkaService, LeaderElectionClient leaderElectionClient
     ) {
-        this.soapOppfolgingstatusService = soapOppfolgingstatusService;
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppfolgingsbrukerSistEndringRepository = oppfolgingsbrukerSistEndringRepository;
         this.kafkaService = kafkaService;
@@ -66,7 +61,6 @@ public class OppfolgingsbrukerEndretSchedule {
                 oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
                 log.info("Legger {} brukere til kafka", brukere.size());
                 brukere.forEach(bruker -> {
-                    soapOppfolgingstatusService.invalidateCachedUser(bruker.getFodselsnr());
                     kafkaService.sendBrukerEndret(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker));
                 });
             } else {

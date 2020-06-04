@@ -32,19 +32,15 @@ public class InternalController {
 
     private final ArenaOrdsClient arenaOrdsClient;
 
-    private final HealthCheck oppfoelgingsstatusV2HealthCheck;
-
     private final List<SelfTestCheck> selftestChecks;
 
     @Autowired
-    public InternalController(JdbcTemplate db, ArenaOrdsClient arenaOrdsClient, @Qualifier("oppfoelgingsstatusV2HealthCheck") HealthCheck oppfoelgingsstatusV2HealthCheck) {
+    public InternalController(JdbcTemplate db, ArenaOrdsClient arenaOrdsClient) {
         this.db = db;
         this.arenaOrdsClient = arenaOrdsClient;
-        this.oppfoelgingsstatusV2HealthCheck = oppfoelgingsstatusV2HealthCheck;
         this.selftestChecks = Arrays.asList(
                 new SelfTestCheck("Arena ORDS ping", true, arenaOrdsClient),
-                new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db)),
-                new SelfTestCheck("Ping oppfolgingstatus_v2", true, oppfoelgingsstatusV2HealthCheck)
+                new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db))
         );
     }
 
@@ -52,8 +48,7 @@ public class InternalController {
     public void isReady() {
         List<HealthCheck> healthChecks = List.of(
                 arenaOrdsClient,
-                () -> DatabaseUtils.checkDbHealth(db),
-                oppfoelgingsstatusV2HealthCheck
+                () -> DatabaseUtils.checkDbHealth(db)
         );
 
         HealthChecker.findFirstFailingCheck(healthChecks)

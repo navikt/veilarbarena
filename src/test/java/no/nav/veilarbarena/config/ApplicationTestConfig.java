@@ -91,9 +91,4 @@ public class ApplicationTestConfig {
         };
     }
 
-    @Bean("oppfoelgingsstatusV2HealthCheck")
-    public HealthCheck oppfoelgingsstatusV2HealthCheck() {
-        return HealthCheckResult::healthy;
-    }
-
 }
