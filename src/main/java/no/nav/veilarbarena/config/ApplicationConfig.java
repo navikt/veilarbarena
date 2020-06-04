@@ -78,20 +78,13 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ArenaOrdsTokenProviderClient arenaOrdsTokenProvider(EnvironmentProperties properties) {
-        return new ArenaOrdsTokenProviderClient(getArenaOrdsUrl(properties));
+    public ArenaOrdsTokenProviderClient arenaOrdsTokenProvider() {
+        return new ArenaOrdsTokenProviderClient(clusterUrlForApplication("arena-ords"));
     }
 
     @Bean
-    public ArenaOrdsClient arenaOrdsClient(EnvironmentProperties properties, ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
-        return new ArenaOrdsClientImpl(getArenaOrdsUrl(properties), arenaOrdsTokenProviderClient::getToken);
-    }
-
-    private static String getArenaOrdsUrl(EnvironmentProperties properties) {
-        String propertiesUrl = properties.getArenaOrdsUrl();
-        return propertiesUrl != null
-                ? propertiesUrl
-                : clusterUrlForApplication("arena-ords");
+    public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
+        return new ArenaOrdsClientImpl(clusterUrlForApplication("arena-ords"), arenaOrdsTokenProviderClient::getToken);
     }
 
 }
