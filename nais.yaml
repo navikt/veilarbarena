@@ -32,6 +32,8 @@ spec:
       memory: 1024Mi
   webproxy: true
   leaderElection: true
+  secureLogs:
+    enabled: true
   vault:
     enabled: true
     paths:
