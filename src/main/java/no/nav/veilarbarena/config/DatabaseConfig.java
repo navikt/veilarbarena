@@ -31,8 +31,7 @@ public class DatabaseConfig {
         config.setJdbcUrl(environmentProperties.getDbUrl());
         config.setUsername(oracleCredentials.username);
         config.setPassword(oracleCredentials.password);
-        config.setMaximumPoolSize(4);
-        config.setMinimumIdle(2);
+        config.setMaximumPoolSize(5);
 
         return new HikariDataSource(config);
     }
