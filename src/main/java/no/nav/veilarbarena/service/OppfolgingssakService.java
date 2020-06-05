@@ -2,8 +2,11 @@ package no.nav.veilarbarena.service;
 
 import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.domain.api.OppfolgingssakDTO;
+import no.nav.veilarbarena.service.dto.ArenaOppfolgingssakDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class OppfolgingssakService {
@@ -16,7 +19,8 @@ public class OppfolgingssakService {
     }
 
     public OppfolgingssakDTO hentOppfolginssak(String fnr) {
-        return arenaOrdsClient.get("oppfoelgingssak", fnr, OppfolgingssakDTO.class);
+        return Optional.ofNullable(arenaOrdsClient.get("oppfoelgingssak", fnr, ArenaOppfolgingssakDTO.class))
+                .map(ArenaOppfolgingssakDTO::toOppfolgingssakDTO)
+                .orElse(null);
     }
-
 }
