@@ -1,8 +1,8 @@
 package no.nav.veilarbarena.domain.api;
 
-import com.google.gson.annotations.SerializedName;
+import lombok.Data;
 
+@Data
 public class OppfolgingssakDTO {
-    @SerializedName(value="oppfolgingssakId", alternate={"saksId"})
     String oppfolgingssakId;
 }
