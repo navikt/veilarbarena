@@ -3,6 +3,7 @@ package no.nav.veilarbarena.client;
 import lombok.SneakyThrows;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
+import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import okhttp3.OkHttpClient;
@@ -36,7 +37,9 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.parseJsonResponseBodyOrThrow(response.body(), clazz);
+            return RestUtils.getBodyStr(response.body())
+                    .map(jsonStr -> JsonUtils.fromJson(jsonStr, clazz))
+                    .orElseThrow(() -> new IllegalStateException("Unable to read json from body"));
         }
     }
 
