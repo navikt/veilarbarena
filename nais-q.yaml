@@ -13,13 +13,13 @@ spec:
   port: 8080
   prometheus:
     enabled: true
-    path: veilarbarena/internal/metrics
+    path: veilarbarena/internal/prometheus
   readiness:
     path: veilarbarena/internal/isReady
-    initialDelay: 60
+    initialDelay: 45
   liveness:
     path: veilarbarena/internal/isAlive
-    initialDelay: 60
+    initialDelay: 45
   replicas:
     min: 1
     max: 2
