@@ -53,6 +53,10 @@ public class KafkaFeilSchedule {
                     .map(FeiletKafkaBruker::getFodselsnr)
                     .collect(Collectors.toList());
 
+            if (feiledeBrukereFnr.isEmpty()) {
+                return;
+            }
+
             List<Oppfolgingsbruker> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
 
             log.info(format(
