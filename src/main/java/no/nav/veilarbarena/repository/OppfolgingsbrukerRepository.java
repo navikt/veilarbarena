@@ -53,7 +53,7 @@ public class OppfolgingsbrukerRepository {
         log.info("Siste sjekket tidspunkt: {}", sistSjekketTidspunkt);
 
         Timestamp timestamp = Timestamp.from(sistSjekketTidspunkt.toInstant());
-        String tidOgFnrSql = "tidsstempel > ? OR (fodselsnr > ? AND tidsstempel >= ?)";
+        String tidOgFnrSql = "tidsstempel > ? OR (fodselsnr > ? AND tidsstempel = ?)";
         String erUnderOppfolgingSql = format(
                 "FORMIDLINGSGRUPPEKODE = '%s' OR (FORMIDLINGSGRUPPEKODE = '%s' AND KVALIFISERINGSGRUPPEKODE in %s)",
                 ARBEIDSOKER, IKKE_ARBEIDSSOKER, toSqlStringArray(OPPFOLGINGKODER)
