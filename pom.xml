@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.05.29_11.07-5849331d146f</common.version>
+        <common.version>2.2020.06.09_15.09-5f12de9f3244</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -108,6 +108,11 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>metrics</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>rest</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>

@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.client;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -9,16 +9,14 @@ import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import okhttp3.*;
 
-
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.ws.rs.core.HttpHeaders.CACHE_CONTROL;
 import static no.nav.common.utils.AuthUtils.basicCredentials;
 import static no.nav.common.utils.EnvironmentUtils.getRequiredProperty;
-import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
 import static no.nav.common.utils.UrlUtils.joinPaths;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 
 @Slf4j
 public class ArenaOrdsTokenProviderClient {
@@ -65,7 +63,7 @@ public class ArenaOrdsTokenProviderClient {
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            OrdsToken ordsToken = RestUtils.parseJsonResponseBodyOrThrow(response.body(), OrdsToken.class);
+            OrdsToken ordsToken = RestUtils.parseJsonResponseOrThrow(response, OrdsToken.class);
             this.tokenCache = new TokenCache(ordsToken);
         }
     }
@@ -92,13 +90,13 @@ public class ArenaOrdsTokenProviderClient {
 
     @Value
     static class OrdsToken {
-        @SerializedName("access_token")
+        @JsonAlias("access_token")
         String accessToken;
 
-        @SerializedName("token_type")
+        @JsonAlias("token_type")
         String tokenType;
 
-        @SerializedName("expires_in")
+        @JsonAlias("expires_in")
         int expiresIn;
     }
 }

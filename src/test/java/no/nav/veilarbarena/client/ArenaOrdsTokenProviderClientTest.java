@@ -1,13 +1,12 @@
 package no.nav.veilarbarena.client;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.google.gson.Gson;
+import no.nav.common.json.JsonUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static java.lang.System.setProperty;
 import static no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -69,7 +68,7 @@ public class ArenaOrdsTokenProviderClientTest {
         givenThat(post(urlEqualTo("/arena/api/oauth/token"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withBody(new Gson().toJson(ordsToken)))
+                        .withBody(JsonUtils.toJson(ordsToken)))
         );
     }
 }

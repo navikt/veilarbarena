@@ -3,7 +3,6 @@ package no.nav.veilarbarena.client;
 import lombok.SneakyThrows;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
-import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import okhttp3.OkHttpClient;
@@ -12,8 +11,8 @@ import okhttp3.Response;
 
 import java.util.function.Supplier;
 
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.common.utils.UrlUtils.joinPaths;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
@@ -37,9 +36,7 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.getBodyStr(response.body())
-                    .map(jsonStr -> JsonUtils.fromJson(jsonStr, clazz))
-                    .orElseThrow(() -> new IllegalStateException("Unable to read json from body"));
+            return RestUtils.parseJsonResponseOrThrow(response, clazz);
         }
     }
 

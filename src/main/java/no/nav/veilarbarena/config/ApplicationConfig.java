@@ -1,7 +1,9 @@
 package no.nav.veilarbarena.config;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.abac.*;
+import no.nav.common.abac.Pep;
+import no.nav.common.abac.VeilarbPep;
+import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
 import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.client.aktorregister.AktorregisterHttpClient;
 import no.nav.common.client.aktorregister.CachedAktorregisterClient;
@@ -68,13 +70,11 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AbacClient abacClient(EnvironmentProperties properties, Credentials serviceUserCredentials) {
-        return new AbacCachedClient(new AbacHttpClient(properties.getAbacUrl(), serviceUserCredentials.username, serviceUserCredentials.password));
-    }
-
-    @Bean
-    public Pep veilarbPep(Credentials serviceUserCredentials, AbacClient abacClient) {
-        return new VeilarbPep(serviceUserCredentials.username, abacClient, new AuditLogger());
+    public Pep veilarbPep(EnvironmentProperties properties, Credentials serviceUserCredentials) {
+        return new VeilarbPep(
+                properties.getAbacUrl(), serviceUserCredentials.username,
+                serviceUserCredentials.password, new SpringAuditRequestInfoSupplier()
+        );
     }
 
     @Bean

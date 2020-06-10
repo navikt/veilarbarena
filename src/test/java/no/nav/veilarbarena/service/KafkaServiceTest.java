@@ -1,7 +1,8 @@
 package no.nav.veilarbarena.service;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.common.json.JsonUtils;
 import no.nav.veilarbarena.config.ApplicationTestConfig;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -34,7 +35,7 @@ public class KafkaServiceTest {
     EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @Test
-    public void sendBrukerEndret_skal_legge_bruker_pa_topic() {
+    public void sendBrukerEndret_skal_legge_bruker_pa_topic() throws JsonProcessingException {
         DefaultKafkaConsumerFactory<String, String> consumerFactory = consumerFactory(embeddedKafkaBroker.getBrokersAsString());
         Consumer<String, String> consumer = consumerFactory.createConsumer("veilarbarena-test-consumer", "local", "local");
 
@@ -50,12 +51,12 @@ public class KafkaServiceTest {
         ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(5000));
         ConsumerRecord<String, String > record = records.iterator().next();
 
-        JsonObject brukerObj = JsonParser.parseString(record.value()).getAsJsonObject();
+        JsonNode brukerNode = JsonUtils.getMapper().readTree(record.value());
 
         assertEquals("test-aktorid", record.key());
-        assertEquals("test-aktorid", brukerObj.get("aktoerid").getAsString());
-        assertEquals("test-fnr", brukerObj.get("fodselsnr").getAsString());
-        assertEquals(now.toLocalDateTime(), ZonedDateTime.parse(brukerObj.get("endret_dato").getAsString()).toLocalDateTime());
+        assertEquals("test-aktorid", brukerNode.get("aktoerid").asText());
+        assertEquals("test-fnr", brukerNode.get("fodselsnr").asText());
+        assertEquals(now.toLocalDateTime(), ZonedDateTime.parse(brukerNode.get("endret_dato").asText()).toLocalDateTime());
     }
 
 }
