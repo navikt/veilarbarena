@@ -36,7 +36,7 @@ public class OppfolgingsbrukerRepository {
 
     public Optional<Oppfolgingsbruker> hentOppfolgingsbruker(String fnr){
         String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE fodselsnr = ?";
-        List<Oppfolgingsbruker> brukere = db.query(sql, new Object[]{fnr}, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
+        List<Oppfolgingsbruker> brukere = db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker, fnr);
         return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
     }
 
@@ -66,8 +66,8 @@ public class OppfolgingsbrukerRepository {
 
         return db.query(
                 sql,
-                new Object[]{timestamp, lastCheckedFnr, timestamp},
-                OppfolgingsbrukerRepository::mapOppfolgingsbruker
+                OppfolgingsbrukerRepository::mapOppfolgingsbruker,
+                timestamp, lastCheckedFnr, timestamp
         );
     }
 
