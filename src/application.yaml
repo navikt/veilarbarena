@@ -1,9 +1,0 @@
-fasit.environment.name: local
- app.name: veilarbarena
- kafka-brokers.url: d26apvl00159.test.local:8443,d26apvl00160.test.local:8443,d26apvl00161.test.local:8443
- srvveilarbarena:
-  username: username
-  password: password
- javax.net.ssl:
-  trustStore: test
-  trustStorePassword: test
