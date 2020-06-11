@@ -7,7 +7,9 @@ import no.nav.common.auth.subject.SsoToken;
 import no.nav.common.auth.subject.SubjectHandler;
 import no.nav.common.client.aktorregister.AktorregisterClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
@@ -28,7 +30,9 @@ public class AuthService {
                 .map(SsoToken::getToken)
                 .orElseThrow(() -> new IllegalStateException("Fant ikke token til innlogget bruker"));
 
-        veilarbPep.sjekkTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AbacPersonId.aktorId(aktorId));
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AbacPersonId.aktorId(aktorId))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
 }
