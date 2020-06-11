@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.controller;
 
 import no.nav.common.health.HealthCheck;
-import no.nav.common.health.HealthChecker;
+import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestUtils;
 import no.nav.common.health.selftest.SelftTestCheckResult;
@@ -9,7 +9,6 @@ import no.nav.common.health.selftest.SelftestHtmlGenerator;
 import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.utils.DatabaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,7 @@ public class InternalController {
                 () -> DatabaseUtils.checkDbHealth(db)
         );
 
-        HealthChecker.findFirstFailingCheck(healthChecks)
+        HealthCheckUtils.findFirstFailingCheck(healthChecks)
                 .ifPresent((failedCheck) -> {
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
                 });
