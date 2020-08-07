@@ -26,8 +26,7 @@ public class EnvironmentProperties {
     private String azureAdB2cClientId;
 
 
-
-    private String stsDiscoveryUrl;
+    private String naisStsDiscoveryUrl;
 
     private String abacUrl;
 

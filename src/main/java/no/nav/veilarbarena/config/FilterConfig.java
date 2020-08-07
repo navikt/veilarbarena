@@ -3,29 +3,51 @@ package no.nav.veilarbarena.config;
 import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter;
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig;
 import no.nav.common.auth.subject.IdentType;
+import no.nav.common.auth.utils.ServiceUserTokenFinder;
 import no.nav.common.log.LogFilter;
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static no.nav.common.auth.Constants.*;
-import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfig;
+import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfigs;
 import static no.nav.common.utils.EnvironmentUtils.isDevelopment;
 import static no.nav.common.utils.EnvironmentUtils.requireApplicationName;
 
 @Configuration
 public class FilterConfig {
 
-    public OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties environmentProperties) {
+    private final List<String> ALLOWED_SERVICE_USERS = List.of(
+            "srvveilarboppfolging"
+    );
+
+    private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(environmentProperties.getOpenAmDiscoveryUrl())
-                .withClientId(environmentProperties.getOpenAmClientId())
+                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
+                .withClientId(properties.getOpenAmClientId())
+                .withIdTokenFinder(new ServiceUserTokenFinder())
+                .withIdentType(IdentType.Systemressurs);
+    }
+
+    private OidcAuthenticatorConfig naisStsAuthConfig(EnvironmentProperties properties) {
+        return new OidcAuthenticatorConfig()
+                .withDiscoveryUrl(properties.getNaisStsDiscoveryUrl())
+                .withClientIds(ALLOWED_SERVICE_USERS)
+                .withIdentType(IdentType.Systemressurs);
+    }
+
+    private OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties properties) {
+        return new OidcAuthenticatorConfig()
+                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
+                .withClientId(properties.getOpenAmClientId())
                 .withIdTokenCookieName(OPEN_AM_ID_TOKEN_COOKIE_NAME)
                 .withRefreshTokenCookieName(REFRESH_TOKEN_COOKIE_NAME)
-                .withRefreshUrl(environmentProperties.getOpenAmRefreshUrl())
+                .withIdTokenFinder((req) -> Optional.empty()) // This overrides the default finder which checks the Authorization header for tokens
+                .withRefreshUrl(properties.getOpenAmRefreshUrl())
                 .withIdentType(IdentType.InternBruker);
     }
 
@@ -47,13 +69,15 @@ public class FilterConfig {
 
     @Bean
     public FilterRegistrationBean authenticationFilterRegistrationBean(EnvironmentProperties properties) {
-        OidcAuthenticatorConfig openAmConfig = openAmAuthConfig(properties);
-        OidcAuthenticatorConfig azureAdConfig = azureAdAuthConfig(properties);
-        OidcAuthenticatorConfig azureAdB2cConfig = azureAdB2CAuthConfig(properties);
-
         FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
         OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
-                Arrays.asList(fromConfig(openAmConfig), fromConfig(azureAdConfig), fromConfig(azureAdB2cConfig))
+                fromConfigs(
+                        openAmAuthConfig(properties),
+                        azureAdAuthConfig(properties),
+                        azureAdB2CAuthConfig(properties),
+                        openAmStsAuthConfig(properties),
+                        naisStsAuthConfig(properties)
+                )
         );
 
         registration.setFilter(authenticationFilter);
