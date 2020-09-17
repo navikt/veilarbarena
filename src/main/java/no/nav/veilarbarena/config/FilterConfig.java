@@ -28,7 +28,7 @@ public class FilterConfig {
     private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getOpenAmClientId())
+                .withClientId(properties.getVeilarbloginOpenAmClientId())
                 .withIdTokenFinder(new ServiceUserTokenFinder())
                 .withIdentType(IdentType.Systemressurs);
     }
@@ -43,7 +43,7 @@ public class FilterConfig {
     private OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getOpenAmClientId())
+                .withClientId(properties.getVeilarbloginOpenAmClientId())
                 .withIdTokenCookieName(OPEN_AM_ID_TOKEN_COOKIE_NAME)
                 .withRefreshTokenCookieName(REFRESH_TOKEN_COOKIE_NAME)
                 .withIdTokenFinder(new UserTokenFinder())
@@ -51,20 +51,29 @@ public class FilterConfig {
                 .withIdentType(IdentType.InternBruker);
     }
 
-    public OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties environmentProperties) {
+    private OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties environmentProperties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(environmentProperties.getAzureAdDiscoveryUrl())
-                .withClientId(environmentProperties.getAzureAdClientId())
+                .withClientId(environmentProperties.getVeilarbloginAzureAdClientId())
                 .withIdTokenCookieName(AZURE_AD_ID_TOKEN_COOKIE_NAME)
                 .withIdentType(IdentType.InternBruker);
     }
 
-    public OidcAuthenticatorConfig azureAdB2CAuthConfig(EnvironmentProperties environmentProperties) {
+    private OidcAuthenticatorConfig azureAdB2CAuthConfig(EnvironmentProperties environmentProperties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(environmentProperties.getAzureAdB2cDiscoveryUrl())
                 .withClientId(environmentProperties.getAzureAdB2cClientId())
                 .withIdTokenCookieName(AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME)
                 .withIdentType(IdentType.EksternBruker);
+    }
+
+    @Bean
+    public FilterRegistrationBean logFilterRegistrationBean() {
+        FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new LogFilter(requireApplicationName(), isDevelopment().orElse(false)));
+        registration.setOrder(1);
+        registration.addUrlPatterns("/*");
+        return registration;
     }
 
     @Bean
@@ -81,17 +90,8 @@ public class FilterConfig {
         );
 
         registration.setFilter(authenticationFilter);
-        registration.setOrder(1);
-        registration.addUrlPatterns("/api/*");
-        return registration;
-    }
-
-    @Bean
-    public FilterRegistrationBean logFilterRegistrationBean() {
-        FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogFilter(requireApplicationName(), isDevelopment().orElse(false)));
         registration.setOrder(2);
-        registration.addUrlPatterns("/*");
+        registration.addUrlPatterns("/api/*");
         return registration;
     }
 

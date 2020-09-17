@@ -11,14 +11,14 @@ public class EnvironmentProperties {
 
     private String openAmDiscoveryUrl;
 
-    private String openAmClientId;
+    private String veilarbloginOpenAmClientId;
 
     private String openAmRefreshUrl;
 
 
     private String azureAdDiscoveryUrl;
 
-    private String azureAdClientId;
+    private String veilarbloginAzureAdClientId;
 
 
     private String azureAdB2cDiscoveryUrl;
