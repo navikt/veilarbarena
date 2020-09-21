@@ -3,19 +3,16 @@ package no.nav.veilarbarena.config;
 import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
 import no.nav.common.client.aktorregister.AktorregisterClient;
-import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.utils.Credentials;
 import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.kafka.KafkaTopics;
 import no.nav.veilarbarena.mock.AbacClientMock;
 import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.mock.PepMock;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +29,8 @@ import javax.sql.DataSource;
         RepositoryTestConfig.class,
         ServiceTestConfig.class,
         KafkaTestConfig.class,
-        FilterTestConfig.class
+        FilterTestConfig.class,
+        HelsesjekkConfig.class
 })
 public class ApplicationTestConfig {
 

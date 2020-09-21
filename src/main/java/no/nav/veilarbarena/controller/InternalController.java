@@ -2,53 +2,39 @@ package no.nav.veilarbarena.controller;
 
 import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckUtils;
-import no.nav.common.health.selftest.SelfTestCheck;
-import no.nav.common.health.selftest.SelfTestUtils;
-import no.nav.common.health.selftest.SelftTestCheckResult;
-import no.nav.common.health.selftest.SelftestHtmlGenerator;
-import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.utils.DatabaseUtils;
+import no.nav.common.health.selftest.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.common.health.selftest.SelfTestUtils.checkAllParallel;
 
 @RestController
 @RequestMapping("/internal")
 public class InternalController {
 
-    private final JdbcTemplate db;
-
-    private final ArenaOrdsClient arenaOrdsClient;
-
-    private final List<SelfTestCheck> selftestChecks;
+    private final SelfTestChecks selftestChecks;
 
     @Autowired
-    public InternalController(JdbcTemplate db, ArenaOrdsClient arenaOrdsClient) {
-        this.db = db;
-        this.arenaOrdsClient = arenaOrdsClient;
-        this.selftestChecks = Arrays.asList(
-                new SelfTestCheck("Arena ORDS ping", true, arenaOrdsClient),
-                new SelfTestCheck("Database ping", true, () -> DatabaseUtils.checkDbHealth(db))
-        );
+    public InternalController(SelfTestChecks selftestChecks) {
+        this.selftestChecks = selftestChecks;
     }
 
     @GetMapping("/isReady")
     public void isReady() {
-        List<HealthCheck> healthChecks = List.of(
-                arenaOrdsClient,
-                () -> DatabaseUtils.checkDbHealth(db)
-        );
+        List<HealthCheck> healthChecks =
+                selftestChecks.getSelfTestChecks().stream()
+                        .filter(SelfTestCheck::isCritical)
+                        .map(SelfTestCheck::getCheck)
+                        .collect(toList());
 
         HealthCheckUtils.findFirstFailingCheck(healthChecks)
                 .ifPresent((failedCheck) -> {
@@ -61,7 +47,7 @@ public class InternalController {
 
     @GetMapping("/selftest")
     public ResponseEntity selftest() {
-        List<SelftTestCheckResult> checkResults = checkAllParallel(selftestChecks);
+        List<SelftTestCheckResult> checkResults = checkAllParallel(selftestChecks.getSelfTestChecks());
         String html = SelftestHtmlGenerator.generate(checkResults);
         int status = SelfTestUtils.findHttpStatusCode(checkResults, true);
 
