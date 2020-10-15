@@ -15,6 +15,7 @@ import no.nav.common.metrics.MetricsClient;
 import no.nav.common.sts.NaisSystemUserTokenProvider;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.common.utils.Credentials;
+import no.nav.common.utils.EnvironmentUtils;
 import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
@@ -25,7 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static no.nav.common.featuretoggle.UnleashServiceConfig.resolveFromEnvironment;
 import static no.nav.common.utils.NaisUtils.getCredentials;
-import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
+import static no.nav.common.utils.UrlUtils.createServiceUrl;
 
 
 @Slf4j
@@ -47,10 +48,17 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public LeaderElectionClient leaderElectionClient() {
-        return new LeaderElectionHttpClient();
+    public LeaderElectionClient leaderElectionClient(UnleashService unleashService) {
+        return new LeaderElectionClient() {
+            private final LeaderElectionHttpClient httpClient = new LeaderElectionHttpClient();
+            @Override
+            public boolean isLeader() {
+                boolean isNamespaceLeader = unleashService.isEnabled("veilarbarena.is_namespace_leader");
+                log.info("Is namespace leader {}", isNamespaceLeader);
+                return isNamespaceLeader && httpClient.isLeader();
+            }
+        };
     }
-
     @Bean
     public MetricsClient metricsClient() {
         return new InfluxClient();
@@ -79,12 +87,19 @@ public class ApplicationConfig {
 
     @Bean
     public ArenaOrdsTokenProviderClient arenaOrdsTokenProvider() {
-        return new ArenaOrdsTokenProviderClient(clusterUrlForApplication("arena-ords"));
+        return new ArenaOrdsTokenProviderClient(createArenaOrdsUrl());
     }
 
     @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
-        return new ArenaOrdsClientImpl(clusterUrlForApplication("arena-ords"), arenaOrdsTokenProviderClient::getToken);
+        return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
+    }
+
+    private static String createArenaOrdsUrl() {
+        boolean isProduction = EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Cluster name is missing"));
+        return isProduction
+                ? createServiceUrl("arena-ords", "default", false)
+                : createServiceUrl("arena-ords", "q1", false);
     }
 
 }

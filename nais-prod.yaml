@@ -2,7 +2,7 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: veilarbarena
-  namespace: default
+  namespace: pto
   labels:
     team: pto
 spec:
