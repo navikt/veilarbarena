@@ -2,8 +2,10 @@ package no.nav.veilarbarena.client;
 
 import no.nav.common.health.HealthCheck;
 
+import java.util.Optional;
+
 public interface ArenaOrdsClient extends HealthCheck {
 
-    <T> T get(String path, String fnr, Class<T> clazz);
+    <T> Optional<T> get(String path, String fnr, Class<T> clazz);
 
 }

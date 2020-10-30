@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.08.07_16.18-e6be6d6a09e6</common.version>
+        <common.version>2.2020.10.30_14.28-f4cf5f5efbe1</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -185,6 +185,12 @@
 
         <!-- test -->
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>test</artifactId>
+            <version>${common.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
@@ -211,6 +217,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

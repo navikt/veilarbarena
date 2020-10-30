@@ -15,6 +15,7 @@ import no.nav.common.metrics.MetricsClient;
 import no.nav.common.sts.NaisSystemUserTokenProvider;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.common.utils.Credentials;
+import no.nav.common.utils.UrlUtils;
 import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
@@ -25,7 +26,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static no.nav.common.featuretoggle.UnleashServiceConfig.resolveFromEnvironment;
 import static no.nav.common.utils.NaisUtils.getCredentials;
-import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
 
 
 @Slf4j
@@ -79,12 +79,12 @@ public class ApplicationConfig {
 
     @Bean
     public ArenaOrdsTokenProviderClient arenaOrdsTokenProvider() {
-        return new ArenaOrdsTokenProviderClient(clusterUrlForApplication("arena-ords"));
+        return new ArenaOrdsTokenProviderClient(UrlUtils.createServiceUrl("arena-ords"));
     }
 
     @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
-        return new ArenaOrdsClientImpl(clusterUrlForApplication("arena-ords"), arenaOrdsTokenProviderClient::getToken);
+        return new ArenaOrdsClientImpl(UrlUtils.createServiceUrl("arena-ords"), arenaOrdsTokenProviderClient::getToken);
     }
 
 }
