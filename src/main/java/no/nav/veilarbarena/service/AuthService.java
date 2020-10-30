@@ -1,11 +1,11 @@
 package no.nav.veilarbarena.service;
 
 import no.nav.common.abac.Pep;
-import no.nav.common.abac.domain.AbacPersonId;
 import no.nav.common.abac.domain.request.ActionId;
-import no.nav.common.auth.subject.SsoToken;
-import no.nav.common.auth.subject.SubjectHandler;
+import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.types.identer.AktorId;
+import no.nav.common.types.identer.Fnr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,10 @@ public class AuthService {
     }
 
     public void sjekkTilgang(String fnr) {
-        String aktorId = aktorregisterClient.hentAktorId(fnr);
-        String innloggetBrukerToken = SubjectHandler.getSsoToken()
-                .map(SsoToken::getToken)
-                .orElseThrow(() -> new IllegalStateException("Fant ikke token til innlogget bruker"));
+        AktorId aktorId = aktorregisterClient.hentAktorId(Fnr.of(fnr));
+        String innloggetBrukerToken = AuthContextHolder.requireIdTokenString();
 
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, AbacPersonId.aktorId(aktorId))) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, aktorId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }

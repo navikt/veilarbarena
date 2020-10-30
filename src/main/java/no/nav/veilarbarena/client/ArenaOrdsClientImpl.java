@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static no.nav.common.utils.UrlUtils.joinPaths;
@@ -26,17 +27,17 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
     }
 
     @SneakyThrows
-    public <T> T get(String path, String fnr, Class<T> clazz) {
+    public <T> Optional<T> get(String path, String fnr, Class<T> clazz) {
         String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging", path) + "?p_fnr=" + fnr;
 
         Request request = new Request.Builder()
                 .url(url)
-                .header(AUTHORIZATION, "Bearer " + arenaOrdsTokenProvider.get())
+                .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.parseJsonResponseOrThrow(response, clazz);
+            return RestUtils.parseJsonResponse(response, clazz);
         }
     }
 
