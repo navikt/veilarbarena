@@ -59,10 +59,10 @@ public class FilterConfig {
                 .withUserRole(UserRole.INTERN);
     }
 
-    private OidcAuthenticatorConfig azureAdB2CAuthConfig(EnvironmentProperties environmentProperties) {
+    private OidcAuthenticatorConfig loginserviceIdportenConfig(EnvironmentProperties environmentProperties) {
         return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(environmentProperties.getAzureAdB2cDiscoveryUrl())
-                .withClientId(environmentProperties.getAzureAdB2cClientId())
+                .withDiscoveryUrl(environmentProperties.getLoginserviceIdportenDiscoveryUrl())
+                .withClientId(environmentProperties.getLoginserviceIdportenAudience())
                 .withIdTokenCookieName(AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME)
                 .withUserRole(UserRole.EKSTERN);
     }
@@ -83,7 +83,7 @@ public class FilterConfig {
                 fromConfigs(
                         openAmAuthConfig(properties),
                         azureAdAuthConfig(properties),
-                        azureAdB2CAuthConfig(properties),
+                        loginserviceIdportenConfig(properties),
                         openAmStsAuthConfig(properties),
                         naisStsAuthConfig(properties)
                 )

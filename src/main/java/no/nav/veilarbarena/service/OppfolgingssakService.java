@@ -4,9 +4,9 @@ import no.nav.veilarbarena.client.ArenaOrdsClient;
 import no.nav.veilarbarena.domain.api.OppfolgingssakDTO;
 import no.nav.veilarbarena.service.dto.ArenaOppfolgingssakDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class OppfolgingssakService {
@@ -19,8 +19,8 @@ public class OppfolgingssakService {
     }
 
     public OppfolgingssakDTO hentOppfolginssak(String fnr) {
-        return Optional.ofNullable(arenaOrdsClient.get("oppfoelgingssak", fnr, ArenaOppfolgingssakDTO.class))
+        return arenaOrdsClient.get("oppfoelgingssak", fnr, ArenaOppfolgingssakDTO.class)
                 .map(ArenaOppfolgingssakDTO::toOppfolgingssakDTO)
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

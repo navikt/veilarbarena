@@ -35,12 +35,13 @@ public class KafkaService {
 
     private void oppdaterMedAktorId(OppfolgingsbrukerEndretDTO oppfolgingsbrukerEndretDTO) {
         if (oppfolgingsbrukerEndretDTO.getAktoerid() == null) {
-            try {
-                final AktorId aktorId = aktorregisterClient.hentAktorId(Fnr.of(oppfolgingsbrukerEndretDTO.getFodselsnr()));
-                oppfolgingsbrukerEndretDTO.setAktoerid(aktorId.get());
-            } catch(Exception e) {
-                throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka", e);
+            final AktorId aktorId = aktorregisterClient.hentAktorId(Fnr.of(oppfolgingsbrukerEndretDTO.getFodselsnr()));
+
+            if (aktorId == null) {
+                throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
             }
+
+            oppfolgingsbrukerEndretDTO.setAktoerid(aktorId.get());
         }
     }
 

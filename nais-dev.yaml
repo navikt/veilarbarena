@@ -44,3 +44,4 @@ spec:
         mountPath: /var/run/secrets/nais.io/vault
   envFrom:
     - configmap: pto-config
+    - configmap: loginservice-idporten

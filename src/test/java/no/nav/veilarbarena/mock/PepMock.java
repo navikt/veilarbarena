@@ -17,56 +17,57 @@ public class PepMock implements Pep {
 
     @Override
     public boolean harVeilederTilgangTilEnhet(NavIdent navIdent, EnhetId enhetId) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harTilgangTilEnhet(String s, EnhetId enhetId) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harTilgangTilEnhetMedSperre(String s, EnhetId enhetId) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harVeilederTilgangTilPerson(NavIdent navIdent, ActionId actionId, EksternBrukerId eksternBrukerId) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harTilgangTilPerson(String s, ActionId actionId, EksternBrukerId eksternBrukerId) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harTilgangTilOppfolging(String s) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harVeilederTilgangTilModia(String s) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harVeilederTilgangTilKode6(NavIdent navIdent) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harVeilederTilgangTilKode7(NavIdent navIdent) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean harVeilederTilgangTilEgenAnsatt(NavIdent navIdent) {
-        return false;
+        return true;
     }
 
     @Override
     public AbacClient getAbacClient() {
         return abacClient;
     }
+
 }
