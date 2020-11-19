@@ -1,12 +1,11 @@
 package no.nav.veilarbarena.utils;
 
-import static no.nav.common.utils.EnvironmentUtils.requireNamespace;
+import no.nav.common.utils.EnvironmentUtils;
 
 public class KafkaUtils {
 
     public static String requireKafkaTopicPrefix() {
-        String namespace = requireNamespace();
-        return namespace.equals("default") ? "p" : namespace;
+        return EnvironmentUtils.isDevelopment().orElse(false) ? "q1" : "p";
     }
 
 }
