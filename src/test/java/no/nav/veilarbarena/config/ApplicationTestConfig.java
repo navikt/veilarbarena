@@ -7,12 +7,12 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.utils.Credentials;
 import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.kafka.KafkaTopics;
 import no.nav.veilarbarena.mock.AbacClientMock;
 import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.mock.PepMock;
+import no.nav.veilarbarena.utils.LocalH2Database;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Configuration
 @EnableConfigurationProperties({EnvironmentProperties.class})
@@ -78,8 +79,8 @@ public class ApplicationTestConfig {
     public ArenaOrdsClient arenaOrdsClient() {
         return new ArenaOrdsClient() {
             @Override
-            public <T> T get(String path, String fnr, Class<T> clazz) {
-                return null;
+            public <T> Optional<T> get(String path, String fnr, Class<T> clazz) {
+                return Optional.empty();
             }
 
             @Override
