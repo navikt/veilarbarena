@@ -48,17 +48,10 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public LeaderElectionClient leaderElectionClient(UnleashService unleashService) {
-        return new LeaderElectionClient() {
-            private final LeaderElectionHttpClient httpClient = new LeaderElectionHttpClient();
-            @Override
-            public boolean isLeader() {
-                boolean isNamespaceLeader = unleashService.isEnabled("veilarbarena.is_namespace_leader");
-                log.info("Is namespace leader {}", isNamespaceLeader);
-                return isNamespaceLeader && httpClient.isLeader();
-            }
-        };
+    public LeaderElectionClient leaderElectionClient() {
+        return new LeaderElectionHttpClient();
     }
+
     @Bean
     public MetricsClient metricsClient() {
         return new InfluxClient();
