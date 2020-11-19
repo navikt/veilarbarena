@@ -30,12 +30,12 @@ public class AktorregisterClientMock implements AktorregisterClient {
     }
 
     @Override
-    public List<IdentOppslag> hentFnr(List<AktorId> list) {
+    public List<IdentOppslag> hentFnr(List<AktorId> aktorIdListe) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<IdentOppslag> hentAktorId(List<Fnr> list) {
+    public List<IdentOppslag> hentAktorId(List<Fnr> fnrListe) {
         return Collections.emptyList();
     }
 

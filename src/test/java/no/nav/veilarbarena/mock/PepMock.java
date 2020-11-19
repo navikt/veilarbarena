@@ -15,7 +15,6 @@ public class PepMock implements Pep {
         this.abacClient = abacClient;
     }
 
-
     @Override
     public boolean harVeilederTilgangTilEnhet(NavIdent navIdent, EnhetId enhetId) {
         return true;
@@ -70,4 +69,5 @@ public class PepMock implements Pep {
     public AbacClient getAbacClient() {
         return abacClient;
     }
+
 }
