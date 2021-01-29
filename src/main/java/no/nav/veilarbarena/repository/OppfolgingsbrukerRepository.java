@@ -56,7 +56,7 @@ public class OppfolgingsbrukerRepository {
         String tidOgFnrSql = "tidsstempel > ? OR (fodselsnr > ? AND tidsstempel = ?)";
 
         String sql = format(
-                "SELECT * FROM OPPFOLGINGSBRUKER WHERE (%s) ORDER BY tidsstempel, fodselsnr ASC FETCH NEXT 1000 ROWS ONLY",
+                "SELECT * FROM OPPFOLGINGSBRUKER WHERE (%s) ORDER BY tidsstempel, fodselsnr ASC FETCH NEXT 5000 ROWS ONLY",
                 tidOgFnrSql
                 );
 
