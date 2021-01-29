@@ -20,6 +20,7 @@ import java.util.List;
 public class OppfolgingsbrukerEndretSchedule {
 
     private final static long TEN_SECONDS = 10 * 1000;
+    private final static long ONE_SECOUND = 1000;
 
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
 
@@ -41,7 +42,7 @@ public class OppfolgingsbrukerEndretSchedule {
         this.leaderElectionClient = leaderElectionClient;
     }
 
-    @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
+    @Scheduled(fixedDelay = ONE_SECOUND, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
             publisereArenaBrukerEndringer();
