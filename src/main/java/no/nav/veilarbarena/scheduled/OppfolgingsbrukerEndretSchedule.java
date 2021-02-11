@@ -1,6 +1,7 @@
 package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.leaderelection.LeaderElectionClient;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
@@ -20,7 +21,6 @@ import java.util.List;
 public class OppfolgingsbrukerEndretSchedule {
 
     private final static long TEN_SECONDS = 10 * 1000;
-    private final static long ONE_SECOUND = 1000;
 
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
 
@@ -30,22 +30,31 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final LeaderElectionClient leaderElectionClient;
 
+    private final UnleashService unleashService;
+
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
             OppfolgingsbrukerSistEndringRepository oppfolgingsbrukerSistEndringRepository,
-            KafkaService kafkaService, LeaderElectionClient leaderElectionClient
+            KafkaService kafkaService,
+            LeaderElectionClient leaderElectionClient,
+            UnleashService unleashService
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppfolgingsbrukerSistEndringRepository = oppfolgingsbrukerSistEndringRepository;
         this.kafkaService = kafkaService;
         this.leaderElectionClient = leaderElectionClient;
+        this.unleashService = unleashService;
     }
 
-    @Scheduled(fixedDelay = ONE_SECOUND, initialDelay = TEN_SECONDS)
+    @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
-            publisereArenaBrukerEndringer();
+            if(unleashService.isEnabled("veilarbarena.skru_av_publisering_kafka")) {
+                log.info("Publisering av brukere på kafka er skrudd av");
+            } else {
+                publisereArenaBrukerEndringer();
+            }
         }
     }
 

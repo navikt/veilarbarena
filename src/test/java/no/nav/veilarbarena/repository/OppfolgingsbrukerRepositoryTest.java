@@ -57,12 +57,12 @@ public class OppfolgingsbrukerRepositoryTest {
     }
 
     @Test
-    public void skal_hente_brukere_som_er_endret_og_har_riktig_status() {
+    public void skal_hente_brukere_som_er_endret() {
         OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(LocalH2Database.getDb());
 
         List<Oppfolgingsbruker> brukere = repository.changesSinceLastCheckSql("12355", ZonedDateTime.now().minusDays(1));
 
-        assertEquals(3, brukere.size());
+        assertEquals(4, brukere.size());
     }
 
     @Test
