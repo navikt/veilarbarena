@@ -21,7 +21,6 @@ import java.util.List;
 public class OppfolgingsbrukerEndretSchedule {
 
     private final static long TEN_SECONDS = 10 * 1000;
-    private final static long ONE_SECOUND = 1000;
 
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
 
@@ -48,7 +47,7 @@ public class OppfolgingsbrukerEndretSchedule {
         this.unleashService = unleashService;
     }
 
-    @Scheduled(fixedDelay = ONE_SECOUND, initialDelay = TEN_SECONDS)
+    @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
             if(unleashService.isEnabled("veilarbarena.skru_av_publisering_kafka")) {
