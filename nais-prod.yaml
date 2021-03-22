@@ -44,3 +44,6 @@ spec:
   envFrom:
     - configmap: pto-config
     - configmap: loginservice-idporten
+  env:
+    - name: MODIALOGIN_OPENAM_CLIENT_ID
+      value: "modialogin-p"
