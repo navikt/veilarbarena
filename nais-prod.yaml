@@ -44,6 +44,7 @@ spec:
   envFrom:
     - configmap: pto-config
     - configmap: loginservice-idporten
+    - secret: veiarbarena-db-url
   env:
     - name: MODIALOGIN_OPENAM_CLIENT_ID
       value: "modialogin-p"
