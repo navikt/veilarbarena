@@ -37,6 +37,8 @@ spec:
     paths:
       - kvPath: /serviceuser/data/prod/srvveilarbarena
         mountPath: /var/run/secrets/nais.io/service_user
+      - kvPath: /oracle/data/prod/config/veilarbarena
+        mountPath: /var/run/secrets/nais.io/oracle_config
       - kvPath: /oracle/data/prod/creds/veilarbarena-user
         mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /kv/prod/fss/veilarbarena/default
