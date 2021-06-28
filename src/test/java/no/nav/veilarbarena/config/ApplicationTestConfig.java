@@ -1,8 +1,14 @@
 package no.nav.veilarbarena.config;
 
+import no.finn.unleash.UnleashContext;
 import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
+import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.AuthContextHolderThreadLocal;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.featuretoggle.UnleashClient;
+import no.nav.common.featuretoggle.UnleashClientImpl;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.utils.Credentials;
@@ -36,8 +42,8 @@ import java.util.Optional;
 public class ApplicationTestConfig {
 
     @Bean
-    public KafkaTopics kafkaTopics() {
-        return KafkaTopics.create("local");
+    public AuthContextHolder authContextHolder() {
+        return AuthContextHolderThreadLocal.instance();
     }
 
     @Bean
@@ -46,7 +52,7 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public AktorregisterClient aktorregisterClient() {
+    public AktorOppslagClient aktorOppslagClient() {
         return new AktorregisterClientMock();
     }
 
@@ -86,6 +92,26 @@ public class ApplicationTestConfig {
             @Override
             public HealthCheckResult checkHealth() {
                 return HealthCheckResult.healthy();
+            }
+        };
+    }
+
+    @Bean
+    public UnleashClient unleashClient() {
+        return new UnleashClient() {
+            @Override
+            public HealthCheckResult checkHealth() {
+                return HealthCheckResult.healthy();
+            }
+
+            @Override
+            public boolean isEnabled(String s) {
+                return true;
+            }
+
+            @Override
+            public boolean isEnabled(String s, UnleashContext unleashContext) {
+                return true;
             }
         };
     }

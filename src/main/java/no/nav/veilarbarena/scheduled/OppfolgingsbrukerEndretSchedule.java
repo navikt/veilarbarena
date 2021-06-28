@@ -1,14 +1,14 @@
 package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.featuretoggle.UnleashService;
-import no.nav.common.leaderelection.LeaderElectionClient;
+import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
 import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
 import no.nav.veilarbarena.service.KafkaService;
+import no.nav.veilarbarena.service.UnleashService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -50,7 +50,7 @@ public class OppfolgingsbrukerEndretSchedule {
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
-            if(unleashService.isEnabled("veilarbarena.skru_av_publisering_kafka")) {
+            if(unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
                 log.info("Publisering av brukere på kafka er skrudd av");
             } else {
                 publisereArenaBrukerEndringer();

@@ -3,6 +3,7 @@ package no.nav.veilarbarena.service;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
@@ -14,19 +15,22 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AuthService {
 
-    private final AktorregisterClient aktorregisterClient;
+    private final AuthContextHolder authContextHolder;
+
+    private final AktorOppslagClient aktorOppslagClient;
 
     private final Pep veilarbPep;
 
     @Autowired
-    public AuthService(AktorregisterClient aktorregisterClient, Pep veilarbPep) {
-        this.aktorregisterClient = aktorregisterClient;
+    public AuthService(AuthContextHolder authContextHolder, AktorOppslagClient aktorOppslagClient, Pep veilarbPep) {
+        this.authContextHolder = authContextHolder;
+        this.aktorOppslagClient = aktorOppslagClient;
         this.veilarbPep = veilarbPep;
     }
 
     public void sjekkTilgang(String fnr) {
-        AktorId aktorId = aktorregisterClient.hentAktorId(Fnr.of(fnr));
-        String innloggetBrukerToken = AuthContextHolder.requireIdTokenString();
+        AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(fnr));
+        String innloggetBrukerToken = authContextHolder.requireIdTokenString();
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, aktorId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
