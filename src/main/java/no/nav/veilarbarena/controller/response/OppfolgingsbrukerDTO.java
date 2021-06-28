@@ -1,6 +1,6 @@
-package no.nav.veilarbarena.domain.api;
+package no.nav.veilarbarena.controller.response;
 
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 

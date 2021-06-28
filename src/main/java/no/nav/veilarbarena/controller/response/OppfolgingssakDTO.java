@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.domain.api;
+package no.nav.veilarbarena.controller.response;
 
 import lombok.Data;
 

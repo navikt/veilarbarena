@@ -1,12 +1,15 @@
 package no.nav.veilarbarena.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -25,8 +28,9 @@ public class OppfolgingsbrukerController {
     }
 
     @GetMapping("/{fnr}")
-    public OppfolgingsbrukerDTO getOppfolgingsbruker(@PathVariable("fnr") String fnr){
+    public OppfolgingsbrukerDTO getOppfolgingsbruker(@PathVariable("fnr") String fnr) {
         authService.sjekkTilgang(fnr);
+
         return oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr)
                 .map(OppfolgingsbrukerDTO::fraOppfolgingsbruker)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

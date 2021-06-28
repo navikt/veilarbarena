@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.service;
 
-import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
 import no.nav.veilarbarena.service.dto.ArenaOppfolgingsstatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

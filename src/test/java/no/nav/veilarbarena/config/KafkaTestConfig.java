@@ -16,7 +16,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.LoggingProducerListener;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.HashMap;
 
@@ -32,21 +33,29 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 })
 public class KafkaTestConfig {
 
-    private final KafkaTopics kafkaTopics;
+    public static final String KAFKA_IMAGE = "confluentinc/cp-kafka:5.4.3";
+
+    private final KafkaContainer kafkaContainer;
 
     @Autowired
-    public KafkaTestConfig(KafkaTopics kafkaTopics) {
-        this.kafkaTopics = kafkaTopics;
+    public KafkaTestConfig() {
+        kafkaContainer = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
+        kafkaContainer.start();
     }
 
     @Bean
-    public EmbeddedKafkaBroker embeddedKafkaBroker() {
-        return new EmbeddedKafkaBroker(1, true, kafkaTopics.getAllTopics());
+    public KafkaTopics kafkaTopics() {
+        return KafkaTopics.create("local");
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(EmbeddedKafkaBroker embeddedKafkaBroker) {
-        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory(embeddedKafkaBroker.getBrokersAsString()));
+    public KafkaContainer kafkaContainer() {
+        return kafkaContainer;
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate(KafkaContainer kafkaContainer) {
+        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory(kafkaContainer.getBootstrapServers()));
         LoggingProducerListener<String, String> producerListener = new LoggingProducerListener<>();
         producerListener.setIncludeContents(false);
         template.setProducerListener(producerListener);

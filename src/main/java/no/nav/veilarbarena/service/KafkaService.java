@@ -1,10 +1,10 @@
 package no.nav.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.kafka.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,12 @@ public class KafkaService {
 
     private final KafkaProducer kafkaProducer;
 
-    private final AktorregisterClient aktorregisterClient;
+    private final AktorOppslagClient aktorOppslagClient;
 
     @Autowired
-    public KafkaService(KafkaProducer kafkaProducer, AktorregisterClient aktorregisterClient) {
+    public KafkaService(KafkaProducer kafkaProducer, AktorOppslagClient aktorOppslagClient) {
         this.kafkaProducer = kafkaProducer;
-        this.aktorregisterClient = aktorregisterClient;
+        this.aktorOppslagClient = aktorOppslagClient;
     }
 
     public void sendBrukerEndret(OppfolgingsbrukerEndretDTO bruker) {
@@ -35,7 +35,7 @@ public class KafkaService {
 
     private void oppdaterMedAktorId(OppfolgingsbrukerEndretDTO oppfolgingsbrukerEndretDTO) {
         if (oppfolgingsbrukerEndretDTO.getAktoerid() == null) {
-            final AktorId aktorId = aktorregisterClient.hentAktorId(Fnr.of(oppfolgingsbrukerEndretDTO.getFodselsnr()));
+            final AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(oppfolgingsbrukerEndretDTO.getFodselsnr()));
 
             if (aktorId == null) {
                 throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
