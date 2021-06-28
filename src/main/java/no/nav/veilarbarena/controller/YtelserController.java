@@ -5,6 +5,7 @@ import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.controller.response.YtelserDTO;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.service.YtelserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +31,10 @@ public class YtelserController {
     private final YtelserService ytelserService;
 
     @GetMapping
-    public YtelserDTO oppfolgingssak(
+    public YtelserDTO hentYtelser(
             @RequestParam("fnr") Fnr fnr,
-            @RequestParam(value = "fra", required = false) LocalDate fra,
-            @RequestParam(value = "til", required = false) LocalDate til
+            @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
+            @RequestParam(value = "til", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate til
     ) {
         authService.sjekkTilgang(fnr);
 
