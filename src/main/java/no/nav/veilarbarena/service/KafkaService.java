@@ -2,10 +2,9 @@ package no.nav.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.kafka.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

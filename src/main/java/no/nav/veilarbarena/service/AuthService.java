@@ -4,7 +4,6 @@ import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,10 @@ public class AuthService {
         this.authContextHolder = authContextHolder;
         this.aktorOppslagClient = aktorOppslagClient;
         this.veilarbPep = veilarbPep;
+    }
+
+    public void sjekkTilgang(Fnr fnr) {
+        sjekkTilgang(fnr.get());
     }
 
     public void sjekkTilgang(String fnr) {

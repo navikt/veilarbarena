@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.controller;
 
-import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.service.OppfolgingsstatusService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,14 +6,14 @@ import no.nav.common.abac.Pep;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.featuretoggle.UnleashClient;
-import no.nav.common.featuretoggle.UnleashClientImpl;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.metrics.MetricsClient;
+import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
-import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.kafka.KafkaTopics;
+import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.AbacClientMock;
 import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Optional;
 
 @Configuration
@@ -112,6 +113,26 @@ public class ApplicationTestConfig {
             @Override
             public boolean isEnabled(String s, UnleashContext unleashContext) {
                 return true;
+            }
+        };
+    }
+
+    @Bean
+    public YtelseskontraktClient ytelseskontraktClient() {
+        return new YtelseskontraktClient() {
+            @Override
+            public YtelseskontraktResponse hentYtelseskontraktListe(Fnr personId, XMLGregorianCalendar periodeFom, XMLGregorianCalendar periodeTom) {
+                return null;
+            }
+
+            @Override
+            public YtelseskontraktResponse hentYtelseskontraktListe(Fnr personId) {
+                return null;
+            }
+
+            @Override
+            public HealthCheckResult checkHealth() {
+                return HealthCheckResult.healthy();
             }
         };
     }

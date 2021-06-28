@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.client;
+package no.nav.veilarbarena.client.ords;
 
 import no.nav.common.health.HealthCheck;
 

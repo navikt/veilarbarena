@@ -22,6 +22,7 @@
         <common.version>2.2021.06.25_13.21-53c5c27a9e63</common.version>
         <springfox.version>2.9.2</springfox.version>
         <testcontainers.version>1.15.2</testcontainers.version>
+        <tjenestespesifikasjoner.version>1.2019.04.03-23.09-56488320520a</tjenestespesifikasjoner.version>
     </properties>
 
     <build>
@@ -107,6 +108,11 @@
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
+            <artifactId>cxf</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
             <version>${common.version}</version>
         </dependency>
@@ -159,6 +165,13 @@
             <groupId>no.nav.common</groupId>
             <artifactId>health</artifactId>
             <version>${common.version}</version>
+        </dependency>
+
+        <!-- Tjenestespesifikasjoner -->
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>ytelseskontrakt-v3-tjenestespesifikasjon</artifactId>
+            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
 
         <dependency>

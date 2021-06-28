@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.service.dto;
 
-import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
 
 import java.time.LocalDate;
 

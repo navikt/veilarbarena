@@ -2,8 +2,7 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.metrics.Event;
 import no.nav.common.metrics.MetricsClient;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

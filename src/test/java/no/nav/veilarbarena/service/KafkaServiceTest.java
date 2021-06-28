@@ -7,7 +7,7 @@ import no.nav.common.kafka.consumer.ConsumeStatus;
 import no.nav.common.kafka.consumer.KafkaConsumerClientConfig;
 import no.nav.common.kafka.consumer.KafkaConsumerClientImpl;
 import no.nav.veilarbarena.config.ApplicationTestConfig;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

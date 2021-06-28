@@ -39,4 +39,8 @@ public class EnvironmentProperties {
 
     private String unleashUrl;
 
+    private String soapStsUrl;
+
+    private String ytelseskontraktV3Endpoint;
+
 }

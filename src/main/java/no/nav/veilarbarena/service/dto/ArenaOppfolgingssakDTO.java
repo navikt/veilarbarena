@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.service.dto;
 
-import no.nav.veilarbarena.domain.api.OppfolgingssakDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 
 public class ArenaOppfolgingssakDTO {
     String saksId;

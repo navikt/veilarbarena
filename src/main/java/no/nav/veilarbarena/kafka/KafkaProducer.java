@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import no.nav.veilarbarena.service.MetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import static java.lang.String.format;
 import static no.nav.common.json.JsonUtils.toJson;
-import static org.apache.commons.lang3.ClassUtils.getName;
 
 @Slf4j
 @Component

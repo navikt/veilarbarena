@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.client;
+package no.nav.veilarbarena.client.ords;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
@@ -89,7 +89,7 @@ public class ArenaOrdsTokenProviderClient {
     }
 
     @Value
-    static class OrdsToken {
+    public static class OrdsToken {
         @JsonAlias("access_token")
         String accessToken;
 

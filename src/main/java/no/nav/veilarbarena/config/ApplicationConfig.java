@@ -2,17 +2,15 @@ package no.nav.veilarbarena.config;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.abac.Pep;
-import no.nav.common.abac.VeilarbPep;
 import no.nav.common.abac.VeilarbPepFactory;
-import no.nav.common.abac.audit.AuditLogFilterUtils;
 import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
-import no.nav.common.abac.constants.NavAttributter;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.client.aktoroppslag.CachedAktorOppslagClient;
 import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.client.aktorregister.AktorregisterHttpClient;
+import no.nav.common.cxf.StsConfig;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.featuretoggle.UnleashClientImpl;
 import no.nav.common.job.leader_election.LeaderElectionClient;
@@ -23,16 +21,16 @@ import no.nav.common.sts.NaisSystemUserTokenProvider;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.EnvironmentUtils;
-import no.nav.common.utils.NaisUtils;
-import no.nav.veilarbarena.client.ArenaOrdsClient;
-import no.nav.veilarbarena.client.ArenaOrdsClientImpl;
-import no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient;
+import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
+import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClientImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import static no.nav.common.abac.audit.AuditLogFilterUtils.anyResourceAttributeFilter;
 import static no.nav.common.utils.NaisUtils.getCredentials;
 import static no.nav.common.utils.UrlUtils.createServiceUrl;
 
@@ -90,6 +88,20 @@ public class ApplicationConfig {
                 properties.getAbacUrl(), serviceUserCredentials.username,
                 serviceUserCredentials.password, new SpringAuditRequestInfoSupplier()
         );
+    }
+
+    @Bean
+    public static StsConfig stsConfig(EnvironmentProperties properties, Credentials serviceUserCredentials) {
+        return StsConfig.builder()
+                .url(properties.getSoapStsUrl())
+                .username(serviceUserCredentials.username)
+                .password(serviceUserCredentials.password)
+                .build();
+    }
+
+    @Bean
+    public YtelseskontraktClient ytelseskontraktClient(EnvironmentProperties properties, StsConfig stsConfig) {
+        return new YtelseskontraktClientImpl(properties.getYtelseskontraktV3Endpoint(), stsConfig);
     }
 
     @Bean

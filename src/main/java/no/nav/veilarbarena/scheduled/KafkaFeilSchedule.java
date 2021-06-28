@@ -2,9 +2,9 @@ package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.job.leader_election.LeaderElectionClient;
+import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import no.nav.veilarbarena.domain.Oppfolgingsbruker;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.service.KafkaService;
