@@ -49,7 +49,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UnleashClient unleashService(EnvironmentProperties properties) {
+    public UnleashClient unleashClient(EnvironmentProperties properties) {
         return new UnleashClientImpl(properties.getUnleashUrl(), APPLICATION_NAME);
     }
 
