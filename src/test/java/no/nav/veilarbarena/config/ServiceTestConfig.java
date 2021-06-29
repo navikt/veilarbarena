@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Import;
 @Import({
         AuthService.class,
         KafkaService.class,
-        OppfolgingsstatusService.class,
         MetricsService.class,
         UnleashService.class,
-        YtelserService.class
+        YtelserService.class,
+        ArenaService.class
 })
 public class ServiceTestConfig {}

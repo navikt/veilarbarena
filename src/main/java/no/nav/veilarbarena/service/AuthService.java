@@ -28,11 +28,7 @@ public class AuthService {
     }
 
     public void sjekkTilgang(Fnr fnr) {
-        sjekkTilgang(fnr.get());
-    }
-
-    public void sjekkTilgang(String fnr) {
-        AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(fnr));
+        AktorId aktorId = aktorOppslagClient.hentAktorId(fnr);
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
 
         if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, aktorId)) {

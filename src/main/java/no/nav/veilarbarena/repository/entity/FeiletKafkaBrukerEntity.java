@@ -1,11 +1,11 @@
-package no.nav.veilarbarena.domain;
+package no.nav.veilarbarena.repository.entity;
 
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Value
-public class FeiletKafkaBruker {
+public class FeiletKafkaBrukerEntity {
     String fodselsnr;
     LocalDateTime tidspunktFeilet;
 }

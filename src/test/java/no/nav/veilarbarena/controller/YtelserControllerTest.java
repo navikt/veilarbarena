@@ -80,8 +80,10 @@ public class YtelserControllerTest {
                 .queryParam("fnr", fnr.get())
         ).andExpect(status().is(200));
 
-        LocalDate expectedFraDato = LocalDate.of(2021, 4, 28);
-        LocalDate expectedTilDato = LocalDate.of(2021, 7, 28);
+        LocalDate now = LocalDate.now();
+
+        LocalDate expectedFraDato = now.minusMonths(2);
+        LocalDate expectedTilDato = now.plusMonths(1);
 
         verify(ytelserService, times(1)).hentYtelseskontrakt(fnr, expectedFraDato, expectedTilDato);
     }

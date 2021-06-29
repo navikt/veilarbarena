@@ -2,7 +2,7 @@ package no.nav.veilarbarena.controller.response;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 
 import java.time.ZonedDateTime;
 
@@ -24,7 +24,7 @@ public class OppfolgingsbrukerDTO {
     Boolean er_doed;
     ZonedDateTime doed_fra_dato;
 
-    public static OppfolgingsbrukerDTO fraOppfolgingsbruker(Oppfolgingsbruker bruker) {
+    public static OppfolgingsbrukerDTO fraOppfolgingsbruker(OppfolgingsbrukerEntity bruker) {
         return new OppfolgingsbrukerDTO()
                 .setFodselsnr(bruker.getFodselsnr())
                 .setFormidlingsgruppekode(bruker.getFormidlingsgruppekode())

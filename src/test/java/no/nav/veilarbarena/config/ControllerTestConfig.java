@@ -1,9 +1,6 @@
 package no.nav.veilarbarena.config;
 
-import no.nav.veilarbarena.controller.InternalController;
-import no.nav.veilarbarena.controller.OppfolgingsbrukerController;
-import no.nav.veilarbarena.controller.OppfolgingsstatusController;
-import no.nav.veilarbarena.controller.YtelserController;
+import no.nav.veilarbarena.controller.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -12,6 +9,7 @@ import org.springframework.context.annotation.Import;
         OppfolgingsbrukerController.class,
         OppfolgingsstatusController.class,
         InternalController.class,
-        YtelserController.class
+        YtelserController.class,
+        ArenaController.class
 })
 public class ControllerTestConfig {}

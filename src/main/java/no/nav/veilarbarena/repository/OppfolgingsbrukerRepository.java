@@ -2,7 +2,7 @@ package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static no.nav.veilarbarena.utils.DatabaseUtils.toSqlStringArray;
 import static no.nav.veilarbarena.utils.DateUtils.convertTimestampToZonedDateTimeIfPresent;
 
@@ -25,22 +24,18 @@ public class OppfolgingsbrukerRepository {
 
     private final JdbcTemplate db;
 
-    private static final String ARBEIDSOKER = "ARBS";
-    private static final List<String> OPPFOLGINGKODER = asList("BATT", "BFORM", "IKVAL", "VURDU", "OPPFI", "VARIG");
-    private static final String IKKE_ARBEIDSSOKER = "IARBS";
-
     @Autowired
     public OppfolgingsbrukerRepository(JdbcTemplate db) {
         this.db = db;
     }
 
-    public Optional<Oppfolgingsbruker> hentOppfolgingsbruker(String fnr){
+    public Optional<OppfolgingsbrukerEntity> hentOppfolgingsbruker(String fnr){
         String sql = "SELECT * FROM OPPFOLGINGSBRUKER WHERE fodselsnr = ?";
-        List<Oppfolgingsbruker> brukere = db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker, fnr);
+        List<OppfolgingsbrukerEntity> brukere = db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker, fnr);
         return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
     }
 
-    public List<Oppfolgingsbruker> hentOppfolgingsbrukere(List<String> fnrs) {
+    public List<OppfolgingsbrukerEntity> hentOppfolgingsbrukere(List<String> fnrs) {
         if (fnrs.isEmpty()) {
             return Collections.emptyList();
         }
@@ -49,7 +44,7 @@ public class OppfolgingsbrukerRepository {
         return db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
 
-    public List<Oppfolgingsbruker> changesSinceLastCheckSql(String lastCheckedFnr, ZonedDateTime sistSjekketTidspunkt) {
+    public List<OppfolgingsbrukerEntity> changesSinceLastCheckSql(String lastCheckedFnr, ZonedDateTime sistSjekketTidspunkt) {
         log.info("Siste sjekket tidspunkt: {}", sistSjekketTidspunkt);
 
         Timestamp timestamp = Timestamp.from(sistSjekketTidspunkt.toInstant());
@@ -68,8 +63,8 @@ public class OppfolgingsbrukerRepository {
     }
 
     @SneakyThrows
-    private static Oppfolgingsbruker mapOppfolgingsbruker(ResultSet rs, int row) {
-        return new Oppfolgingsbruker()
+    private static OppfolgingsbrukerEntity mapOppfolgingsbruker(ResultSet rs, int row) {
+        return new OppfolgingsbrukerEntity()
                 .setFornavn(rs.getString("fornavn"))
                 .setEtternavn(rs.getString("etternavn"))
                 .setFodselsnr(rs.getString("fodselsnr"))

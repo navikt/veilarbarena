@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.repository;
 
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
 import no.nav.veilarbarena.utils.LocalH2Database;
-import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
 import org.junit.Test;
 
 import java.time.ZonedDateTime;
@@ -19,7 +19,7 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
 
         repository.updateLastcheck("test-fnr", now);
 
-        OppfolgingsbrukerSistEndret sistEndret = repository.hentSistEndret();
+        OppfolgingsbrukerSistEndretEntity sistEndret = repository.hentSistEndret();
 
         assertEquals("test-fnr", sistEndret.getFodselsnr());
         assertEquals(now, sistEndret.getOppfolgingsbrukerSistEndring());

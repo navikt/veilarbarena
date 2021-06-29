@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
-import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDto;
+import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +48,7 @@ public class YtelserController {
 
         var ytelseskontrakt = ytelserService.hentYtelseskontrakt(fnr, fra, til);
 
-        return mapTilYtelserDto(ytelseskontrakt);
+        return mapTilYtelserDTO(ytelseskontrakt);
     }
 
 }

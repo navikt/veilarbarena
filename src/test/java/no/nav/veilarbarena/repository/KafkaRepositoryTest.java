@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.repository;
 
+import no.nav.veilarbarena.repository.entity.FeiletKafkaBrukerEntity;
 import no.nav.veilarbarena.utils.LocalH2Database;
-import no.nav.veilarbarena.domain.FeiletKafkaBruker;
 import org.junit.Test;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class KafkaRepositoryTest {
 
         kafkaRepository.insertFeiletBruker("test-fnr");
 
-        List<FeiletKafkaBruker> brukere = kafkaRepository.hentFeiledeBrukere();
+        List<FeiletKafkaBrukerEntity> brukere = kafkaRepository.hentFeiledeBrukere();
 
         assertEquals(1, brukere.size());
         assertEquals("test-fnr", brukere.get(0).getFodselsnr());
@@ -30,7 +30,7 @@ public class KafkaRepositoryTest {
         kafkaRepository.insertFeiletBruker("test-fnr");
         kafkaRepository.deleteFeiletBruker("test-fnr");
 
-        List<FeiletKafkaBruker> brukere = kafkaRepository.hentFeiledeBrukere();
+        List<FeiletKafkaBrukerEntity> brukere = kafkaRepository.hentFeiledeBrukere();
 
         assertTrue(brukere.isEmpty());
     }
