@@ -2,6 +2,7 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.service.dto.ArenaOppfolgingsstatusDTO;
@@ -21,7 +22,9 @@ public class ArenaServiceTest {
 
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository = mock(OppfolgingsbrukerRepository.class);
 
-    private final ArenaService arenaService = new ArenaService(arenaOrdsClient, oppfolgingsbrukerRepository);
+    private final YtelseskontraktClient ytelseskontraktClient = mock(YtelseskontraktClient.class);
+
+    private final ArenaService arenaService = new ArenaService(arenaOrdsClient, oppfolgingsbrukerRepository, ytelseskontraktClient);
 
     @Test
     public void hentArenaStatus__skal_returnere_status_fra_database_hvis_funnet() {

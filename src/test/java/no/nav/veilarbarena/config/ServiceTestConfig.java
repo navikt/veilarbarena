@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
         KafkaService.class,
         MetricsService.class,
         UnleashService.class,
-        YtelserService.class,
         ArenaService.class
 })
 public class ServiceTestConfig {}

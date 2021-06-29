@@ -2,6 +2,8 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
+import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
@@ -11,19 +13,30 @@ import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
 import java.util.Optional;
+
+import static no.nav.veilarbarena.utils.DateUtils.convertToCalendar;
 
 @Service
 public class ArenaService {
 
     private final ArenaOrdsClient arenaOrdsClient;
 
+    private final YtelseskontraktClient ytelseskontraktClient;
+
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository;
 
     @Autowired
-    public ArenaService(ArenaOrdsClient arenaOrdsClient, OppfolgingsbrukerRepository oppfolgingsbrukerRepository) {
+    public ArenaService(
+            ArenaOrdsClient arenaOrdsClient,
+            OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
+            YtelseskontraktClient ytelseskontraktClient
+    ) {
         this.arenaOrdsClient = arenaOrdsClient;
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
+        this.ytelseskontraktClient = ytelseskontraktClient;
     }
 
     /**
@@ -47,6 +60,13 @@ public class ArenaService {
         return hentArenaOppfolgingsstatus(fnr)
                 .map(ArenaOppfolgingsstatusDTO::getKanEnkeltReaktiveres)
                 .orElse(null);
+    }
+
+    public YtelseskontraktResponse hentYtelseskontrakt(Fnr fnr, LocalDate fra, LocalDate til) {
+        XMLGregorianCalendar fomCalendar = convertToCalendar(fra);
+        XMLGregorianCalendar tomCalendar = convertToCalendar(til);
+
+        return ytelseskontraktClient.hentYtelseskontraktListe(fnr, fomCalendar, tomCalendar);
     }
 
     public Optional<OppfolgingsbrukerEntity> hentOppfolgingsbruker(Fnr fnr) {
