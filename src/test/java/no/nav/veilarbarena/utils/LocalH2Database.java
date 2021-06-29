@@ -1,6 +1,5 @@
 package no.nav.veilarbarena.utils;
 
-import no.nav.veilarbarena.utils.TestUtils;
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -11,7 +10,7 @@ public class LocalH2Database {
     public static JdbcTemplate getDb() {
         if (db == null) {
             JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:mem:veilarbarena-local;DB_CLOSE_DELAY=-1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=3");
+            dataSource.setURL("jdbc:h2:mem:veilarbarena-local;DB_CLOSE_DELAY=-1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=1");
 
             db = new JdbcTemplate(dataSource);
             initDb(db);

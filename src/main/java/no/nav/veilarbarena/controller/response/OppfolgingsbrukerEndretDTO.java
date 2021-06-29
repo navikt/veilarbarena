@@ -2,7 +2,7 @@ package no.nav.veilarbarena.controller.response;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 
 import java.time.ZonedDateTime;
 
@@ -28,7 +28,7 @@ public class OppfolgingsbrukerEndretDTO {
     ZonedDateTime doed_fra_dato;
     ZonedDateTime endret_dato;
     
-    public static OppfolgingsbrukerEndretDTO fraOppfolgingsbruker(Oppfolgingsbruker bruker) {
+    public static OppfolgingsbrukerEndretDTO fraOppfolgingsbruker(OppfolgingsbrukerEntity bruker) {
         return new OppfolgingsbrukerEndretDTO()
                 .setFornavn(bruker.getFornavn())
                 .setEtternavn(bruker.getEtternavn())

@@ -3,10 +3,10 @@ package no.nav.veilarbarena.scheduled;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
-import no.nav.veilarbarena.domain.FeiletKafkaBruker;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
 import no.nav.veilarbarena.repository.KafkaRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
+import no.nav.veilarbarena.repository.entity.FeiletKafkaBrukerEntity;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -50,14 +50,14 @@ public class KafkaFeilSchedule {
         if (leaderElectionClient.isLeader()) {
             List<String> feiledeBrukereFnr = kafkaRepository.hentFeiledeBrukere()
                     .stream()
-                    .map(FeiletKafkaBruker::getFodselsnr)
+                    .map(FeiletKafkaBrukerEntity::getFodselsnr)
                     .collect(Collectors.toList());
 
             if (feiledeBrukereFnr.isEmpty()) {
                 return;
             }
 
-            List<Oppfolgingsbruker> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
+            List<OppfolgingsbrukerEntity> oppfolgingsbrukere = oppfolgingsbrukerRepository.hentOppfolgingsbrukere(feiledeBrukereFnr);
 
             log.info(format(
                     "Publiser tidligere feilede brukere på kafka. Feilede brukere: %d Brukere fra database: %d",

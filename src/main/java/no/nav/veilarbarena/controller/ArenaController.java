@@ -2,9 +2,13 @@ package no.nav.veilarbarena.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
+import no.nav.veilarbarena.controller.response.KanEnkeltReaktiveresDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.controller.response.YtelserDTO;
+import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
-import no.nav.veilarbarena.service.YtelserService;
+import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +19,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
-import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDto;
+import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/ytelser")
-public class YtelserController {
+@RequestMapping("/api/arena")
+public class ArenaController {
 
     private static final int MANEDER_BAK_I_TID = 2;
 
@@ -28,9 +32,35 @@ public class YtelserController {
 
     private final AuthService authService;
 
-    private final YtelserService ytelserService;
+    private final ArenaService arenaService;
 
-    @GetMapping
+    @GetMapping("/status")
+    public ArenaStatusDTO hentStatus(@RequestParam("fnr") Fnr fnr) {
+        authService.sjekkTilgang(fnr);
+
+        return arenaService.hentArenaStatus(fnr)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/kan-enkelt-reaktiveres")
+    public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveres(@RequestParam("fnr") Fnr fnr) {
+        authService.sjekkTilgang(fnr);
+
+        Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fnr);
+
+        return new KanEnkeltReaktiveresDTO(kanEnkeltReaktivers);
+    }
+
+    @GetMapping("/oppfolgingssak")
+    public OppfolgingssakDTO hentOppfolgingssak(@RequestParam("fnr") Fnr fnr) {
+        authService.sjekkTilgang(fnr);
+
+        return arenaService.hentArenaOppfolginssak(fnr)
+                .map(DtoMapper::mapTilOppfolgingssakDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/ytelser")
     public YtelserDTO hentYtelser(
             @RequestParam("fnr") Fnr fnr,
             @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
@@ -46,9 +76,9 @@ public class YtelserController {
             til = LocalDate.now().plusMonths(MANEDER_FREM_I_TID);
         }
 
-        var ytelseskontrakt = ytelserService.hentYtelseskontrakt(fnr, fra, til);
+        var ytelseskontrakt = arenaService.hentYtelseskontrakt(fnr, fra, til);
 
-        return mapTilYtelserDto(ytelseskontrakt);
+        return mapTilYtelserDTO(ytelseskontrakt);
     }
 
 }

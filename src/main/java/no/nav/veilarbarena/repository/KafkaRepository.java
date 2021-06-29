@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
-import no.nav.veilarbarena.domain.FeiletKafkaBruker;
+import no.nav.veilarbarena.repository.entity.FeiletKafkaBrukerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -29,14 +29,14 @@ public class KafkaRepository {
         db.update(sql, brukerFnr);
     }
 
-    public List<FeiletKafkaBruker> hentFeiledeBrukere() {
+    public List<FeiletKafkaBrukerEntity> hentFeiledeBrukere() {
         String sql = "SELECT * FROM FEILEDE_KAFKA_BRUKERE FETCH NEXT 1000 ROWS ONLY";
         return db.query(sql, KafkaRepository::mapFeiletKafkaRecord);
     }
 
     @SneakyThrows
-    private static FeiletKafkaBruker mapFeiletKafkaRecord(ResultSet rs, int row) {
-        return new FeiletKafkaBruker(rs.getString("FODSELSNR"), rs.getTimestamp("TIDSPUNKT_FEILET").toLocalDateTime());
+    private static FeiletKafkaBrukerEntity mapFeiletKafkaRecord(ResultSet rs, int row) {
+        return new FeiletKafkaBrukerEntity(rs.getString("FODSELSNR"), rs.getTimestamp("TIDSPUNKT_FEILET").toLocalDateTime());
     }
 
 }

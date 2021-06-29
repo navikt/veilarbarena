@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.domain;
+package no.nav.veilarbarena.repository.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -7,8 +7,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Accessors(chain = true)
-public class Oppfolgingsbruker {
-
+public class OppfolgingsbrukerEntity {
     String fornavn;
     String etternavn;
     String fodselsnr;
@@ -25,6 +24,5 @@ public class Oppfolgingsbruker {
     Boolean erDoed;
     ZonedDateTime doedFraDato;
     ZonedDateTime timestamp; // Når brukeren sist ble endret
-
 }
 
