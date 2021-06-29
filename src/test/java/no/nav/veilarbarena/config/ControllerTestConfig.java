@@ -10,6 +10,6 @@ import org.springframework.context.annotation.Import;
         OppfolgingsstatusController.class,
         InternalController.class,
         YtelserController.class,
-        ArenaController.class
+        ArenaControllerTest.class
 })
 public class ControllerTestConfig {}

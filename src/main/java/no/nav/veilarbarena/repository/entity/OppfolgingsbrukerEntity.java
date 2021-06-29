@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 @Data
 @Accessors(chain = true)
 public class OppfolgingsbrukerEntity {
-
     String fornavn;
     String etternavn;
     String fodselsnr;
@@ -25,6 +24,5 @@ public class OppfolgingsbrukerEntity {
     Boolean erDoed;
     ZonedDateTime doedFraDato;
     ZonedDateTime timestamp; // Når brukeren sist ble endret
-
 }
 
