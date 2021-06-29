@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.KanEnkeltReaktiveresDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.controller.response.YtelserDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
+import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,15 @@ public class ArenaController {
         Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fnr);
 
         return new KanEnkeltReaktiveresDTO(kanEnkeltReaktivers);
+    }
+
+    @GetMapping("/oppfolgingssak")
+    public OppfolgingssakDTO hentOppfolgingssak(@RequestParam("fnr") Fnr fnr) {
+        authService.sjekkTilgang(fnr);
+
+        return arenaService.hentArenaOppfolginssak(fnr)
+                .map(DtoMapper::mapTilOppfolgingssakDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/ytelser")

@@ -27,6 +27,7 @@ public class OppfolgingssakController {
         this.arenaService = arenaService;
     }
 
+    @Deprecated
     @GetMapping("/{fnr}")
     public OppfolgingssakDTO oppfolgingssak(@PathVariable("fnr") Fnr fnr) {
         authService.sjekkTilgang(fnr);

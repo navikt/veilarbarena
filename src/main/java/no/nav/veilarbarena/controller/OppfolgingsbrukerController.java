@@ -28,6 +28,7 @@ public class OppfolgingsbrukerController {
         this.authService = authService;
     }
 
+    @Deprecated
     @GetMapping("/{fnr}")
     public OppfolgingsbrukerDTO getOppfolgingsbruker(@PathVariable("fnr") Fnr fnr) {
         authService.sjekkTilgang(fnr);
