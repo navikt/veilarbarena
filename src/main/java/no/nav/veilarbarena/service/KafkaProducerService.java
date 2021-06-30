@@ -28,7 +28,7 @@ public class KafkaProducerService {
         this.metricsService = metricsService;
     }
 
-    public void publiserEndringPaOppfolgingsbruker(EndringPaaOppfoelgingsBrukerV1 bruker) {
+    public void publiserEndringPaOppfolgingsbrukerOnPrem(EndringPaaOppfoelgingsBrukerV1 bruker) {
         ProducerRecord<String, Object> jsonRecord = new ProducerRecord<>(
                 kafkaProperties.getEndringPaaOppfolgingBrukerOnPremTopic(),
                 bruker.getAktoerid(),
@@ -38,6 +38,16 @@ public class KafkaProducerService {
         kafkaProducerRecordStorage.store(ProducerUtils.serializeJsonRecord(jsonRecord));
 
         metricsService.leggerBrukerPaKafkaMetrikk(bruker);
+    }
+
+    public void publiserEndringPaOppfolgingsbrukerAiven(EndringPaaOppfoelgingsBrukerV1 bruker) {
+        ProducerRecord<String, Object> jsonRecord = new ProducerRecord<>(
+                kafkaProperties.getEndringPaaOppfolgingBrukerAivenTopic(),
+                bruker.getAktoerid(),
+                bruker
+        );
+
+        kafkaProducerRecordStorage.store(ProducerUtils.serializeJsonRecord(jsonRecord));
     }
 
 }

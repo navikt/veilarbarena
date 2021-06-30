@@ -18,12 +18,13 @@ import static no.nav.common.auth.Constants.*;
 import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfigs;
 import static no.nav.common.utils.EnvironmentUtils.isDevelopment;
 import static no.nav.common.utils.EnvironmentUtils.requireApplicationName;
+import static no.nav.veilarbarena.controller.AdminController.PTO_ADMIN_SERVICE_USER;
 
 @Configuration
 public class FilterConfig {
 
     private final List<String> ALLOWED_SERVICE_USERS = List.of(
-            "srvveilarboppfolging", "srvtiltaksgjennomf", "srvdokumentfordeling"
+            "srvveilarboppfolging", "srvtiltaksgjennomf", "srvdokumentfordeling", PTO_ADMIN_SERVICE_USER
     );
 
     private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {

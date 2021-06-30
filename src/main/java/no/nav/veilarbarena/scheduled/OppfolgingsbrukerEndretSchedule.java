@@ -93,7 +93,7 @@ public class OppfolgingsbrukerEndretSchedule {
 
                 endringPaBruker.setAktoerid(aktorId.get());
 
-                kafkaProducerService.publiserEndringPaOppfolgingsbruker(endringPaBruker);
+                kafkaProducerService.publiserEndringPaOppfolgingsbrukerOnPrem(endringPaBruker);
             });
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
