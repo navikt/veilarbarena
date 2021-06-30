@@ -9,6 +9,7 @@ spec:
   image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
   ingresses:
     - https://veilarbarena.nais.adeo.no
+    - https://veilarbarena.intern.nav.no
   port: 8080
   prometheus:
     enabled: true
