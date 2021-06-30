@@ -1,87 +1,96 @@
 package no.nav.veilarbarena.config;
 
-import no.nav.veilarbarena.kafka.KafkaHelsesjekk;
-import no.nav.veilarbarena.kafka.KafkaProducer;
-import no.nav.veilarbarena.kafka.KafkaTopics;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.micrometer.core.instrument.MeterRegistry;
+import no.nav.common.job.leader_election.LeaderElectionClient;
+import no.nav.common.kafka.producer.KafkaProducerClient;
+import no.nav.common.kafka.producer.feilhandtering.KafkaProducerRecordProcessor;
+import no.nav.common.kafka.producer.feilhandtering.KafkaProducerRecordStorage;
+import no.nav.common.kafka.producer.feilhandtering.OracleProducerRepository;
+import no.nav.common.kafka.producer.util.KafkaProducerClientBuilder;
+import no.nav.common.kafka.util.KafkaPropertiesBuilder;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.LoggingProducerListener;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.HashMap;
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Properties;
 
-import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
+import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
-@EnableKafka
 @Configuration
-@Import({
-        KafkaProducer.class,
-        KafkaHelsesjekk.class
-})
+@EnableConfigurationProperties({KafkaProperties.class})
 public class KafkaTestConfig {
 
     public static final String KAFKA_IMAGE = "confluentinc/cp-kafka:5.4.3";
 
-    private final KafkaContainer kafkaContainer;
+    private final KafkaProducerRecordProcessor onPremProducerRecordProcessor;
 
-    @Autowired
-    public KafkaTestConfig() {
-        kafkaContainer = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
+    private final KafkaProducerRecordProcessor aivenProducerRecordProcessor;
+
+    private final KafkaProducerRecordStorage producerRecordStorage;
+
+    public KafkaTestConfig(
+            JdbcTemplate jdbcTemplate,
+            LeaderElectionClient leaderElectionClient,
+            KafkaProperties kafkaProperties,
+            MeterRegistry meterRegistry
+    ) {
+        KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
         kafkaContainer.start();
+
+        OracleProducerRepository oracleProducerRepository = new OracleProducerRepository(jdbcTemplate.getDataSource());
+
+        Properties properties = KafkaPropertiesBuilder.producerBuilder()
+                .withBrokerUrl(kafkaContainer.getBootstrapServers())
+                .withProducerId(PRODUCER_CLIENT_ID)
+                .withSerializers(ByteArraySerializer.class, ByteArraySerializer.class)
+                .build();
+
+        KafkaProducerClient<byte[], byte[]> onPremProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
+                .withProperties(properties)
+                .withMetrics(meterRegistry)
+                .build();
+
+        KafkaProducerClient<byte[], byte[]> aivenProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
+                .withProperties(properties)
+                .withMetrics(meterRegistry)
+                .build();
+
+        onPremProducerRecordProcessor = new KafkaProducerRecordProcessor(
+                oracleProducerRepository,
+                onPremProducerClient,
+                leaderElectionClient,
+                List.of(
+                        kafkaProperties.endringPaaOppfolgingBrukerOnPremTopic
+                )
+        );
+
+        aivenProducerRecordProcessor = new KafkaProducerRecordProcessor(
+                oracleProducerRepository,
+                aivenProducerClient,
+                leaderElectionClient,
+                List.of(
+                        kafkaProperties.endringPaaOppfolgingBrukerAivenTopic
+                )
+        );
+
+        producerRecordStorage = new KafkaProducerRecordStorage(oracleProducerRepository);
     }
 
     @Bean
-    public KafkaTopics kafkaTopics() {
-        return KafkaTopics.create("local");
+    public KafkaProducerRecordStorage kafkaProducerRecordStorage() {
+        return producerRecordStorage;
     }
 
-    @Bean
-    public KafkaContainer kafkaContainer() {
-        return kafkaContainer;
+    @PostConstruct
+    public void start() {
+        onPremProducerRecordProcessor.start();
+        aivenProducerRecordProcessor.start();
     }
 
-    @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(KafkaContainer kafkaContainer) {
-        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory(kafkaContainer.getBootstrapServers()));
-        LoggingProducerListener<String, String> producerListener = new LoggingProducerListener<>();
-        producerListener.setIncludeContents(false);
-        template.setProducerListener(producerListener);
-        return template;
-    }
-
-    public static DefaultKafkaConsumerFactory<String, String> consumerFactory(String kafkaBrokersUrl) {
-        HashMap<String, Object> props = new HashMap<>();
-        props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
-        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(GROUP_ID_CONFIG, "veilarbarena-test-consumer");
-        props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(MAX_POLL_INTERVAL_MS_CONFIG, 1000);
-
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    private static ProducerFactory<String, String> producerFactory(String kafkaBrokersUrl) {
-        HashMap<String, Object> props = new HashMap<>();
-        props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
-        props.put(ProducerConfig.ACKS_CONFIG, "all");
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "veilarbarena-test-producer");
-        props.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-
-        return new DefaultKafkaProducerFactory<>(props);
-    }
 }

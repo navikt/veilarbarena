@@ -57,7 +57,7 @@ public class OppfolgingsbrukerEndretSchedule {
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
-            if(unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
+            if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
                 log.info("Publisering av brukere på kafka er skrudd av");
             } else {
                 publisereArenaBrukerEndringer();
@@ -78,10 +78,10 @@ public class OppfolgingsbrukerEndretSchedule {
                 return;
             }
 
+            log.info("Legger {} brukere til kafka", brukere.size());
+
             OppfolgingsbrukerEntity sisteBruker = brukere.get(brukere.size() - 1);
             oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
-
-            log.info("Legger {} brukere til kafka", brukere.size());
 
             brukere.forEach(bruker -> {
                 OppfolgingsbrukerEndretDTO oppfolgingsbrukerEndretDTO = OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker);

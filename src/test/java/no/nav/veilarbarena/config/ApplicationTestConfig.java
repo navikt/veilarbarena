@@ -8,6 +8,7 @@ import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.HealthCheckResult;
+import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
@@ -60,6 +61,11 @@ public class ApplicationTestConfig {
     @Bean
     public AbacClient abacClient() {
         return new AbacClientMock();
+    }
+
+    @Bean
+    public LeaderElectionClient leaderElectionClient() {
+        return () -> true;
     }
 
     @Bean

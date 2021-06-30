@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         AuthService.class,
-        KafkaService.class,
+        KafkaProducerService.class,
         MetricsService.class,
         UnleashService.class,
         ArenaService.class
