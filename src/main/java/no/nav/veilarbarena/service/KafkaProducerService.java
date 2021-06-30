@@ -3,8 +3,8 @@ package no.nav.veilarbarena.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.kafka.producer.feilhandtering.KafkaProducerRecordStorage;
 import no.nav.common.kafka.producer.util.ProducerUtils;
+import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
 import no.nav.veilarbarena.config.KafkaProperties;
-import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class KafkaProducerService {
         this.metricsService = metricsService;
     }
 
-    public void publiserEndringPaOppfolgingsbruker(OppfolgingsbrukerEndretDTO bruker) {
+    public void publiserEndringPaOppfolgingsbruker(EndringPaaOppfoelgingsBrukerV1 bruker) {
         ProducerRecord<String, Object> jsonRecord = new ProducerRecord<>(
                 kafkaProperties.getEndringPaaOppfolgingBrukerOnPremTopic(),
                 bruker.getAktoerid(),

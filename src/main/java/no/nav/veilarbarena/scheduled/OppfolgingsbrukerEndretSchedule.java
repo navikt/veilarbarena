@@ -5,13 +5,13 @@ import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
-import no.nav.veilarbarena.controller.response.OppfolgingsbrukerEndretDTO;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
 import no.nav.veilarbarena.service.KafkaProducerService;
 import no.nav.veilarbarena.service.UnleashService;
+import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -84,16 +84,16 @@ public class OppfolgingsbrukerEndretSchedule {
             oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
 
             brukere.forEach(bruker -> {
-                OppfolgingsbrukerEndretDTO oppfolgingsbrukerEndretDTO = OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker);
-                AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(oppfolgingsbrukerEndretDTO.getFodselsnr()));
+                var endringPaBruker = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(bruker);
+                AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(endringPaBruker.getFodselsnr()));
 
                 if (aktorId == null) {
                     throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
                 }
 
-                oppfolgingsbrukerEndretDTO.setAktoerid(aktorId.get());
+                endringPaBruker.setAktoerid(aktorId.get());
 
-                kafkaProducerService.publiserEndringPaOppfolgingsbruker(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker));
+                kafkaProducerService.publiserEndringPaOppfolgingsbruker(endringPaBruker);
             });
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
