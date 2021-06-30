@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.repository;
 
+import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import no.nav.veilarbarena.utils.TestUtils;
@@ -8,11 +9,13 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +29,31 @@ public class OppfolgingsbrukerRepositoryTest {
         String insertBrukere = TestUtils.readTestResourceFile("oppfolgingsbrukere.sql");
         db.execute("DELETE FROM OPPFOLGINGSBRUKER");
         db.execute(insertBrukere);
+    }
+
+    @Test
+    public void hentUnikeBrukerePage__skal_hente_page_med_unike_brukere() {
+        JdbcTemplate db = LocalH2Database.getDb();
+        db.execute("DELETE FROM OPPFOLGINGSBRUKER");
+
+        OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(db);
+
+        Fnr fnr1 = Fnr.of("fnr1");
+        Fnr fnr2 = Fnr.of("fnr2");
+        Fnr fnr3 = Fnr.of("fnr3");
+
+        insertBruker(fnr2);
+        insertBruker(fnr1);
+        insertBruker(fnr3);
+
+        List<Fnr> unikeBrukerePage1 = repository.hentUnikeBrukerePage(0, 1);
+        assertEquals(1, unikeBrukerePage1.size());
+        assertEquals(fnr1, unikeBrukerePage1.get(0));
+
+        List<Fnr> unikeBrukerePage2 = repository.hentUnikeBrukerePage(1, 2);
+        assertEquals(2, unikeBrukerePage2.size());
+        assertEquals(fnr2, unikeBrukerePage2.get(0));
+        assertEquals(fnr3, unikeBrukerePage2.get(1));
     }
 
     @Test
@@ -70,7 +98,7 @@ public class OppfolgingsbrukerRepositoryTest {
         OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(LocalH2Database.getDb());
         ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1).truncatedTo(ChronoUnit.SECONDS);
 
-        insertBrukerMedTimestamp(Timestamp.from(tomorrow.toInstant()));
+        insertBruker(Fnr.of("12345678909"), Timestamp.from(tomorrow.toInstant()));
 
         List<OppfolgingsbrukerEntity> brukere = repository.changesSinceLastCheckSql("12345678908", tomorrow);
 
@@ -87,8 +115,13 @@ public class OppfolgingsbrukerRepositoryTest {
         assertTrue(brukere.isEmpty());
     }
 
-    private void insertBrukerMedTimestamp(Timestamp timestamp) {
-        LocalH2Database.getDb().update(format("INSERT INTO OPPFOLGINGSBRUKER (PERSON_ID, FODSELSNR, ETTERNAVN, FORNAVN, FORMIDLINGSGRUPPEKODE, KVALIFISERINGSGRUPPEKODE, RETTIGHETSGRUPPEKODE, ER_DOED, TIDSSTEMPEL) VALUES (123, '12345678909', 'Nordman', 'Knut', 'ARBS', 'BFORM', 'VLONN', 'N', '%s')", timestamp.toString()));
+    private void insertBruker(Fnr fnr) {
+        insertBruker(fnr, Timestamp.from(Instant.now()));
+    }
+
+    private void insertBruker(Fnr fnr, Timestamp timestamp) {
+        int personId = new Random().nextInt();
+        LocalH2Database.getDb().update(format("INSERT INTO OPPFOLGINGSBRUKER (PERSON_ID, FODSELSNR, ETTERNAVN, FORNAVN, FORMIDLINGSGRUPPEKODE, KVALIFISERINGSGRUPPEKODE, RETTIGHETSGRUPPEKODE, ER_DOED, TIDSSTEMPEL) VALUES (%d, '%s', 'Nordman', 'Knut', 'ARBS', 'BFORM', 'VLONN', 'N', '%s')", personId, fnr, timestamp.toString()));
     }
 
 }

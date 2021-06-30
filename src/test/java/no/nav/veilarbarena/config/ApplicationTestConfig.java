@@ -8,6 +8,8 @@ import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.HealthCheckResult;
+import no.nav.common.job.leader_election.LeaderElectionClient;
+import no.nav.common.kafka.util.KafkaPropertiesBuilder;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
@@ -19,15 +21,21 @@ import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.mock.PepMock;
 import no.nav.veilarbarena.utils.LocalH2Database;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Optional;
+import java.util.Properties;
+
+import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
 @Configuration
 @EnableConfigurationProperties({EnvironmentProperties.class})
@@ -36,11 +44,13 @@ import java.util.Optional;
         ControllerTestConfig.class,
         RepositoryTestConfig.class,
         ServiceTestConfig.class,
-        KafkaTestConfig.class,
+        KafkaConfig.class,
         FilterTestConfig.class,
         HelsesjekkConfig.class
 })
 public class ApplicationTestConfig {
+
+    public static final String KAFKA_IMAGE = "confluentinc/cp-kafka:5.4.3";
 
     @Bean
     public AuthContextHolder authContextHolder() {
@@ -63,6 +73,11 @@ public class ApplicationTestConfig {
     }
 
     @Bean
+    public LeaderElectionClient leaderElectionClient() {
+        return () -> true;
+    }
+
+    @Bean
     public Pep veilarbPep(AbacClient abacClient) {
         return new PepMock(abacClient);
     }
@@ -70,6 +85,26 @@ public class ApplicationTestConfig {
     @Bean
     public MetricsClient metricsClient() {
         return new MetricsClientMock();
+    }
+
+    @Bean
+    public KafkaContainer kafkaContainer() {
+        KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse(KAFKA_IMAGE));
+        kafkaContainer.start();
+        return kafkaContainer;
+    }
+
+    @Bean
+    public KafkaConfig.EnvironmentContext kafkaConfigEnvironmentContext(KafkaContainer kafkaContainer) {
+        Properties properties = KafkaPropertiesBuilder.producerBuilder()
+                .withBrokerUrl(kafkaContainer.getBootstrapServers())
+                .withProducerId(PRODUCER_CLIENT_ID)
+                .withSerializers(ByteArraySerializer.class, ByteArraySerializer.class)
+                .build();
+
+        return new KafkaConfig.EnvironmentContext()
+                .setAivenProducerClientProperties(properties)
+                .setOnPremProducerClientProperties(properties);
     }
 
     @Bean

@@ -31,8 +31,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
+import static no.nav.common.kafka.util.KafkaPropertiesPreset.onPremByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
 import static no.nav.common.utils.UrlUtils.createServiceUrl;
+import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
 
 @Slf4j
@@ -80,6 +83,13 @@ public class ApplicationConfig {
         );
 
         return new CachedAktorOppslagClient(aktorregisterClient);
+    }
+
+    @Bean
+    public KafkaConfig.EnvironmentContext kafkaConfigEnvContext(KafkaProperties kafkaProperties, Credentials credentials) {
+        return new KafkaConfig.EnvironmentContext()
+                .setOnPremProducerClientProperties(onPremByteProducerProperties(PRODUCER_CLIENT_ID, kafkaProperties.getBrokersUrl(), credentials))
+                .setAivenProducerClientProperties(aivenByteProducerProperties(PRODUCER_CLIENT_ID));
     }
 
     @Bean

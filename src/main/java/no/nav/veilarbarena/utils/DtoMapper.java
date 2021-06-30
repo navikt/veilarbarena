@@ -1,6 +1,7 @@
 package no.nav.veilarbarena.utils;
 
 import no.nav.common.types.identer.EnhetId;
+import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
@@ -83,6 +84,26 @@ public class DtoMapper {
                 .setOppfolgingsenhet(
                         ofNullable(oppfolgingsbruker.getNavKontor()).map(EnhetId::of).orElse(null)
                 );
+    }
+
+    public static EndringPaaOppfoelgingsBrukerV1 tilEndringPaaOppfoelgingsBrukerV1(OppfolgingsbrukerEntity bruker) {
+        return new EndringPaaOppfoelgingsBrukerV1()
+                .setFornavn(bruker.getFornavn())
+                .setEtternavn(bruker.getEtternavn())
+                .setFodselsnr(bruker.getFodselsnr())
+                .setFormidlingsgruppekode(bruker.getFormidlingsgruppekode())
+                .setIserv_fra_dato(bruker.getIservFraDato())
+                .setNav_kontor(bruker.getNavKontor())
+                .setKvalifiseringsgruppekode(bruker.getKvalifiseringsgruppekode())
+                .setRettighetsgruppekode(bruker.getRettighetsgruppekode())
+                .setHovedmaalkode(bruker.getHovedmaalkode())
+                .setSikkerhetstiltak_type_kode(bruker.getSikkerhetstiltakTypeKode())
+                .setFr_kode(bruker.getFrKode())
+                .setHar_oppfolgingssak(bruker.getHarOppfolgingssak())
+                .setSperret_ansatt(bruker.getSperretAnsatt())
+                .setEr_doed(bruker.getErDoed())
+                .setDoed_fra_dato(bruker.getDoedFraDato())
+                .setEndret_dato(bruker.getTimestamp());
     }
 
 }
