@@ -50,3 +50,5 @@ spec:
   env:
     - name: MODIALOGIN_OPENAM_CLIENT_ID
       value: "modialogin-q1"
+    - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
+      value: aapen-fo-endringPaaOppfoelgingsBruker-v1-q1
