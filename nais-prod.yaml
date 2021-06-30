@@ -32,6 +32,8 @@ spec:
       memory: 1024Mi
   webproxy: true
   leaderElection: true
+  kafka:
+    pool: nav-prod
   vault:
     enabled: true
     paths:

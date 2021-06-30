@@ -33,6 +33,8 @@ spec:
       memory: 1024Mi
   webproxy: true
   leaderElection: true
+  kafka:
+    pool: nav-dev
   vault:
     enabled: true
     paths:
