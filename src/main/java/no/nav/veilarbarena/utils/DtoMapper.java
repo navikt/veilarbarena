@@ -1,7 +1,10 @@
 package no.nav.veilarbarena.utils;
 
+import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.EnhetId;
+import no.nav.pto_schema.enums.arena.*;
 import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
+import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV2;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
@@ -11,12 +14,14 @@ import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.service.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.service.dto.ArenaOppfolgingsstatusDTO;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static no.nav.veilarbarena.utils.DateUtils.convertToLocalDate;
+import static no.nav.veilarbarena.utils.EnumUtils.safeValueOf;
 
 public class DtoMapper {
 
@@ -86,24 +91,50 @@ public class DtoMapper {
                 );
     }
 
-    public static EndringPaaOppfoelgingsBrukerV1 tilEndringPaaOppfoelgingsBrukerV1(OppfolgingsbrukerEntity bruker) {
-        return new EndringPaaOppfoelgingsBrukerV1()
-                .setFornavn(bruker.getFornavn())
-                .setEtternavn(bruker.getEtternavn())
-                .setFodselsnr(bruker.getFodselsnr())
-                .setFormidlingsgruppekode(bruker.getFormidlingsgruppekode())
-                .setIserv_fra_dato(bruker.getIservFraDato())
-                .setNav_kontor(bruker.getNavKontor())
-                .setKvalifiseringsgruppekode(bruker.getKvalifiseringsgruppekode())
-                .setRettighetsgruppekode(bruker.getRettighetsgruppekode())
-                .setHovedmaalkode(bruker.getHovedmaalkode())
-                .setSikkerhetstiltak_type_kode(bruker.getSikkerhetstiltakTypeKode())
-                .setFr_kode(bruker.getFrKode())
-                .setHar_oppfolgingssak(bruker.getHarOppfolgingssak())
-                .setSperret_ansatt(bruker.getSperretAnsatt())
-                .setEr_doed(bruker.getErDoed())
-                .setDoed_fra_dato(bruker.getDoedFraDato())
-                .setEndret_dato(bruker.getTimestamp());
+    public static EndringPaaOppfoelgingsBrukerV1 tilEndringPaaOppfoelgingsBrukerV1(OppfolgingsbrukerEntity bruker, AktorId aktorId) {
+        return EndringPaaOppfoelgingsBrukerV1.builder()
+                .fornavn(bruker.getFornavn())
+                .aktoerid(aktorId.get())
+                .etternavn(bruker.getEtternavn())
+                .fodselsnr(bruker.getFodselsnr())
+                .formidlingsgruppekode(bruker.getFormidlingsgruppekode())
+                .iserv_fra_dato(bruker.getIservFraDato())
+                .nav_kontor(bruker.getNavKontor())
+                .kvalifiseringsgruppekode(bruker.getKvalifiseringsgruppekode())
+                .rettighetsgruppekode(bruker.getRettighetsgruppekode())
+                .hovedmaalkode(bruker.getHovedmaalkode())
+                .sikkerhetstiltak_type_kode(bruker.getSikkerhetstiltakTypeKode())
+                .fr_kode(bruker.getFrKode())
+                .har_oppfolgingssak(bruker.getHarOppfolgingssak())
+                .sperret_ansatt(bruker.getSperretAnsatt())
+                .er_doed(bruker.getErDoed())
+                .doed_fra_dato(bruker.getDoedFraDato())
+                .endret_dato(bruker.getTimestamp())
+                .build();
+    }
+
+    public static EndringPaaOppfoelgingsBrukerV2 tilEndringPaaOppfoelgingsBrukerV2(OppfolgingsbrukerEntity bruker) {
+        LocalDate iservFraDato = ofNullable(bruker.getIservFraDato()).map(ZonedDateTime::toLocalDate).orElse(null);
+        LocalDate doedFraDato = ofNullable(bruker.getDoedFraDato()).map(ZonedDateTime::toLocalDate).orElse(null);
+
+        return EndringPaaOppfoelgingsBrukerV2.builder()
+                .fornavn(bruker.getFornavn())
+                .etternavn(bruker.getEtternavn())
+                .fodselsnummer(bruker.getFodselsnr())
+                .formidlingsgruppe(safeValueOf(Formidlingsgruppe.class, bruker.getFormidlingsgruppekode()))
+                .iservFraDato(iservFraDato)
+                .oppfolgingsenhet(bruker.getNavKontor())
+                .kvalifiseringsgruppe(safeValueOf(Kvalifiseringsgruppe.class, bruker.getKvalifiseringsgruppekode()))
+                .rettighetsgruppe(safeValueOf(Rettighetsgruppe.class, bruker.getRettighetsgruppekode()))
+                .hovedmaal(safeValueOf(Hovedmaal.class, bruker.getHovedmaalkode()))
+                .sikkerhetstiltakType(safeValueOf(SikkerhetstiltakType.class, bruker.getSikkerhetstiltakTypeKode()))
+                .diskresjonskode(bruker.getFrKode())
+                .harOppfolgingssak(bruker.getHarOppfolgingssak())
+                .sperretAnsatt(bruker.getSperretAnsatt())
+                .erDoed(bruker.getErDoed())
+                .doedFraDato(doedFraDato)
+                .sistEndretDato(bruker.getTimestamp())
+                .build();
     }
 
 }

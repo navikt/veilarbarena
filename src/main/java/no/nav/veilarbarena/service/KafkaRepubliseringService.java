@@ -2,7 +2,6 @@ package no.nav.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.utils.DtoMapper;
@@ -54,12 +53,9 @@ public class KafkaRepubliseringService {
 
     private void republiserEndringPaBruker(Fnr fnr) {
         var oppfolgingsbrukerEntity = oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get()).orElseThrow();
-        var endringPaBruker = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(oppfolgingsbrukerEntity);
-        AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(endringPaBruker.getFodselsnr()));
+        var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(oppfolgingsbrukerEntity);
 
-        endringPaBruker.setAktoerid(aktorId.get());
-
-        kafkaProducerService.publiserEndringPaOppfolgingsbrukerAiven(endringPaBruker);
+        kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);
     }
 
 }

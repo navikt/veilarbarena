@@ -10,6 +10,7 @@ import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
 import no.nav.veilarbarena.service.KafkaProducerService;
+import no.nav.veilarbarena.service.MetricsService;
 import no.nav.veilarbarena.service.UnleashService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final AktorOppslagClient aktorOppslagClient;
 
+    private final MetricsService metricsService;
+
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
@@ -44,7 +47,8 @@ public class OppfolgingsbrukerEndretSchedule {
             LeaderElectionClient leaderElectionClient,
             UnleashService unleashService,
             KafkaProducerService kafkaProducerService,
-            AktorOppslagClient aktorOppslagClient
+            AktorOppslagClient aktorOppslagClient,
+            MetricsService metricsService
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppfolgingsbrukerSistEndringRepository = oppfolgingsbrukerSistEndringRepository;
@@ -52,6 +56,7 @@ public class OppfolgingsbrukerEndretSchedule {
         this.unleashService = unleashService;
         this.kafkaProducerService = kafkaProducerService;
         this.aktorOppslagClient = aktorOppslagClient;
+        this.metricsService = metricsService;
     }
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
@@ -84,16 +89,19 @@ public class OppfolgingsbrukerEndretSchedule {
             oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
 
             brukere.forEach(bruker -> {
-                var endringPaBruker = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(bruker);
-                AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(endringPaBruker.getFodselsnr()));
+                AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(bruker.getFodselsnr()));
 
                 if (aktorId == null) {
                     throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
                 }
 
-                endringPaBruker.setAktoerid(aktorId.get());
+                var endringPaBrukerV1 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(bruker, aktorId);
+                var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
 
-                kafkaProducerService.publiserEndringPaOppfolgingsbrukerOnPrem(endringPaBruker);
+                kafkaProducerService.publiserEndringPaOppfolgingsbrukerV1OnPrem(endringPaBrukerV1);
+                kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);
+
+                metricsService.leggerBrukerPaKafkaMetrikk(endringPaBrukerV1);
             });
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
