@@ -2,7 +2,6 @@ package no.nav.veilarbarena.repository;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,6 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static no.nav.veilarbarena.utils.DatabaseUtils.toSqlStringArray;
@@ -64,12 +62,9 @@ public class OppfolgingsbrukerRepository {
         );
     }
 
-    public List<Fnr> hentUnikeBrukerePage(int offset, int pageSize) {
-        String sql = format("SELECT DISTINCT fodselsnr FROM OPPFOLGINGSBRUKER ORDER BY fodselsnr OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", offset, pageSize);
-        return db.query(sql, (rs, rowNum) -> rs.getString("fodselsnr"))
-                .stream()
-                .map(Fnr::of)
-                .collect(Collectors.toList());
+    public List<OppfolgingsbrukerEntity> hentBrukerePage(int offset, int pageSize) {
+        String sql = format("SELECT * FROM OPPFOLGINGSBRUKER ORDER BY fodselsnr OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", offset, pageSize);
+        return db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
 
     @SneakyThrows

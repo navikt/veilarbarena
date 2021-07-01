@@ -1,9 +1,8 @@
 package no.nav.veilarbarena.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,39 +19,34 @@ public class KafkaRepubliseringService {
 
     private final KafkaProducerService kafkaProducerService;
 
-    private final AktorOppslagClient aktorOppslagClient;
-
     @Autowired
     public KafkaRepubliseringService(
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
-            KafkaProducerService kafkaProducerService,
-            AktorOppslagClient aktorOppslagClient
+            KafkaProducerService kafkaProducerService
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.kafkaProducerService = kafkaProducerService;
-        this.aktorOppslagClient = aktorOppslagClient;
     }
 
     public void republiserEndringPaBrukere() {
         int currentOffset = 0;
 
         while (true) {
-            List<Fnr> unikeFnr = oppfolgingsbrukerRepository.hentUnikeBrukerePage(currentOffset, OPPFOLGINGSPERIODE_PAGE_SIZE);
+            List<OppfolgingsbrukerEntity> brukere = oppfolgingsbrukerRepository.hentBrukerePage(currentOffset, OPPFOLGINGSPERIODE_PAGE_SIZE);
 
-            if (unikeFnr.isEmpty()) {
+            if (brukere.isEmpty()) {
                 break;
             }
 
-            currentOffset += unikeFnr.size();
+            currentOffset += brukere.size();
 
-            log.info("Republiserer endring på brukere. CurrentOffset={} BatchSize={}", currentOffset, unikeFnr.size());
+            log.info("Republiserer endring på brukere. CurrentOffset={} BatchSize={}", currentOffset, brukere.size());
 
-            unikeFnr.forEach(this::republiserEndringPaBruker);
+            brukere.forEach(this::republiserEndringPaBruker);
         }
     }
 
-    private void republiserEndringPaBruker(Fnr fnr) {
-        var oppfolgingsbrukerEntity = oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get()).orElseThrow();
+    private void republiserEndringPaBruker(OppfolgingsbrukerEntity oppfolgingsbrukerEntity) {
         var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(oppfolgingsbrukerEntity);
 
         kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);

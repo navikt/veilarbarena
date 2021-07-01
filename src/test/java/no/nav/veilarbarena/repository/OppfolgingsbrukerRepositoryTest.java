@@ -32,7 +32,7 @@ public class OppfolgingsbrukerRepositoryTest {
     }
 
     @Test
-    public void hentUnikeBrukerePage__skal_hente_page_med_unike_brukere() {
+    public void hentBrukerePage__skal_hente_page_med_brukere() {
         JdbcTemplate db = LocalH2Database.getDb();
         db.execute("DELETE FROM OPPFOLGINGSBRUKER");
 
@@ -46,14 +46,14 @@ public class OppfolgingsbrukerRepositoryTest {
         insertBruker(fnr1);
         insertBruker(fnr3);
 
-        List<Fnr> unikeBrukerePage1 = repository.hentUnikeBrukerePage(0, 1);
-        assertEquals(1, unikeBrukerePage1.size());
-        assertEquals(fnr1, unikeBrukerePage1.get(0));
+        List<OppfolgingsbrukerEntity> brukerePage1 = repository.hentBrukerePage(0, 1);
+        assertEquals(1, brukerePage1.size());
+        assertEquals(fnr1.get(), brukerePage1.get(0).getFodselsnr());
 
-        List<Fnr> unikeBrukerePage2 = repository.hentUnikeBrukerePage(1, 2);
-        assertEquals(2, unikeBrukerePage2.size());
-        assertEquals(fnr2, unikeBrukerePage2.get(0));
-        assertEquals(fnr3, unikeBrukerePage2.get(1));
+        List<OppfolgingsbrukerEntity> brukerePage2 = repository.hentBrukerePage(1, 2);
+        assertEquals(2, brukerePage2.size());
+        assertEquals(fnr2.get(), brukerePage2.get(0).getFodselsnr());
+        assertEquals(fnr3.get(), brukerePage2.get(1).getFodselsnr());
     }
 
     @Test
