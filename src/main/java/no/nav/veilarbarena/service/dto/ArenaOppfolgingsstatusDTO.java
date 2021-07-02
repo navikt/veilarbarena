@@ -1,9 +1,12 @@
 package no.nav.veilarbarena.service.dto;
 
-import no.nav.veilarbarena.domain.api.OppfolgingsstatusDTO;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
+@Data
+@Accessors(chain = true)
 public class ArenaOppfolgingsstatusDTO {
     String rettighetsgruppeKode;
     String formidlingsgruppeKode;
@@ -11,15 +14,4 @@ public class ArenaOppfolgingsstatusDTO {
     String navOppfoelgingsenhet;
     LocalDate inaktiveringsdato;
     Boolean kanEnkeltReaktiveres;
-
-    public OppfolgingsstatusDTO toOppfolgingsstatusDTO() {
-        OppfolgingsstatusDTO dto = new OppfolgingsstatusDTO();
-        dto.setRettighetsgruppe(rettighetsgruppeKode);
-        dto.setFormidlingsgruppe(formidlingsgruppeKode);
-        dto.setServicegruppe(servicegruppeKode);
-        dto.setOppfolgingsenhet(navOppfoelgingsenhet);
-        dto.setInaktiveringsdato(inaktiveringsdato);
-        dto.setKanEnkeltReaktiveres(kanEnkeltReaktiveres);
-        return dto;
-    }
 }

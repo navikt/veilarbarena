@@ -1,0 +1,21 @@
+{
+  "vedtak": [
+    {
+      "type": "type",
+      "status": "status",
+      "aktivitetsfase": "aktivitetsfase",
+      "rettighetsgruppe": "rettighetsgruppe",
+      "fraDato": "2021-04-28",
+      "tilDato": "2021-08-06"
+    }
+  ],
+  "ytelser": [
+    {
+      "type": "type",
+      "status": "status",
+      "motattDato": "2021-01-13",
+      "fraDato": "2021-01-15",
+      "tilDato": "2021-02-03"
+    }
+  ]
+}

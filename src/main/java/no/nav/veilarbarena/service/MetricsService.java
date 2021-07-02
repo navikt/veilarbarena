@@ -2,8 +2,7 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.metrics.Event;
 import no.nav.common.metrics.MetricsClient;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class MetricsService {
         this.metricsClient = metricsClient;
     }
 
-    public void leggerBrukerPaKafkaMetrikk(OppfolgingsbrukerEndretDTO bruker) {
+    public void leggerBrukerPaKafkaMetrikk(EndringPaaOppfoelgingsBrukerV1 bruker) {
         final ZonedDateTime iservFraDato = bruker.getIserv_fra_dato();
         boolean erIserv28 = false;
 
@@ -39,10 +38,6 @@ public class MetricsService {
             .addFieldToReport("endringstidspunkt", bruker.getEndret_dato().toInstant());
 
         metricsClient.report(event);
-    }
-
-    public void feilVedSendingTilKafkaMetrikk() {
-        metricsClient.report(new Event("bruker.kafka.send.feil"));
     }
 
 }

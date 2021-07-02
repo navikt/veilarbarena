@@ -2,13 +2,14 @@ package no.nav.veilarbarena.client;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import no.nav.common.json.JsonUtils;
+import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.System.setProperty;
-import static no.nav.veilarbarena.client.ArenaOrdsTokenProviderClient.*;
+import static no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ArenaOrdsTokenProviderClientTest {

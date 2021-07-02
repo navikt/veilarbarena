@@ -1,5 +1,8 @@
 package no.nav.veilarbarena.utils;
 
+import lombok.SneakyThrows;
+
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -15,10 +18,22 @@ public class DateUtils {
                 date.toLocalDateTime().atZone(ZoneId.systemDefault()) : null ;
     }
 
-    public static LocalDate xmlGregorianCalendarToLocalDate(XMLGregorianCalendar inaktiveringsdato) {
-        return Optional.ofNullable(inaktiveringsdato)
-                .map(XMLGregorianCalendar::toGregorianCalendar)
-                .map(GregorianCalendar::toZonedDateTime)
-                .map(ZonedDateTime::toLocalDate).orElse(null);
+    @SneakyThrows
+    public static XMLGregorianCalendar convertToCalendar(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+
+        final GregorianCalendar gregorianCalendar = GregorianCalendar.from(date.atStartOfDay(ZoneId.systemDefault()));
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
     }
+
+    public static LocalDate convertToLocalDate(XMLGregorianCalendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+
+        return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    }
+
 }

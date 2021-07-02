@@ -1,14 +1,18 @@
 package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.featuretoggle.UnleashService;
-import no.nav.common.leaderelection.LeaderElectionClient;
-import no.nav.veilarbarena.domain.Oppfolgingsbruker;
-import no.nav.veilarbarena.domain.OppfolgingsbrukerSistEndret;
-import no.nav.veilarbarena.domain.api.OppfolgingsbrukerEndretDTO;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
+import no.nav.common.job.leader_election.LeaderElectionClient;
+import no.nav.common.types.identer.AktorId;
+import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerSistEndringRepository;
-import no.nav.veilarbarena.service.KafkaService;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
+import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
+import no.nav.veilarbarena.service.KafkaProducerService;
+import no.nav.veilarbarena.service.MetricsService;
+import no.nav.veilarbarena.service.UnleashService;
+import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,31 +30,39 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final OppfolgingsbrukerSistEndringRepository oppfolgingsbrukerSistEndringRepository;
 
-    private final KafkaService kafkaService;
-
     private final LeaderElectionClient leaderElectionClient;
 
     private final UnleashService unleashService;
+
+    private final KafkaProducerService kafkaProducerService;
+
+    private final AktorOppslagClient aktorOppslagClient;
+
+    private final MetricsService metricsService;
 
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
             OppfolgingsbrukerSistEndringRepository oppfolgingsbrukerSistEndringRepository,
-            KafkaService kafkaService,
             LeaderElectionClient leaderElectionClient,
-            UnleashService unleashService
+            UnleashService unleashService,
+            KafkaProducerService kafkaProducerService,
+            AktorOppslagClient aktorOppslagClient,
+            MetricsService metricsService
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppfolgingsbrukerSistEndringRepository = oppfolgingsbrukerSistEndringRepository;
-        this.kafkaService = kafkaService;
         this.leaderElectionClient = leaderElectionClient;
         this.unleashService = unleashService;
+        this.kafkaProducerService = kafkaProducerService;
+        this.aktorOppslagClient = aktorOppslagClient;
+        this.metricsService = metricsService;
     }
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
         if (leaderElectionClient.isLeader()) {
-            if(unleashService.isEnabled("veilarbarena.skru_av_publisering_kafka")) {
+            if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
                 log.info("Publisering av brukere på kafka er skrudd av");
             } else {
                 publisereArenaBrukerEndringer();
@@ -61,21 +73,36 @@ public class OppfolgingsbrukerEndretSchedule {
     @Transactional
     void publisereArenaBrukerEndringer() {
         try {
-            OppfolgingsbrukerSistEndret sistEndret = oppfolgingsbrukerSistEndringRepository.hentSistEndret();
-            List<Oppfolgingsbruker> brukere = oppfolgingsbrukerRepository.changesSinceLastCheckSql(
+            OppfolgingsbrukerSistEndretEntity sistEndret = oppfolgingsbrukerSistEndringRepository.hentSistEndret();
+            List<OppfolgingsbrukerEntity> brukere = oppfolgingsbrukerRepository.changesSinceLastCheckSql(
                     sistEndret.getFodselsnr(), sistEndret.getOppfolgingsbrukerSistEndring()
             );
 
-            if (!brukere.isEmpty()) {
-                Oppfolgingsbruker sisteBruker = brukere.get(brukere.size() - 1);
-                oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
-                log.info("Legger {} brukere til kafka", brukere.size());
-                brukere.forEach(bruker -> {
-                    kafkaService.sendBrukerEndret(OppfolgingsbrukerEndretDTO.fraOppfolgingsbruker(bruker));
-                });
-            } else {
+            if (brukere.isEmpty()) {
                 log.info("Ingen nye endringer å publisere på kafka");
+                return;
             }
+
+            log.info("Legger {} brukere til kafka", brukere.size());
+
+            OppfolgingsbrukerEntity sisteBruker = brukere.get(brukere.size() - 1);
+            oppfolgingsbrukerSistEndringRepository.updateLastcheck(sisteBruker.getFodselsnr(), sisteBruker.getTimestamp());
+
+            brukere.forEach(bruker -> {
+                AktorId aktorId = aktorOppslagClient.hentAktorId(Fnr.of(bruker.getFodselsnr()));
+
+                if (aktorId == null) {
+                    throw new IllegalStateException("Fant ikke aktørid for en bruker, får ikke sendt til kafka");
+                }
+
+                var endringPaBrukerV1 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(bruker, aktorId);
+                var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
+
+                kafkaProducerService.publiserEndringPaOppfolgingsbrukerV1OnPrem(endringPaBrukerV1);
+                kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);
+
+                metricsService.leggerBrukerPaKafkaMetrikk(endringPaBrukerV1);
+            });
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }

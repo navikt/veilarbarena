@@ -9,6 +9,7 @@ spec:
   image: docker.pkg.github.com/navikt/veilarbarena/veilarbarena:{{version}}
   ingresses:
     - https://veilarbarena.nais.adeo.no
+    - https://veilarbarena.intern.nav.no
   port: 8080
   prometheus:
     enabled: true
@@ -32,6 +33,8 @@ spec:
       memory: 1024Mi
   webproxy: true
   leaderElection: true
+  kafka:
+    pool: nav-prod
   vault:
     enabled: true
     paths:
@@ -49,3 +52,5 @@ spec:
   env:
     - name: MODIALOGIN_OPENAM_CLIENT_ID
       value: "modialogin-p"
+    - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
+      value: aapen-fo-endringPaaOppfoelgingsBruker-v1-p

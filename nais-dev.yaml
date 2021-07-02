@@ -10,6 +10,7 @@ spec:
   ingresses:
     - https://veilarbarena-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbarena
+    - https://veilarbarena.dev.intern.nav.no
   port: 8080
   prometheus:
     enabled: true
@@ -33,6 +34,8 @@ spec:
       memory: 1024Mi
   webproxy: true
   leaderElection: true
+  kafka:
+    pool: nav-dev
   vault:
     enabled: true
     paths:
@@ -50,3 +53,5 @@ spec:
   env:
     - name: MODIALOGIN_OPENAM_CLIENT_ID
       value: "modialogin-q1"
+    - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
+      value: aapen-fo-endringPaaOppfoelgingsBruker-v1-q1
