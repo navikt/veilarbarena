@@ -8,6 +8,7 @@ import no.nav.veilarbarena.service.KafkaRepubliseringService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,9 +24,9 @@ public class AdminController {
     private final KafkaRepubliseringService kafkaRepubliseringService;
 
     @PostMapping("/republiser/endring-pa-bruker")
-    public String republiserEndringPaBruker() {
+    public String republiserEndringPaBruker(@RequestParam(required = false, defaultValue = "0") int fromOffset) {
         sjekkTilgangTilAdmin();
-        return JobRunner.runAsync("republiser-endring-pa-bruker", kafkaRepubliseringService::republiserEndringPaBrukere);
+        return JobRunner.runAsync("republiser-endring-pa-bruker", () -> kafkaRepubliseringService.republiserEndringPaBrukere(fromOffset));
     }
 
     private void sjekkTilgangTilAdmin() {
