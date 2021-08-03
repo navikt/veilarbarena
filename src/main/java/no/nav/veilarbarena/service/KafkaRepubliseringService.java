@@ -28,8 +28,10 @@ public class KafkaRepubliseringService {
         this.kafkaProducerService = kafkaProducerService;
     }
 
-    public void republiserEndringPaBrukere() {
-        int currentOffset = 0;
+    public void republiserEndringPaBrukere(int fromOffset) {
+        log.info("Starter republisering fra offset {}", fromOffset);
+
+        int currentOffset = fromOffset;
 
         while (true) {
             List<OppfolgingsbrukerEntity> brukere = oppfolgingsbrukerRepository.hentBrukerePage(currentOffset, OPPFOLGINGSPERIODE_PAGE_SIZE);
