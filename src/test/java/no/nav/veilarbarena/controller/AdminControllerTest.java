@@ -77,8 +77,20 @@ public class AdminControllerTest {
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
         verifiserAsynkront(3, TimeUnit.SECONDS, () -> {
-            verify(kafkaRepubliseringService, times(1)).republiserEndringPaBrukere();
+            verify(kafkaRepubliseringService, times(1)).republiserEndringPaBrukere(0);
         });
     }
-    
+
+    @Test
+    public void republiserEndringPaBruker__should_use_fromOffset() throws Exception {
+        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
+        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
+
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fromOffset=123"));
+
+        verifiserAsynkront(3, TimeUnit.SECONDS, () -> {
+            verify(kafkaRepubliseringService, times(1)).republiserEndringPaBrukere(123);
+        });
+    }
+
 }
