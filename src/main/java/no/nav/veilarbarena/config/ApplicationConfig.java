@@ -127,8 +127,7 @@ public class ApplicationConfig {
     private static String createArenaOrdsUrl() {
         boolean isProduction = EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Cluster name is missing"));
         return isProduction
-                ? createServiceUrl("arena-ords", "default", false)
-                : createServiceUrl("arena-ords", "q1", false);
+                ? "https://arena-ords.nais.adeo.no"
+                : "https://arena-ords-q1.dev.intern.nav.no";
     }
-
 }
