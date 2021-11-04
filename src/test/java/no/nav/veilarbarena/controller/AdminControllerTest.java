@@ -2,6 +2,7 @@ package no.nav.veilarbarena.controller;
 
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
+import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import no.nav.veilarbarena.service.KafkaRepubliseringService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class AdminControllerTest {
 
     @MockBean
     private KafkaRepubliseringService kafkaRepubliseringService;
+
+    @MockBean
+    private OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
     @Test
     public void republiserEndringPaBruker__should_return_401_if_user_missing() throws Exception {
