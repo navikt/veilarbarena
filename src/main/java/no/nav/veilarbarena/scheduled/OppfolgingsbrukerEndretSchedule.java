@@ -115,7 +115,6 @@ public class OppfolgingsbrukerEndretSchedule {
                 var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
 
                 kafkaProducerService.publiserEndringPaOppfolgingsbrukerV1OnPrem(endringPaBrukerV1);
-                metricsService.leggerBrukerPaKafkaMetrikk(endringPaBrukerV2);
             });
         } catch(Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
@@ -137,7 +136,6 @@ public class OppfolgingsbrukerEndretSchedule {
     private void publiserPaKafka(OppfolgingsbrukerEntity bruker) {
         var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
         kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);
-        metricsService.leggerBrukerPaKafkaMetrikk(endringPaBrukerV2);
     }
 
 }
