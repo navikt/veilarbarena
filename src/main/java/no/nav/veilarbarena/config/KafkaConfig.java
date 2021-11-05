@@ -9,6 +9,8 @@ import no.nav.common.kafka.producer.feilhandtering.KafkaProducerRecordProcessor;
 import no.nav.common.kafka.producer.feilhandtering.KafkaProducerRecordStorage;
 import no.nav.common.kafka.producer.feilhandtering.OracleProducerRepository;
 import no.nav.common.kafka.producer.util.KafkaProducerClientBuilder;
+import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
+import no.nav.veilarbarena.utils.KafkaMeterBinder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,14 +39,17 @@ public class KafkaConfig {
 
     private final KafkaProducerRecordStorage producerRecordStorage;
 
+    private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
+
 
     public KafkaConfig(
             JdbcTemplate jdbcTemplate,
             LeaderElectionClient leaderElectionClient,
             EnvironmentContext environmentContext,
             KafkaProperties kafkaProperties,
-            MeterRegistry meterRegistry
-    ) {
+            MeterRegistry meterRegistry,
+            OppdaterteBrukereRepository oppdaterteBrukereRepository) {
+        this.oppdaterteBrukereRepository = oppdaterteBrukereRepository;
         OracleProducerRepository oracleProducerRepository = new OracleProducerRepository(jdbcTemplate.getDataSource());
 
         KafkaProducerClient<byte[], byte[]> onPremProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
@@ -89,4 +94,8 @@ public class KafkaConfig {
         aivenProducerRecordProcessor.start();
     }
 
+    @Bean
+    public KafkaMeterBinder kafkaMeterBinder(){
+        return new KafkaMeterBinder(oppdaterteBrukereRepository);
+    }
 }

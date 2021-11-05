@@ -6,12 +6,10 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import no.nav.veilarbarena.repository.entity.OppdatertBrukerEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.ZonedDateTime;
 
-@Component
 public class KafkaMeterBinder implements MeterBinder {
 
     private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
