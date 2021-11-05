@@ -39,7 +39,7 @@ public class OppdaterteBrukereRepositoryTest {
         OppdaterteBrukereRepository oppdaterteBrukerRepository = new OppdaterteBrukereRepository(db);
         insertOppdatering(db, "123", Date.valueOf(LocalDate.now()));
 
-        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukerRepository.hentBrukereMedEldstEndring();
+        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
         long antallBrukereForSletting = oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters();
         oppdaterteBrukerRepository.slettOppdatering(oppdatertBrukerEntity);
         long antallBrukereEtterSletting = oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters();
@@ -58,11 +58,11 @@ public class OppdaterteBrukereRepositoryTest {
         insertOppdatering(db, nyFnr, Date.valueOf(LocalDate.now()));
         insertOppdatering(db, eldstFnr, Date.valueOf(LocalDate.now().minusYears(1)));
 
-        OppdatertBrukerEntity eldstBruker = oppdaterteBrukerRepository.hentBrukereMedEldstEndring();
+        OppdatertBrukerEntity eldstBruker = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
         oppdaterteBrukerRepository.slettOppdatering(eldstBruker);
-        OppdatertBrukerEntity nesteBruker = oppdaterteBrukerRepository.hentBrukereMedEldstEndring();
+        OppdatertBrukerEntity nesteBruker = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
         oppdaterteBrukerRepository.slettOppdatering(nesteBruker);
-        OppdatertBrukerEntity forventetNull = oppdaterteBrukerRepository.hentBrukereMedEldstEndring();
+        OppdatertBrukerEntity forventetNull = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
 
         assertEquals(eldstFnr, eldstBruker.getFodselsnr());
         assertEquals(nyFnr, nesteBruker.getFodselsnr());

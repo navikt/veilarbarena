@@ -24,7 +24,7 @@ public class KafkaMeterBinder implements MeterBinder {
     }
 
     public long hentDelayIMillisekunder() {
-        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukereRepository.hentBrukereMedEldstEndring();
+        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukereRepository.hentBrukerMedEldstEndring();
         if (oppdatertBrukerEntity == null) {
             return 0;
         }

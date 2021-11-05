@@ -123,7 +123,7 @@ public class OppfolgingsbrukerEndretSchedule {
     void publisereArenaBrukerEndringerV2() {
         log.info("Skal sende {} bruker oppdateringer til kafka", oppdaterteBrukereRepository.hentAntallBrukereSomSkalOppdaters());
         while (true) {
-            OppdatertBrukerEntity brukerOppdatering = oppdaterteBrukereRepository.hentBrukereMedEldstEndring();
+            OppdatertBrukerEntity brukerOppdatering = oppdaterteBrukereRepository.hentBrukerMedEldstEndring();
             if (brukerOppdatering == null) {
                 return;
             }
