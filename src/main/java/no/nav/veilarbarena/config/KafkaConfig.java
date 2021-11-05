@@ -37,7 +37,6 @@ public class KafkaConfig {
 
     private final KafkaProducerRecordStorage producerRecordStorage;
 
-
     public KafkaConfig(
             JdbcTemplate jdbcTemplate,
             LeaderElectionClient leaderElectionClient,

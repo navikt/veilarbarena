@@ -112,7 +112,6 @@ public class OppfolgingsbrukerEndretSchedule {
                 }
 
                 var endringPaBrukerV1 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV1(bruker, aktorId);
-                var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
 
                 kafkaProducerService.publiserEndringPaOppfolgingsbrukerV1OnPrem(endringPaBrukerV1);
             });
