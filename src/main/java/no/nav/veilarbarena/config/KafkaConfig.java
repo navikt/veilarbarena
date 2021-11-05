@@ -39,17 +39,12 @@ public class KafkaConfig {
 
     private final KafkaProducerRecordStorage producerRecordStorage;
 
-    private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
-
-
     public KafkaConfig(
             JdbcTemplate jdbcTemplate,
             LeaderElectionClient leaderElectionClient,
             EnvironmentContext environmentContext,
             KafkaProperties kafkaProperties,
-            MeterRegistry meterRegistry,
-            OppdaterteBrukereRepository oppdaterteBrukereRepository) {
-        this.oppdaterteBrukereRepository = oppdaterteBrukereRepository;
+            MeterRegistry meterRegistry) {
         OracleProducerRepository oracleProducerRepository = new OracleProducerRepository(jdbcTemplate.getDataSource());
 
         KafkaProducerClient<byte[], byte[]> onPremProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
@@ -92,10 +87,5 @@ public class KafkaConfig {
     public void start() {
         onPremProducerRecordProcessor.start();
         aivenProducerRecordProcessor.start();
-    }
-
-    @Bean
-    public KafkaMeterBinder kafkaMeterBinder(){
-        return new KafkaMeterBinder(oppdaterteBrukereRepository);
     }
 }
