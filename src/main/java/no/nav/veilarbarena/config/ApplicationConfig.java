@@ -27,7 +27,7 @@ import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClientImpl;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import no.nav.veilarbarena.utils.MetricsReporter;
+import no.nav.veilarbarena.utils.KafkaMeterBinder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -127,8 +127,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public MetricsReporter kafkaMetrics(OppdaterteBrukereRepository oppdaterteBrukereRepository){
-        return new MetricsReporter(oppdaterteBrukereRepository);
+    public KafkaMeterBinder kafkaMeterBinder(OppdaterteBrukereRepository oppdaterteBrukereRepository){
+        return new KafkaMeterBinder(oppdaterteBrukereRepository);
     }
 
     private static String createArenaOrdsUrl() {
