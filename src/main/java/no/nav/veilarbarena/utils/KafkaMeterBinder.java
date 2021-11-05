@@ -25,7 +25,7 @@ public class KafkaMeterBinder implements MeterBinder {
 
     public long hentDelayIMillisekunder() {
         OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukereRepository.hentBrukerMedEldstEndring();
-        if (oppdatertBrukerEntity == null) {
+        if (oppdatertBrukerEntity == null || oppdatertBrukerEntity.getTidsstempel() == null) {
             return 0;
         }
         return Math.max(Date.from(ZonedDateTime.now().toInstant()).getTime() - oppdatertBrukerEntity.getTidsstempel().getTime(), 0);
