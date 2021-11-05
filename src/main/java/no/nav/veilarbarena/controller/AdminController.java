@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
+import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import no.nav.veilarbarena.service.KafkaRepubliseringService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +24,17 @@ public class AdminController {
 
     private final KafkaRepubliseringService kafkaRepubliseringService;
 
+    private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
+
     @PostMapping("/republiser/endring-pa-bruker")
     public String republiserEndringPaBruker(@RequestParam(required = false, defaultValue = "0") int fromOffset) {
         sjekkTilgangTilAdmin();
         return JobRunner.runAsync("republiser-endring-pa-bruker", () -> kafkaRepubliseringService.republiserEndringPaBrukere(fromOffset));
+    }
+    @PostMapping("/republiser/leggAlleBrukerePaV2Topicen")
+    public String republiserTilstand() {
+        sjekkTilgangTilAdmin();
+        return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic", oppdaterteBrukereRepository::insertAlleBrukereFraOppfolgingsbrukerTabellen);
     }
 
     private void sjekkTilgangTilAdmin() {

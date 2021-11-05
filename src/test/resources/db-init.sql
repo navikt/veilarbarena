@@ -68,3 +68,11 @@ CREATE TABLE KAFKA_PRODUCER_RECORD (
     HEADERS_JSON            CLOB,
     CREATED_AT              TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+
+-- V1_9__kafka_producer_record.sql (Trigger stottes ikke i H2 databasen)
+CREATE TABLE OPPDATERTE_BRUKERE
+(
+    FNR         VARCHAR(33),
+    TIDSSTEMPEL DATE,
+    PRIMARY KEY (FNR)
+);
