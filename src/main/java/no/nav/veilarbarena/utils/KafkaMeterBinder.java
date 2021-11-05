@@ -22,10 +22,10 @@ public class KafkaMeterBinder implements MeterBinder {
 
     @Override
     public void bindTo(@NonNull MeterRegistry registry) {
-        Gauge.builder("delay_veialarbarena_sekunder", this::hentDelayISekunder).register(registry);
+        Gauge.builder("delay_veialarbarena_millisekunder", this::hentDelayIMillisekunder).register(registry);
     }
 
-    public long hentDelayISekunder() {
+    public long hentDelayIMillisekunder() {
         OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukereRepository.hentBrukereMedEldstEndring();
         if (oppdatertBrukerEntity == null) {
             return 0;
