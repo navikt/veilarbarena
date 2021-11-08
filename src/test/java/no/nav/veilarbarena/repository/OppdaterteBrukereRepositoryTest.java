@@ -9,9 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OppdaterteBrukereRepositoryTest {
 
@@ -39,7 +40,7 @@ public class OppdaterteBrukereRepositoryTest {
         OppdaterteBrukereRepository oppdaterteBrukerRepository = new OppdaterteBrukereRepository(db);
         oppdaterteBrukerRepository.insertOppdatering("123", Date.valueOf(LocalDate.now()));
 
-        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
+        OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukerRepository.hentBrukereMedEldsteEndringer().get(0);
         long antallBrukereForSletting = oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters();
         oppdaterteBrukerRepository.slettOppdatering(oppdatertBrukerEntity);
         long antallBrukereEtterSletting = oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters();
@@ -58,14 +59,23 @@ public class OppdaterteBrukereRepositoryTest {
         oppdaterteBrukerRepository.insertOppdatering(nyFnr, Date.valueOf(LocalDate.now()));
         oppdaterteBrukerRepository.insertOppdatering(eldstFnr, Date.valueOf(LocalDate.now().minusYears(1)));
 
-        OppdatertBrukerEntity eldstBruker = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
+        OppdatertBrukerEntity eldstBruker = oppdaterteBrukerRepository.hentBrukereMedEldsteEndringer().get(0);
         oppdaterteBrukerRepository.slettOppdatering(eldstBruker);
-        OppdatertBrukerEntity nesteBruker = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
+        OppdatertBrukerEntity nesteBruker = oppdaterteBrukerRepository.hentBrukereMedEldsteEndringer().get(0);
         oppdaterteBrukerRepository.slettOppdatering(nesteBruker);
-        OppdatertBrukerEntity forventetNull = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
+        List<OppdatertBrukerEntity> forventetTom = oppdaterteBrukerRepository.hentBrukereMedEldsteEndringer();
 
         assertEquals(eldstFnr, eldstBruker.getFodselsnr());
         assertEquals(nyFnr, nesteBruker.getFodselsnr());
-        assertNull(forventetNull);
+        assertTrue(forventetTom.isEmpty());
+    }
+
+    @Test
+    public void skal_hente_liste_av_oppdateringer() {
+        JdbcTemplate db = LocalH2Database.getDb();
+        OppdaterteBrukereRepository oppdaterteBrukerRepository = new OppdaterteBrukereRepository(db);
+        oppdaterteBrukerRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen(Date.valueOf(LocalDate.now()));
+        List<OppdatertBrukerEntity> brukereSomSkalOppdateres = oppdaterteBrukerRepository.hentBrukereMedEldsteEndringer();
+        assertEquals(brukereSomSkalOppdateres.size(), 3);
     }
 }

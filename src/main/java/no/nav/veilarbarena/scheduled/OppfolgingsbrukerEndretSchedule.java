@@ -111,7 +111,7 @@ public class OppfolgingsbrukerEndretSchedule {
 
                 kafkaProducerService.publiserEndringPaOppfolgingsbrukerV1OnPrem(endringPaBrukerV1);
             });
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error("Feil ved publisering av arena endringer til kafka", e);
         }
     }
@@ -119,12 +119,14 @@ public class OppfolgingsbrukerEndretSchedule {
     void publisereArenaBrukerEndringerV2() {
         log.info("Skal sende {} bruker oppdateringer til kafka", oppdaterteBrukereRepository.hentAntallBrukereSomSkalOppdaters());
         while (true) {
-            OppdatertBrukerEntity brukerOppdatering = oppdaterteBrukereRepository.hentBrukerMedEldstEndring();
-            if (brukerOppdatering == null) {
+            List<OppdatertBrukerEntity> brukerOppdateringer = oppdaterteBrukereRepository.hentBrukereMedEldsteEndringer();
+            if (brukerOppdateringer == null || brukerOppdateringer.isEmpty()) {
                 return;
             }
-            oppfolgingsbrukerRepository.hentOppfolgingsbruker(brukerOppdatering.getFodselsnr()).ifPresent(this::publiserPaKafka);
-            oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
+            brukerOppdateringer.forEach(brukerOppdatering -> {
+                oppfolgingsbrukerRepository.hentOppfolgingsbruker(brukerOppdatering.getFodselsnr()).ifPresent(this::publiserPaKafka);
+                oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
+            });
         }
     }
 
