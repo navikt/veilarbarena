@@ -28,7 +28,7 @@ public class OppdaterteBrukereRepositoryTest {
     public void skal_inserte_alle_unike_brukere() {
         JdbcTemplate db = LocalH2Database.getDb();
         OppdaterteBrukereRepository oppdaterteBrukerRepository = new OppdaterteBrukereRepository(db);
-        oppdaterteBrukerRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen();
+        oppdaterteBrukerRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen(Date.valueOf(LocalDate.now()));
 
         assertEquals(Long.valueOf(3), oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters());
     }
@@ -37,7 +37,7 @@ public class OppdaterteBrukereRepositoryTest {
     public void skal_slette_oppdatering() {
         JdbcTemplate db = LocalH2Database.getDb();
         OppdaterteBrukereRepository oppdaterteBrukerRepository = new OppdaterteBrukereRepository(db);
-        insertOppdatering(db, "123", Date.valueOf(LocalDate.now()));
+        oppdaterteBrukerRepository.insertOppdatering("123", Date.valueOf(LocalDate.now()));
 
         OppdatertBrukerEntity oppdatertBrukerEntity = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
         long antallBrukereForSletting = oppdaterteBrukerRepository.hentAntallBrukereSomSkalOppdaters();
@@ -55,8 +55,8 @@ public class OppdaterteBrukereRepositoryTest {
         final String eldstFnr = "12345";
         final String nyFnr = "123";
 
-        insertOppdatering(db, nyFnr, Date.valueOf(LocalDate.now()));
-        insertOppdatering(db, eldstFnr, Date.valueOf(LocalDate.now().minusYears(1)));
+        oppdaterteBrukerRepository.insertOppdatering(nyFnr, Date.valueOf(LocalDate.now()));
+        oppdaterteBrukerRepository.insertOppdatering(eldstFnr, Date.valueOf(LocalDate.now().minusYears(1)));
 
         OppdatertBrukerEntity eldstBruker = oppdaterteBrukerRepository.hentBrukerMedEldstEndring();
         oppdaterteBrukerRepository.slettOppdatering(eldstBruker);
@@ -67,17 +67,5 @@ public class OppdaterteBrukereRepositoryTest {
         assertEquals(eldstFnr, eldstBruker.getFodselsnr());
         assertEquals(nyFnr, nesteBruker.getFodselsnr());
         assertNull(forventetNull);
-    }
-
-
-    private void insertOppdatering(JdbcTemplate db, String fnr, Date dato) {
-        String sql = "merge into OPPDATERTE_BRUKERE" +
-                "    using dual" +
-                "    on (FNR = ?)" +
-                "    when not matched then" +
-                "        insert (FNR, TIDSSTEMPEL) values (?, ?)" +
-                "    when matched then" +
-                "        update set TIDSSTEMPEL = ?";
-        db.update(sql, fnr, fnr, dato, dato);
     }
 }

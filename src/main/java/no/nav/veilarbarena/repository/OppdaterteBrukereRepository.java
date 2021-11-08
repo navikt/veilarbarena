@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.util.function.Supplier;
 
@@ -36,15 +37,25 @@ public class OppdaterteBrukereRepository {
 
     /*
         Inserter alle fnr slik at naavarende tilstand blir publisert pa kafka.
-        Re-publiseringen blir nedprioritert i forhold til faktiske endringer i OPPFOLGINGSBRUKER tabellen.
-        pga. TIDSSTEMPEL satt til 17/12/2072
+        Re-publiseringen blir nedprioritert i forhold til faktiske endringer i OPPFOLGINGSBRUKER tabellen, hvis dato er satt frem i tid.
     * */
-    public void insertAlleBrukereFraOppfolgingsbrukerTabellen() {
+    public void insertAlleBrukereFraOppfolgingsbrukerTabellen(Date dato) {
         db.update("merge into OPPDATERTE_BRUKERE t using (SELECT DISTINCT FODSELSNR FROM OPPFOLGINGSBRUKER) s" +
                 "    on (t.FNR = s.FODSELSNR)" +
                 "    when not matched" +
                 "    then" +
-                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, TO_DATE('17/12/2072', 'DD/MM/YYYY'))");
+                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", dato);
+    }
+
+    public void insertOppdatering(String fnr, Date dato) {
+        String sql = "merge into OPPDATERTE_BRUKERE" +
+                "    using dual" +
+                "    on (FNR = ?)" +
+                "    when not matched then" +
+                "        insert (FNR, TIDSSTEMPEL) values (?, ?)" +
+                "    when matched then" +
+                "        update set TIDSSTEMPEL = ?";
+        db.update(sql, fnr, fnr, dato, dato);
     }
 
     public Long hentAntallBrukereSomSkalOppdaters() {

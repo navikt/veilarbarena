@@ -12,7 +12,6 @@ import no.nav.veilarbarena.repository.entity.OppdatertBrukerEntity;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
 import no.nav.veilarbarena.service.KafkaProducerService;
-import no.nav.veilarbarena.service.MetricsService;
 import no.nav.veilarbarena.service.UnleashService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,6 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final AktorOppslagClient aktorOppslagClient;
 
-    private final MetricsService metricsService;
 
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
@@ -51,8 +49,7 @@ public class OppfolgingsbrukerEndretSchedule {
             OppdaterteBrukereRepository oppdaterteBrukereRepository, LeaderElectionClient leaderElectionClient,
             UnleashService unleashService,
             KafkaProducerService kafkaProducerService,
-            AktorOppslagClient aktorOppslagClient,
-            MetricsService metricsService
+            AktorOppslagClient aktorOppslagClient
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppfolgingsbrukerSistEndringRepository = oppfolgingsbrukerSistEndringRepository;
@@ -61,7 +58,6 @@ public class OppfolgingsbrukerEndretSchedule {
         this.unleashService = unleashService;
         this.kafkaProducerService = kafkaProducerService;
         this.aktorOppslagClient = aktorOppslagClient;
-        this.metricsService = metricsService;
     }
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
