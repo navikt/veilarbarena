@@ -3,7 +3,6 @@ package no.nav.veilarbarena.controller;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import no.nav.veilarbarena.service.KafkaRepubliseringService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,9 +29,6 @@ public class AdminControllerTest {
     private AuthContextHolder authContextHolder;
 
     @MockBean
-    private KafkaRepubliseringService kafkaRepubliseringService;
-
-    @MockBean
     private OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
     @Test
@@ -40,7 +36,7 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.empty());
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
                 .andExpect(status().is(401));
     }
 
@@ -49,7 +45,7 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
                 .andExpect(status().is(401));
     }
 
@@ -58,7 +54,7 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvmyapp"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
                 .andExpect(status().is(403));
     }
 
@@ -67,7 +63,7 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.EKSTERN));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
                 .andExpect(status().is(403));
     }
 
@@ -76,25 +72,27 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
                 .andExpect(status().is(200))
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
-        verifiserAsynkront(3, TimeUnit.SECONDS, () -> {
-            verify(kafkaRepubliseringService, times(1)).republiserEndringPaBrukere(0);
-        });
+        verifiserAsynkront(3, TimeUnit.SECONDS,
+                () -> verify(oppdaterteBrukereRepository, times(1)).insertOppdatering(eq("123"), any())
+        );
     }
 
     @Test
-    public void republiserEndringPaBruker__should_use_fromOffset() throws Exception {
+    public void republiserEndringPaBruker__should_return_job_id_and_republish_all() throws Exception {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fromOffset=123"));
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/all"))
+                .andExpect(status().is(200))
+                .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
-        verifiserAsynkront(3, TimeUnit.SECONDS, () -> {
-            verify(kafkaRepubliseringService, times(1)).republiserEndringPaBrukere(123);
-        });
+        verifiserAsynkront(3, TimeUnit.SECONDS,
+                () -> verify(oppdaterteBrukereRepository, times(1)).insertAlleBrukereFraOppfolgingsbrukerTabellen(any())
+        );
     }
 
 }
