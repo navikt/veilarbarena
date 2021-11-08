@@ -5,13 +5,15 @@ import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import no.nav.veilarbarena.service.KafkaRepubliseringService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.Date;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,19 +24,23 @@ public class AdminController {
 
     private final AuthContextHolder authContextHolder;
 
-    private final KafkaRepubliseringService kafkaRepubliseringService;
-
     private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
-    @PostMapping("/republiser/endring-pa-bruker")
-    public String republiserEndringPaBruker(@RequestParam(required = false, defaultValue = "0") int fromOffset) {
-        sjekkTilgangTilAdmin();
-        return JobRunner.runAsync("republiser-endring-pa-bruker", () -> kafkaRepubliseringService.republiserEndringPaBrukere(fromOffset));
-    }
-    @PostMapping("/republiser/leggAlleBrukerePaV2Topicen")
+    //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
+    @PostMapping("/republiser/endring-pa-bruker/all")
     public String republiserTilstand() {
         sjekkTilgangTilAdmin();
-        return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic", oppdaterteBrukereRepository::insertAlleBrukereFraOppfolgingsbrukerTabellen);
+        return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic",
+                () -> oppdaterteBrukereRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen((Date.valueOf(LocalDate.now().plusYears(1))))
+        );
+    }
+
+    @PostMapping("/republiser/endring-pa-bruker")
+    public String republiserTilstand(@RequestParam String fnr) {
+        sjekkTilgangTilAdmin();
+        return JobRunner.runAsync("legg-bruker-pa-v2-topic",
+                () -> oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now()))
+        );
     }
 
     private void sjekkTilgangTilAdmin() {

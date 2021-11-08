@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.util.function.Supplier;
 
@@ -24,7 +25,7 @@ public class OppdaterteBrukereRepository {
     }
 
 
-    public OppdatertBrukerEntity hentBrukereMedEldstEndring() {
+    public OppdatertBrukerEntity hentBrukerMedEldstEndring() {
         String sql = "SELECT * FROM OPPDATERTE_BRUKERE ORDER BY TIDSSTEMPEL FETCH NEXT 1 ROWS ONLY";
         return queryForObjectOrNull(() -> db.queryForObject(sql, OppdaterteBrukereRepository::mapOppfolgingsbrukerSistEndret));
     }
@@ -36,15 +37,25 @@ public class OppdaterteBrukereRepository {
 
     /*
         Inserter alle fnr slik at naavarende tilstand blir publisert pa kafka.
-        Re-publiseringen blir nedprioritert i forhold til faktiske endringer i OPPFOLGINGSBRUKER tabellen.
-        pga. TIDSSTEMPEL satt til 17/12/2072
+        Re-publiseringen blir nedprioritert i forhold til faktiske endringer i OPPFOLGINGSBRUKER tabellen, hvis dato er satt frem i tid.
     * */
-    public void insertAlleBrukereFraOppfolgingsbrukerTabellen() {
+    public void insertAlleBrukereFraOppfolgingsbrukerTabellen(Date endringsDato) {
         db.update("merge into OPPDATERTE_BRUKERE t using (SELECT DISTINCT FODSELSNR FROM OPPFOLGINGSBRUKER) s" +
                 "    on (t.FNR = s.FODSELSNR)" +
                 "    when not matched" +
                 "    then" +
-                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, TO_DATE('17/12/2072', 'DD/MM/YYYY'))");
+                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", endringsDato);
+    }
+
+    public void insertOppdatering(String fnr, Date endringsDato) {
+        String sql = "merge into OPPDATERTE_BRUKERE" +
+                "    using dual" +
+                "    on (FNR = ?)" +
+                "    when not matched then" +
+                "        insert (FNR, TIDSSTEMPEL) values (?, ?)" +
+                "    when matched then" +
+                "        update set TIDSSTEMPEL = ?";
+        db.update(sql, fnr, fnr, endringsDato, endringsDato);
     }
 
     public Long hentAntallBrukereSomSkalOppdaters() {
