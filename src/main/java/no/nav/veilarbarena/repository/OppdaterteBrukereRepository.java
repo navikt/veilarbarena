@@ -39,15 +39,15 @@ public class OppdaterteBrukereRepository {
         Inserter alle fnr slik at naavarende tilstand blir publisert pa kafka.
         Re-publiseringen blir nedprioritert i forhold til faktiske endringer i OPPFOLGINGSBRUKER tabellen, hvis dato er satt frem i tid.
     * */
-    public void insertAlleBrukereFraOppfolgingsbrukerTabellen(Date dato) {
+    public void insertAlleBrukereFraOppfolgingsbrukerTabellen(Date endringsDato) {
         db.update("merge into OPPDATERTE_BRUKERE t using (SELECT DISTINCT FODSELSNR FROM OPPFOLGINGSBRUKER) s" +
                 "    on (t.FNR = s.FODSELSNR)" +
                 "    when not matched" +
                 "    then" +
-                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", dato);
+                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", endringsDato);
     }
 
-    public void insertOppdatering(String fnr, Date dato) {
+    public void insertOppdatering(String fnr, Date endringsDato) {
         String sql = "merge into OPPDATERTE_BRUKERE" +
                 "    using dual" +
                 "    on (FNR = ?)" +
@@ -55,7 +55,7 @@ public class OppdaterteBrukereRepository {
                 "        insert (FNR, TIDSSTEMPEL) values (?, ?)" +
                 "    when matched then" +
                 "        update set TIDSSTEMPEL = ?";
-        db.update(sql, fnr, fnr, dato, dato);
+        db.update(sql, fnr, fnr, endringsDato, endringsDato);
     }
 
     public Long hentAntallBrukereSomSkalOppdaters() {

@@ -26,6 +26,7 @@ public class AdminController {
 
     private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
+    //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
     @PostMapping("/republiser/endring-pa-bruker/all")
     public String republiserTilstand() {
         sjekkTilgangTilAdmin();
@@ -37,8 +38,8 @@ public class AdminController {
     @PostMapping("/republiser/endring-pa-bruker")
     public String republiserTilstand(@RequestParam String fnr) {
         sjekkTilgangTilAdmin();
-        return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic",
-                () -> oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now().plusYears(1)))
+        return JobRunner.runAsync("legg-bruker-pa-v2-topic",
+                () -> oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now()))
         );
     }
 
