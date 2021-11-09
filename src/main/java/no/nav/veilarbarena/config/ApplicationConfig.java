@@ -27,7 +27,6 @@ import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClientImpl;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import no.nav.veilarbarena.utils.KafkaMeterBinder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +35,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.onPremByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
-import static no.nav.common.utils.UrlUtils.createServiceUrl;
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
 
@@ -124,11 +122,6 @@ public class ApplicationConfig {
     @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
         return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
-    }
-
-    @Bean
-    public KafkaMeterBinder kafkaMeterBinder(OppdaterteBrukereRepository oppdaterteBrukereRepository){
-        return new KafkaMeterBinder(oppdaterteBrukereRepository);
     }
 
     private static String createArenaOrdsUrl() {

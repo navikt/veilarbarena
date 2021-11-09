@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -25,9 +26,9 @@ public class OppdaterteBrukereRepository {
     }
 
 
-    public OppdatertBrukerEntity hentBrukerMedEldstEndring() {
-        String sql = "SELECT * FROM OPPDATERTE_BRUKERE ORDER BY TIDSSTEMPEL FETCH NEXT 1 ROWS ONLY";
-        return queryForObjectOrNull(() -> db.queryForObject(sql, OppdaterteBrukereRepository::mapOppfolgingsbrukerSistEndret));
+    public List<OppdatertBrukerEntity> hentBrukereMedEldsteEndringer() {
+        String sql = "SELECT * FROM OPPDATERTE_BRUKERE ORDER BY TIDSSTEMPEL FETCH NEXT 10000 ROWS ONLY";
+        return db.query(sql, OppdaterteBrukereRepository::mapOppfolgingsbrukerSistEndret);
     }
 
     public void slettOppdatering(OppdatertBrukerEntity oppdatering) {
