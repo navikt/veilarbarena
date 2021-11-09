@@ -27,7 +27,7 @@ public class OppdaterteBrukereRepository {
 
 
     public List<OppdatertBrukerEntity> hentBrukereMedEldsteEndringer() {
-        String sql = "SELECT * FROM OPPDATERTE_BRUKERE ORDER BY TIDSSTEMPEL FETCH NEXT 1000 ROWS ONLY";
+        String sql = "SELECT * FROM OPPDATERTE_BRUKERE ORDER BY TIDSSTEMPEL FETCH NEXT 10 ROWS ONLY";
         return db.query(sql, OppdaterteBrukereRepository::mapOppfolgingsbrukerSistEndret);
     }
 
