@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -46,6 +47,15 @@ public class OppdaterteBrukereRepository {
                 "    when not matched" +
                 "    then" +
                 "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", endringsDato);
+    }
+
+    public void insertBrukereFraOppfolgingsbrukerFraDato(Date endringsDato, LocalDate fraDato) {
+        db.update("merge into OPPDATERTE_BRUKERE t using" +
+                " (SELECT DISTINCT FODSELSNR FROM OPPFOLGINGSBRUKER WHERE TIDSSTEMPEL >= ?) s" +
+                "    on (t.FNR = s.FODSELSNR)" +
+                "    when not matched" +
+                "    then" +
+                "        insert (FNR, TIDSSTEMPEL) values (s.FODSELSNR, ?)", fraDato, endringsDato);
     }
 
     public void insertOppdatering(String fnr, Date endringsDato) {

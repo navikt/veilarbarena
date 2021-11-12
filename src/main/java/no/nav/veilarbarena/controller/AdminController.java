@@ -5,6 +5,7 @@ import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,25 @@ public class AdminController {
 
     private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
-    //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
     @PostMapping("/republiser/endring-pa-bruker/all")
     public String republiserTilstand() {
         sjekkTilgangTilAdmin();
+        //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
+        Date endringsDato = Date.valueOf(LocalDate.now().plusYears(1));
         return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic",
-                () -> oppdaterteBrukereRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen((Date.valueOf(LocalDate.now().plusYears(1))))
+                () -> oppdaterteBrukereRepository.insertAlleBrukereFraOppfolgingsbrukerTabellen(endringsDato)
+        );
+    }
+
+    @PostMapping("/republiser/endring-pa-bruker/fra-dato")
+    public String republiserTilstandFraDato(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fraDato
+    ) {
+        sjekkTilgangTilAdmin();
+        //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
+        Date endringsDato = Date.valueOf(LocalDate.now().plusYears(1));
+        return JobRunner.runAsync("legg-brukere-fra-dato-pa-v2-topic",
+                () -> oppdaterteBrukereRepository.insertBrukereFraOppfolgingsbrukerFraDato(endringsDato, fraDato)
         );
     }
 
