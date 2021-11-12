@@ -44,7 +44,7 @@ public class AdminController {
         sjekkTilgangTilAdmin();
         //Bruker dato et år frem i tid for at løpende oppdateringer fra Arena skal få prioritet
         Date endringsDato = Date.valueOf(LocalDate.now().plusYears(1));
-        return JobRunner.runAsync("legg-alle-brukere-pa-v2-topic",
+        return JobRunner.runAsync("legg-brukere-fra-dato-pa-v2-topic",
                 () -> oppdaterteBrukereRepository.insertBrukereFraOppfolgingsbrukerFraDato(endringsDato, fraDato)
         );
     }
