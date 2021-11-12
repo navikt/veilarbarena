@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -95,4 +96,18 @@ public class AdminControllerTest {
         );
     }
 
+    @Test
+    public void republiserTilstandFraDato__returnerer_job_id_og_insert_brukere_for_republisering_med_fra_dato() throws Exception {
+        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
+        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
+
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/fra-dato?fraDato=2021-10-17"))
+                .andExpect(status().is(200))
+                .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
+
+        verifiserAsynkront(3, TimeUnit.SECONDS,
+                () -> verify(oppdaterteBrukereRepository, times(1))
+                        .insertBrukereFraOppfolgingsbrukerFraDato(any(), eq(LocalDate.of(2021, 10, 17)))
+        );
+    }
 }
