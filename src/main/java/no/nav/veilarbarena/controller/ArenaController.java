@@ -36,7 +36,9 @@ public class ArenaController {
 
     @GetMapping("/status")
     public ArenaStatusDTO hentStatus(@RequestParam("fnr") Fnr fnr) {
-        authService.sjekkTilgang(fnr);
+        if (!authService.erSystembruker()) {
+            authService.sjekkTilgang(fnr);
+        }
 
         return arenaService.hentArenaStatus(fnr)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

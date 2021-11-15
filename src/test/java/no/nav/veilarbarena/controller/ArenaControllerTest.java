@@ -41,6 +41,26 @@ public class ArenaControllerTest {
     private ArenaService arenaService;
 
     @Test
+    public void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {
+        when(authService.erSystembruker()).thenReturn(false);
+        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
+
+        verify(authService, times(1)).sjekkTilgang(FNR);
+    }
+
+    @Test
+    public void hentStatus__should_not_check_authorizaton_if_system_user() throws Exception {
+        when(authService.erSystembruker()).thenReturn(true);
+        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
+
+        verify(authService, never()).sjekkTilgang(FNR);
+    }
+
+    @Test
     public void hentStatus__should_check_authorization() throws Exception {
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
