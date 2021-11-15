@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.service;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -40,6 +43,17 @@ public class AuthService {
 
     public boolean erSystembruker() {
         return authContextHolder.erSystemBruker();
+    }
+
+    @SneakyThrows
+    public void sjekkAtSystembrukerErWhitelistet(String... clientIdWhitelist) {
+        String requestingAppClientId = authContextHolder.requireIdTokenClaims().getStringClaim("azp");
+        boolean isWhitelisted = Arrays.asList(clientIdWhitelist).contains(requestingAppClientId);
+
+        if (!isWhitelisted) {
+            log.error("Systembruker {} er ikke whitelistet", requestingAppClientId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
 }
