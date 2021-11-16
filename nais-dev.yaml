@@ -36,6 +36,15 @@ spec:
   leaderElection: true
   kafka:
     pool: nav-dev
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: poao-gcp-proxy
+          namespace: pto
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
@@ -55,3 +64,5 @@ spec:
       value: "modialogin-q1"
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: aapen-fo-endringPaaOppfoelgingsBruker-v1-q1
+    - name: POAO_GCP_PROXY_CLIENT_ID
+      value: 1fbc8405-3eae-4f2f-9af8-7c7ba303cd52
