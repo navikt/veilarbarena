@@ -42,7 +42,10 @@ public class ArenaController {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(fnr);
         } else {
-            authService.sjekkAtSystembrukerErWhitelistet(environmentProperties.getPoaoGcpProxyClientId());
+            authService.sjekkAtSystembrukerErWhitelistet(
+                    environmentProperties.getPoaoGcpProxyClientId(),
+                    environmentProperties.getTiltaksgjennomforingApiClientId()
+            );
         }
 
         return arenaService.hentArenaStatus(fnr)

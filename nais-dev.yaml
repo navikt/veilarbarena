@@ -42,6 +42,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: tiltaksgjennomforing-api
+          namespace: arbeidsgiver
+          cluster: dev-fss
         - application: poao-gcp-proxy
           namespace: pto
           cluster: dev-fss
@@ -66,3 +69,5 @@ spec:
       value: aapen-fo-endringPaaOppfoelgingsBruker-v1-q1
     - name: POAO_GCP_PROXY_CLIENT_ID
       value: 1fbc8405-3eae-4f2f-9af8-7c7ba303cd52
+    - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
+      value: 98a17237-0bfc-496e-ba28-cdb320960257

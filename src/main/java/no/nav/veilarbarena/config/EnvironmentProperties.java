@@ -33,6 +33,8 @@ public class EnvironmentProperties {
 
     private String poaoGcpProxyClientId;
 
+    private String tiltaksgjennomforingApiClientId;
+
 
     private String naisStsDiscoveryUrl;
 
