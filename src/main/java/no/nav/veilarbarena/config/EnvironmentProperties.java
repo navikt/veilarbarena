@@ -27,6 +27,15 @@ public class EnvironmentProperties {
     private String loginserviceIdportenAudience;
 
 
+    private String naisAadDiscoveryUrl;
+
+    private String naisAadClientId;
+
+    private String poaoGcpProxyClientId;
+
+    private String tiltaksgjennomforingApiClientId;
+
+
     private String naisStsDiscoveryUrl;
 
     private String abacUrl;

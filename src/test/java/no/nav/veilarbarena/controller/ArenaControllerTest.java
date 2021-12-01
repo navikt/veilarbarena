@@ -3,6 +3,7 @@ package no.nav.veilarbarena.controller;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
+import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
@@ -35,10 +36,34 @@ public class ArenaControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private EnvironmentProperties environmentProperties;
+
+    @MockBean
     private AuthService authService;
 
     @MockBean
     private ArenaService arenaService;
+
+    @Test
+    public void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {
+        when(authService.erSystembruker()).thenReturn(false);
+        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
+
+        verify(authService, times(1)).sjekkTilgang(FNR);
+    }
+
+    @Test
+    public void hentStatus__should_check_whitelist_if_system_user() throws Exception {
+        when(environmentProperties.getPoaoGcpProxyClientId()).thenReturn("poao-gcp-proxy");
+        when(authService.erSystembruker()).thenReturn(true);
+        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
+
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("poao-gcp-proxy", null);
+    }
 
     @Test
     public void hentStatus__should_check_authorization() throws Exception {

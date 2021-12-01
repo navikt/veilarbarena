@@ -2,6 +2,7 @@ package no.nav.veilarbarena.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.KanEnkeltReaktiveresDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
@@ -34,9 +35,18 @@ public class ArenaController {
 
     private final ArenaService arenaService;
 
+    private final EnvironmentProperties environmentProperties;
+
     @GetMapping("/status")
     public ArenaStatusDTO hentStatus(@RequestParam("fnr") Fnr fnr) {
-        authService.sjekkTilgang(fnr);
+        if (!authService.erSystembruker()) {
+            authService.sjekkTilgang(fnr);
+        } else {
+            authService.sjekkAtSystembrukerErWhitelistet(
+                    environmentProperties.getPoaoGcpProxyClientId(),
+                    environmentProperties.getTiltaksgjennomforingApiClientId()
+            );
+        }
 
         return arenaService.hentArenaStatus(fnr)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
