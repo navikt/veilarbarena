@@ -43,3 +43,4 @@ Spørsmål knyttet til koden eller prosjektet kan stilles via issues her på git
 ## For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #team-oppfølging.
+
