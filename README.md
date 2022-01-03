@@ -13,12 +13,12 @@ Tjenester man kan se for seg:
 - Tiltak-fil (SFTP i veilarbportefolje per idag)
 - Arena-JSON proxy (Mye fra av veilarboppfolging)
 - Bolk uthenting med søk/filtrering
-  
+
 
 ### Finurligheter
 - Bruker veilarbportefolje sin database pga db-link til arena (Denne skal permanent flyttes hit etterhvert:tm:)
-- Databasen har materaliserte views som synkes mot views i arena via db-link. Dette betyr at det kan forekomme forsinkelser på noen minutter når data fra databasen brukes. 
- 
+- Databasen har materaliserte views som synkes mot views i arena via db-link. Dette betyr at det kan forekomme forsinkelser på noen minutter når data fra databasen brukes.
+
 
 # Komme i gang
 
@@ -42,5 +42,4 @@ Spørsmål knyttet til koden eller prosjektet kan stilles via issues her på git
 
 ## For NAV-ansatte
 
-Interne henvendelser kan sendes via Slack i kanalen #poao-tech
-.
+Interne henvendelser kan sendes via Slack i kanalen #poao-tech.
