@@ -44,6 +44,7 @@ public class ArenaController {
         } else {
             authService.sjekkAtSystembrukerErWhitelistet(
                     environmentProperties.getPoaoGcpProxyClientId(),
+                    environmentProperties.getAmtTiltakClientId(),
                     environmentProperties.getTiltaksgjennomforingApiClientId()
             );
         }
