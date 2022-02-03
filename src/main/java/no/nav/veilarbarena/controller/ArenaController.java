@@ -55,7 +55,9 @@ public class ArenaController {
 
     @GetMapping("/kan-enkelt-reaktiveres")
     public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveres(@RequestParam("fnr") Fnr fnr) {
-        authService.sjekkTilgang(fnr);
+        if (!authService.erSystembruker()) {
+            authService.sjekkTilgang(fnr);
+        }
 
         Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fnr);
 

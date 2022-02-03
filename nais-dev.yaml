@@ -51,6 +51,9 @@ spec:
         - application: amt-tiltak
           namespace: amt
           cluster: dev-gcp
+        - application: veilarbregistrering
+          namespace: paw
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
