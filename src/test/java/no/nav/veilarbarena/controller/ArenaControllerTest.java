@@ -62,7 +62,7 @@ public class ArenaControllerTest {
 
         mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
 
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("poao-gcp-proxy", null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("poao-gcp-proxy", null, null, null);
     }
 
     @Test
