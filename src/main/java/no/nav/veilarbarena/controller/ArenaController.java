@@ -43,7 +43,6 @@ public class ArenaController {
             authService.sjekkTilgang(fnr);
         } else {
             authService.sjekkAtSystembrukerErWhitelistet(
-                    environmentProperties.getPoaoGcpProxyClientId(),
                     environmentProperties.getAmtTiltakClientId(),
                     environmentProperties.getTiltaksgjennomforingApiClientId(),
                     environmentProperties.getVeilarbregistreringClientId()

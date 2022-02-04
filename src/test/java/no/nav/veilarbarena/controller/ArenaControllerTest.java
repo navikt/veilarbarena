@@ -56,13 +56,13 @@ public class ArenaControllerTest {
 
     @Test
     public void hentStatus__should_check_whitelist_if_system_user() throws Exception {
-        when(environmentProperties.getPoaoGcpProxyClientId()).thenReturn("poao-gcp-proxy");
+        when(environmentProperties.getAmtTiltakClientId()).thenReturn("amt-tiltak");
         when(authService.erSystembruker()).thenReturn(true);
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
 
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("poao-gcp-proxy", null, null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null);
     }
 
     @Test

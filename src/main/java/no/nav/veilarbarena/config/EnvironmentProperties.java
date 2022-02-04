@@ -31,8 +31,6 @@ public class EnvironmentProperties {
 
     private String naisAadClientId;
 
-    private String poaoGcpProxyClientId;
-
     private String amtTiltakClientId;
 
     private String tiltaksgjennomforingApiClientId;
