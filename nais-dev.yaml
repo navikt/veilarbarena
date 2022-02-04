@@ -77,5 +77,7 @@ spec:
       value: 1fbc8405-3eae-4f2f-9af8-7c7ba303cd52
     - name: AMT_TILTAK_CLIENT_ID
       value: 667fdef7-53e1-4b3c-bdd2-5195d72e8e98
+    - name: VEILARBREGISTRERING_CLIENT_ID
+      value: 687bb3b0-a83c-47b7-9562-c6f9fedcc898
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
       value: 98a17237-0bfc-496e-ba28-cdb320960257

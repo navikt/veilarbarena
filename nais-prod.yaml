@@ -47,6 +47,9 @@ spec:
         - application: poao-gcp-proxy
           namespace: pto
           cluster: prod-fss
+        - application: veilarbregistrering
+          namespace: paw
+          cluster: prod-fss
   vault:
     enabled: true
     paths:
@@ -70,5 +73,7 @@ spec:
       value: e068ab20-8fb3-44cd-af23-c10fc6541fbc
     - name: AMT_TILTAK_CLIENT_ID
       value: TODO
+    - name: VEILARBREGISTRERING_CLIENT_ID
+      value: b898d7c6-0160-4dca-867e-873a4bd85d25
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
       value: 4bc6277f-7c25-49b9-803f-a9873995889f
