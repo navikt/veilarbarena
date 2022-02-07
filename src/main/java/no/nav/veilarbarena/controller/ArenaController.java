@@ -43,8 +43,9 @@ public class ArenaController {
             authService.sjekkTilgang(fnr);
         } else {
             authService.sjekkAtSystembrukerErWhitelistet(
-                    environmentProperties.getPoaoGcpProxyClientId(),
-                    environmentProperties.getTiltaksgjennomforingApiClientId()
+                    environmentProperties.getAmtTiltakClientId(),
+                    environmentProperties.getTiltaksgjennomforingApiClientId(),
+                    environmentProperties.getVeilarbregistreringClientId()
             );
         }
 
@@ -54,7 +55,9 @@ public class ArenaController {
 
     @GetMapping("/kan-enkelt-reaktiveres")
     public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveres(@RequestParam("fnr") Fnr fnr) {
-        authService.sjekkTilgang(fnr);
+        if (!authService.erSystembruker()) {
+            authService.sjekkTilgang(fnr);
+        }
 
         Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fnr);
 

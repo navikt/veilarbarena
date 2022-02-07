@@ -31,10 +31,11 @@ public class EnvironmentProperties {
 
     private String naisAadClientId;
 
-    private String poaoGcpProxyClientId;
+    private String amtTiltakClientId;
 
     private String tiltaksgjennomforingApiClientId;
 
+    private String veilarbregistreringClientId;
 
     private String naisStsDiscoveryUrl;
 
