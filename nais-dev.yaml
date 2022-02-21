@@ -45,9 +45,6 @@ spec:
         - application: tiltaksgjennomforing-api
           namespace: arbeidsgiver
           cluster: dev-fss
-        - application: poao-gcp-proxy
-          namespace: pto
-          cluster: dev-fss
         - application: amt-tiltak
           namespace: amt
           cluster: dev-gcp
