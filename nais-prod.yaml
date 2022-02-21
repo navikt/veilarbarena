@@ -44,9 +44,9 @@ spec:
         - application: tiltaksgjennomforing-api
           namespace: arbeidsgiver
           cluster: prod-fss
-        - application: poao-gcp-proxy
-          namespace: pto
-          cluster: prod-fss
+        - application: amt-tiltak
+          namespace: amt
+          cluster: prod-gcp
         - application: veilarbregistrering
           namespace: paw
           cluster: prod-fss
