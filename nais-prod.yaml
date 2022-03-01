@@ -70,7 +70,7 @@ spec:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: aapen-fo-endringPaaOppfoelgingsBruker-v1-p
     - name: AMT_TILTAK_CLIENT_ID
-      value: ca05c4fa-ed31-4d5f-a27f-a0167aa24c56
+      value: 877dd682-4750-4193-8286-8ad2e08c3aab
     - name: VEILARBREGISTRERING_CLIENT_ID
       value: b898d7c6-0160-4dca-867e-873a4bd85d25
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
