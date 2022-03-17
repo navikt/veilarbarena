@@ -123,6 +123,8 @@ public class OppfolgingsbrukerEndretSchedule {
             if (brukerOppdateringer == null || brukerOppdateringer.isEmpty()) {
                 return;
             }
+            log.info("Kjører batch med {} bruker oppdateringer til kafka", brukerOppdateringer.size());
+
             brukerOppdateringer.forEach(brukerOppdatering -> {
                 oppfolgingsbrukerRepository.hentOppfolgingsbruker(brukerOppdatering.getFodselsnr()).ifPresent(this::publiserPaKafka);
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
