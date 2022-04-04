@@ -40,7 +40,6 @@ import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 @Configuration
 @EnableConfigurationProperties({EnvironmentProperties.class})
 @Import({
-        SwaggerConfig.class,
         ControllerTestConfig.class,
         RepositoryTestConfig.class,
         ServiceTestConfig.class,
