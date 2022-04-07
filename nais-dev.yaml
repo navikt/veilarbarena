@@ -54,6 +54,9 @@ spec:
         - application: veilarbregistrering
           namespace: paw
           cluster: dev-fss
+        - application: veilarboppfolging
+          namespace: pto
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
