@@ -17,11 +17,11 @@ import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.AbacClientMock;
-import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.mock.PepMock;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +63,7 @@ public class ApplicationTestConfig {
 
     @Bean
     public AktorOppslagClient aktorOppslagClient() {
-        return new AktorregisterClientMock();
+        return Mockito.mock(AktorOppslagClient.class);
     }
 
     @Bean
