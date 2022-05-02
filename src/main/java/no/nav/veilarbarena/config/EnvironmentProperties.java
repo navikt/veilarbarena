@@ -41,8 +41,6 @@ public class EnvironmentProperties {
 
     private String abacUrl;
 
-    private String aktorregisterUrl;
-
     private String dbUrl;
 
     private String kafkaBrokersUrl;
