@@ -2,6 +2,7 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
@@ -79,6 +80,10 @@ public class ArenaService {
 
     public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
         return arenaOrdsClient.hentArenaOppfolginssak(fnr);
+    }
+
+    public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {
+        return arenaOrdsClient.hentArenaAktiviteter(fnr);
     }
 
 }
