@@ -56,6 +56,9 @@ spec:
         - application: veilarboppfolging
           namespace: pto
           cluster: prod-fss
+        - application: veilarbaktivitet
+          namespace: pto
+          cluster: prod-fss
   vault:
     enabled: true
     paths:
