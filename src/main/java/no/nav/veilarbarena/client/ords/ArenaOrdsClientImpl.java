@@ -51,12 +51,22 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
                 .map(body -> fromJson(body, ArenaOppfolgingssakDTO.class));
     }
 
+    @SneakyThrows
     @Override
     public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {
-        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/aktiviteter?fnr=" + fnr);
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/aktiviteter");
 
-        return get(url)
-                .map(body -> fromXml(body, ArenaAktiviteterDTO.class));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("fnr", fnr.get())
+                .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.getBodyStr(response)
+                    .map(body -> fromXml(body, ArenaAktiviteterDTO.class));
+        }
     }
 
     @SneakyThrows

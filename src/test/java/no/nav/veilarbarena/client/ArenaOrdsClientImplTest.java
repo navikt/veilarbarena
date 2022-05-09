@@ -29,8 +29,9 @@ public class ArenaOrdsClientImplTest {
 
         ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
 
-        givenThat(get(urlEqualTo("/arena/api/v1/person/oppfoelging/aktiviteter?fnr=3628714324"))
+        givenThat(get(urlEqualTo("/arena/api/v1/person/oppfoelging/aktiviteter"))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withHeader("fnr", equalTo(fnr))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/xml")
