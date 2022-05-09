@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.service.dto;
+package no.nav.veilarbarena.client.ords.dto;
 
 import lombok.Value;
 

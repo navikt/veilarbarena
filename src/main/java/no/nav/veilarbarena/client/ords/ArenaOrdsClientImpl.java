@@ -5,6 +5,10 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -12,7 +16,9 @@ import okhttp3.Response;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static no.nav.common.json.JsonUtils.fromJson;
 import static no.nav.common.utils.UrlUtils.joinPaths;
+import static no.nav.veilarbarena.utils.XmlUtils.fromXml;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class ArenaOrdsClientImpl implements ArenaOrdsClient {
@@ -26,23 +32,44 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
         this.arenaOrdsTokenProvider = arenaOrdsTokenProvider;
     }
 
-    @SneakyThrows
-    public <T> Optional<T> get(String path, String fnr, Class<T> clazz) {
-        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging", path) + "?p_fnr=" + fnr;
+    @Override
+    public HealthCheckResult checkHealth() {
+        return HealthCheckUtils.pingUrl(joinPaths(arenaOrdsUrl, "arena/api/v1/test/ping"), client);
+    }
 
+    @Override
+    public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/oppfoelgingsstatus?p_fnr=" + fnr);
+        return get(url)
+                .map(body -> fromJson(body, ArenaOppfolgingsstatusDTO.class));
+    }
+
+    @Override
+    public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/oppfoelgingssak?p_fnr=" + fnr);
+        return get(url)
+                .map(body -> fromJson(body, ArenaOppfolgingssakDTO.class));
+    }
+
+    @Override
+    public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/aktiviteter?fnr=" + fnr);
+
+        return get(url)
+                .map(body -> fromXml(body, ArenaAktiviteterDTO.class));
+    }
+
+    @SneakyThrows
+    private Optional<String> get(String path) {
         Request request = new Request.Builder()
-                .url(url)
+                .url(path)
                 .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.parseJsonResponse(response, clazz);
+            return RestUtils.getBodyStr(response);
         }
     }
 
-    @Override
-    public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(joinPaths(arenaOrdsUrl, "arena/api/v1/test/ping"), client);
-    }
 }
