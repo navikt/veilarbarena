@@ -3,6 +3,7 @@ package no.nav.veilarbarena.client.ords.dto;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -11,9 +12,9 @@ public class ArenaAktiviteterDTO {
 
     @Data
     public static class Response {
-        List<Tiltaksaktivitet> tiltaksaktivitetListe;
-        List<Gruppeaktivitet> gruppeaktivitetListe;
-        List<Utdanningsaktivitet> utdanningsaktivitetListe;
+        List<Tiltaksaktivitet> tiltaksaktivitetListe = Collections.emptyList();
+        List<Gruppeaktivitet> gruppeaktivitetListe = Collections.emptyList();
+        List<Utdanningsaktivitet> utdanningsaktivitetListe = Collections.emptyList();
     }
 
     @Data

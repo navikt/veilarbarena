@@ -102,4 +102,31 @@ public class ArenaOrdsClientImplTest {
         assertEquals(LocalDate.of(2018, 2, 28), utdanningsaktivitet.getAktivitetPeriode().getTom());
     }
 
+    @Test
+    public void hentArenaAktiviteter_skal_ha_tom_liste_som_default() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String xmlResponse = TestUtils.readTestResourceFile("client/ords/aktiviteter_empty_response.xml", StandardCharsets.ISO_8859_1);
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlEqualTo("/arena/api/v1/person/oppfoelging/aktiviteter"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withHeader("fnr", equalTo(fnr))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(xmlResponse))
+        );
+
+        Optional<ArenaAktiviteterDTO> maybeAktiviteter = client.hentArenaAktiviteter(Fnr.of(fnr));
+
+        assertTrue(maybeAktiviteter.isPresent());
+
+        ArenaAktiviteterDTO aktiviteter = maybeAktiviteter.get();
+
+        assertTrue(aktiviteter.getResponse().getGruppeaktivitetListe().isEmpty());
+        assertTrue(aktiviteter.getResponse().getTiltaksaktivitetListe().isEmpty());
+        assertTrue(aktiviteter.getResponse().getUtdanningsaktivitetListe().isEmpty());
+    }
+
 }
