@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<v1:hentTiltakOgAktiviteterForBrukerResponse xmlns:v1="http://nav.no/tjeneste/virksomhet/tiltakOgAktivitet/v1/">
+    <response>
+        <tiltaksaktivitetListe>
+            <tiltaksnavn>Arbeidstrening</tiltaksnavn>
+            <aktivitetId>XX4367922</aktivitetId>
+            <tiltakLokaltNavn>Hjelpearbeider - murer</tiltakLokaltNavn>
+            <arrangoer>TEST Muligheter AS</arrangoer>
+            <bedriftsnummer>123543546</bedriftsnummer>
+            <deltakelsePeriode>
+                <fom>2017-01-28</fom>
+                <tom>2017-04-10</tom>
+            </deltakelsePeriode>
+            <deltakelseProsent>100</deltakelseProsent>
+            <deltakerStatus termnavn="Fullført">FULLF</deltakerStatus>
+            <statusSistEndret>2017-04-11</statusSistEndret>
+            <begrunnelseInnsoeking>Skal bli murer</begrunnelseInnsoeking>
+        </tiltaksaktivitetListe>
+        <tiltaksaktivitetListe>
+            <tiltaksnavn>Mentor</tiltaksnavn>
+            <aktivitetId>XX7894329</aktivitetId>
+            <tiltakLokaltNavn>Hjelpearbeider - murer</tiltakLokaltNavn>
+            <arrangoer>Et sted AS</arrangoer>
+            <bedriftsnummer>999123456</bedriftsnummer>
+            <deltakelsePeriode>
+                <fom>2017-02-28</fom>
+                <tom>2017-04-10</tom>
+            </deltakelsePeriode>
+            <deltakelseProsent>100</deltakelseProsent>
+            <deltakerStatus termnavn="Fullført">FULLF</deltakerStatus>
+            <statusSistEndret>2017-04-11</statusSistEndret>
+            <begrunnelseInnsoeking>Interessert i brannmur</begrunnelseInnsoeking>
+        </tiltaksaktivitetListe>
+        <utdanningsaktivitetListe>
+            <aktivitetstype>Ordinær utdanning for enslige forsørgere mv</aktivitetstype>
+            <aktivitetId>XX348702</aktivitetId>
+            <beskrivelse>Avsluttet arbeidsforholdet som lærling 28.02.18.</beskrivelse>
+            <aktivitetPeriode>
+                <fom>2017-10-01</fom>
+                <tom>2018-02-28</tom>
+            </aktivitetPeriode>
+        </utdanningsaktivitetListe>
+        <utdanningsaktivitetListe>
+            <aktivitetstype>Ordinær utdanning for enslige forsørgere mv</aktivitetstype>
+            <aktivitetId>XX57348923</aktivitetId>
+            <beskrivelse>Avsluttet arbeidsforholdet som lærling 28.02.18.</beskrivelse>
+            <aktivitetPeriode>
+                <fom>2017-10-01</fom>
+                <tom>2018-02-28</tom>
+            </aktivitetPeriode>
+        </utdanningsaktivitetListe>
+        <gruppeaktivitetListe>
+            <aktivitetstype>informasjonsmøte ved NAV lokalt</aktivitetstype>
+            <aktivitetId>XX3463278432</aktivitetId>
+            <beskrivelse>Informasjonsmøte med NAV</beskrivelse>
+            <moeteplanListe>
+                <startDato>2018-06-22</startDato>
+                <startKlokkeslett>13:00:00</startKlokkeslett>
+                <sluttDato>2018-06-22</sluttDato>
+                <sluttKlokkeslett>15:00:00</sluttKlokkeslett>
+                <sted>NAV Testheim</sted>
+            </moeteplanListe>
+            <status termnavn="Avbrutt">AVBR</status>
+        </gruppeaktivitetListe>
+        <gruppeaktivitetListe>
+            <aktivitetstype>informasjonsmøte ved NAV lokalt</aktivitetstype>
+            <aktivitetId>XX423876423</aktivitetId>
+            <beskrivelse>Informasjonsmøte om den nye digitale aktivitetsplanen i NAV</beskrivelse>
+            <moeteplanListe>
+                <startDato>2018-05-23</startDato>
+                <startKlokkeslett>13:00:00</startKlokkeslett>
+                <sluttDato>2018-05-23</sluttDato>
+                <sluttKlokkeslett>14:00:00</sluttKlokkeslett>
+                <sted>NAV Testheim</sted>
+            </moeteplanListe>
+            <status termnavn="Avbrutt">AVBR</status>
+        </gruppeaktivitetListe>
+    </response>
+</v1:hentTiltakOgAktiviteterForBrukerResponse>

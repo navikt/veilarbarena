@@ -1,11 +1,19 @@
 package no.nav.veilarbarena.client.ords;
 
 import no.nav.common.health.HealthCheck;
+import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 
 import java.util.Optional;
 
 public interface ArenaOrdsClient extends HealthCheck {
 
-    <T> Optional<T> get(String path, String fnr, Class<T> clazz);
+    Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr);
+
+    Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr);
+
+    Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr);
 
 }

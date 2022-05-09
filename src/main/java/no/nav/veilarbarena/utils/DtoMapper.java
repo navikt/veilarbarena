@@ -5,14 +5,14 @@ import no.nav.common.types.identer.EnhetId;
 import no.nav.pto_schema.enums.arena.*;
 import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
 import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV2;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
 import no.nav.veilarbarena.controller.response.YtelserDTO;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
-import no.nav.veilarbarena.service.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.service.dto.ArenaOppfolgingsstatusDTO;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;

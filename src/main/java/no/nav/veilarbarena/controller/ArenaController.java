@@ -2,11 +2,9 @@ package no.nav.veilarbarena.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.config.EnvironmentProperties;
-import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
-import no.nav.veilarbarena.controller.response.KanEnkeltReaktiveresDTO;
-import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
-import no.nav.veilarbarena.controller.response.YtelserDTO;
+import no.nav.veilarbarena.controller.response.*;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.DtoMapper;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
@@ -92,6 +92,89 @@ public class ArenaController {
         var ytelseskontrakt = arenaService.hentYtelseskontrakt(fnr, fra, til);
 
         return mapTilYtelserDTO(ytelseskontrakt);
+    }
+
+    @GetMapping("/aktiviteter")
+    public AktiviteterDTO hentAktiviteter(@RequestParam("fnr") Fnr fnr) {
+        if (!authService.erSystembruker()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        return arenaService.hentArenaAktiviteter(fnr)
+                .map(this::mapArenaAktiviteter)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {
+        ArenaAktiviteterDTO.Response response = arenaAktiviteterDTO.getResponse();
+
+        List<AktiviteterDTO.Tiltaksaktivitet> tiltaksaktiviteter = response.getTiltaksaktivitetListe()
+                .stream()
+                .map(this::mapTiltaksaktivitet)
+                .collect(Collectors.toList());
+
+        List<AktiviteterDTO.Gruppeaktivitet> gruppeaktiviteter = response.getGruppeaktivitetListe()
+                .stream()
+                .map(this::mapGruppeaktivitet)
+                .collect(Collectors.toList());
+
+        List<AktiviteterDTO.Utdanningsaktivitet> utdanningsaktiviteter = response.getUtdanningsaktivitetListe()
+                .stream()
+                .map(this::mapUtdanningsaktivitet)
+                .collect(Collectors.toList());
+
+        return new AktiviteterDTO()
+                .setTiltaksaktiviteter(tiltaksaktiviteter)
+                .setGruppeaktiviteter(gruppeaktiviteter)
+                .setUtdanningsaktiviteter(utdanningsaktiviteter);
+    }
+
+    private AktiviteterDTO.Tiltaksaktivitet mapTiltaksaktivitet(ArenaAktiviteterDTO.Tiltaksaktivitet a) {
+        return new AktiviteterDTO.Tiltaksaktivitet()
+                .setTiltaksnavn(a.getTiltaksnavn())
+                .setAktivitetId(a.getAktivitetId())
+                .setTiltakLokaltNavn(a.getTiltakLokaltNavn())
+                .setArrangor(a.getArrangoer())
+                .setBedriftsnummer(a.getBedriftsnummer())
+                .setDeltakelsePeriode(
+                        new AktiviteterDTO.Tiltaksaktivitet.DeltakelsesPeriode()
+                                .setFom(a.getDeltakelsePeriode().getFom())
+                                .setTom(a.getDeltakelsePeriode().getTom())
+                )
+                .setDeltakelseProsent(a.getDeltakelseProsent())
+                .setDeltakerStatus(a.getDeltakerStatus())
+                .setStatusSistEndret(a.getStatusSistEndret())
+                .setBegrunnelseInnsoking(a.getBegrunnelseInnsoeking());
+    }
+
+    private AktiviteterDTO.Gruppeaktivitet mapGruppeaktivitet(ArenaAktiviteterDTO.Gruppeaktivitet a) {
+        ArenaAktiviteterDTO.Gruppeaktivitet.MoteplanListe moteplan = a.getMoeteplanListe();
+
+        return new AktiviteterDTO.Gruppeaktivitet()
+                .setAktivitetId(a.getAktivitetId())
+                .setAktivitetstype(a.getAktivitetstype())
+                .setBeskrivelse(a.getBeskrivelse())
+                .setStatus(a.getStatus())
+                .setMoteplan(
+                        new AktiviteterDTO.Gruppeaktivitet.Moteplan()
+                                .setStartDato(moteplan.getStartDato())
+                                .setStartKlokkeslett(moteplan.getStartKlokkeslett())
+                                .setSluttDato(moteplan.getSluttDato())
+                                .setSluttKlokkeslett(moteplan.getSluttKlokkeslett())
+                                .setSted(moteplan.getSted())
+                );
+    }
+
+    private AktiviteterDTO.Utdanningsaktivitet mapUtdanningsaktivitet(ArenaAktiviteterDTO.Utdanningsaktivitet a) {
+        return new AktiviteterDTO.Utdanningsaktivitet()
+                .setAktivitetId(a.getAktivitetId())
+                .setAktivitetstype(a.getAktivitetstype())
+                .setBeskrivelse(a.getBeskrivelse())
+                .setAktivitetPeriode(
+                        new AktiviteterDTO.Utdanningsaktivitet.AktivitetPeriode()
+                                .setFom(a.getAktivitetPeriode().getFom())
+                                .setTom(a.getAktivitetPeriode().getTom())
+                );
     }
 
 }
