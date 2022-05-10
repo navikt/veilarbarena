@@ -144,25 +144,30 @@ public class ArenaController {
                 .setDeltakelseProsent(a.getDeltakelseProsent())
                 .setDeltakerStatus(a.getDeltakerStatus())
                 .setStatusSistEndret(a.getStatusSistEndret())
-                .setBegrunnelseInnsoking(a.getBegrunnelseInnsoeking());
+                .setBegrunnelseInnsoking(a.getBegrunnelseInnsoeking())
+                .setAntallDagerPerUke(a.getAntallDagerPerUke());
     }
 
     private AktiviteterDTO.Gruppeaktivitet mapGruppeaktivitet(ArenaAktiviteterDTO.Gruppeaktivitet a) {
-        ArenaAktiviteterDTO.Gruppeaktivitet.MoteplanListe moteplan = a.getMoeteplanListe();
-
+        List<AktiviteterDTO.Gruppeaktivitet.Moteplan> moteplanListe = null;
+        if (a.getMoeteplanListe() != null) {
+            moteplanListe = a.getMoeteplanListe().stream().map(this::mapMoteplan).collect(Collectors.toList());
+        }
         return new AktiviteterDTO.Gruppeaktivitet()
                 .setAktivitetId(a.getAktivitetId())
                 .setAktivitetstype(a.getAktivitetstype())
                 .setBeskrivelse(a.getBeskrivelse())
                 .setStatus(a.getStatus())
-                .setMoteplan(
-                        new AktiviteterDTO.Gruppeaktivitet.Moteplan()
-                                .setStartDato(moteplan.getStartDato())
-                                .setStartKlokkeslett(moteplan.getStartKlokkeslett())
-                                .setSluttDato(moteplan.getSluttDato())
-                                .setSluttKlokkeslett(moteplan.getSluttKlokkeslett())
-                                .setSted(moteplan.getSted())
-                );
+                .setMoteplanListe(moteplanListe);
+    }
+
+    private AktiviteterDTO.Gruppeaktivitet.Moteplan mapMoteplan(ArenaAktiviteterDTO.Gruppeaktivitet.Moteplan moteplan) {
+        return new AktiviteterDTO.Gruppeaktivitet.Moteplan()
+                .setStartDato(moteplan.getStartDato())
+                .setStartKlokkeslett(moteplan.getStartKlokkeslett())
+                .setSluttDato(moteplan.getSluttDato())
+                .setSluttKlokkeslett(moteplan.getSluttKlokkeslett())
+                .setSted(moteplan.getSted());
     }
 
     private AktiviteterDTO.Utdanningsaktivitet mapUtdanningsaktivitet(ArenaAktiviteterDTO.Utdanningsaktivitet a) {

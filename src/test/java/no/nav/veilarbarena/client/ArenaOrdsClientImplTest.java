@@ -60,13 +60,13 @@ public class ArenaOrdsClientImplTest {
         assertEquals("Informasjonsmøte med NAV", gruppeaktivitet.getBeskrivelse());
         assertEquals("AVBR", gruppeaktivitet.getStatus());
 
-        ArenaAktiviteterDTO.Gruppeaktivitet.MoteplanListe moteplanListe = gruppeaktivitet.getMoeteplanListe();
+        ArenaAktiviteterDTO.Gruppeaktivitet.Moteplan moteplan = gruppeaktivitet.getMoeteplanListe().get(0);
 
-        assertEquals(LocalDate.of(2018, 6, 22), moteplanListe.getStartDato());
-        assertEquals("13:00:00", moteplanListe.getStartKlokkeslett());
-        assertEquals(LocalDate.of(2018, 6, 22), moteplanListe.getSluttDato());
-        assertEquals("15:00:00", moteplanListe.getSluttKlokkeslett());
-        assertEquals("NAV Testheim", moteplanListe.getSted());
+        assertEquals(LocalDate.of(2018, 6, 22), moteplan.getStartDato());
+        assertEquals("13:00:00", moteplan.getStartKlokkeslett());
+        assertEquals(LocalDate.of(2018, 6, 22), moteplan.getSluttDato());
+        assertEquals("15:00:00", moteplan.getSluttKlokkeslett());
+        assertEquals("NAV Testheim", moteplan.getSted());
 
         // =========================================
 

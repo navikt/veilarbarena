@@ -25,6 +25,7 @@ public class AktiviteterDTO {
         String deltakerStatus;
         LocalDate statusSistEndret;
         String begrunnelseInnsoking;
+        Float antallDagerPerUke;
 
         @Data
         @Accessors(chain = true)
@@ -55,7 +56,7 @@ public class AktiviteterDTO {
         String aktivitetId;
         String beskrivelse;
         String status;
-        Moteplan moteplan;
+        List<Moteplan> moteplanListe;
 
         @Data
         @Accessors(chain = true)
