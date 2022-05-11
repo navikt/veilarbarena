@@ -29,6 +29,7 @@ public class ArenaAktiviteterDTO {
         String deltakerStatus;
         LocalDate statusSistEndret;
         String begrunnelseInnsoeking;
+        Float antallDagerPerUke;
 
         @Data
         public static class DeltakelsesPeriode {
@@ -57,10 +58,10 @@ public class ArenaAktiviteterDTO {
         String aktivitetId;
         String beskrivelse;
         String status;
-        MoteplanListe moeteplanListe;
+        List<Moteplan> moeteplanListe = List.of();
 
         @Data
-        public static class MoteplanListe {
+        public static class Moteplan {
             LocalDate startDato;
             String startKlokkeslett; // f.eks: 13:00:00
             LocalDate sluttDato;
