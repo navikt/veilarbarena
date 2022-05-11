@@ -56,7 +56,7 @@ public class AktiviteterDTO {
         String aktivitetId;
         String beskrivelse;
         String status;
-        List<Moteplan> moteplanListe;
+        List<Moteplan> moteplanListe = List.of();
 
         @Data
         @Accessors(chain = true)

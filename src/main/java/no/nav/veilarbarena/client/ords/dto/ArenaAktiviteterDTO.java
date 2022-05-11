@@ -58,7 +58,7 @@ public class ArenaAktiviteterDTO {
         String aktivitetId;
         String beskrivelse;
         String status;
-        List<Moteplan> moeteplanListe;
+        List<Moteplan> moeteplanListe = List.of();
 
         @Data
         public static class Moteplan {
