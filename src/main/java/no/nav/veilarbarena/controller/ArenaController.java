@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
@@ -137,9 +138,11 @@ public class ArenaController {
                 .setArrangor(a.getArrangoer())
                 .setBedriftsnummer(a.getBedriftsnummer())
                 .setDeltakelsePeriode(
-                        new AktiviteterDTO.Tiltaksaktivitet.DeltakelsesPeriode()
-                                .setFom(a.getDeltakelsePeriode().getFom())
-                                .setTom(a.getDeltakelsePeriode().getTom())
+                        Optional.ofNullable(a.getDeltakelsePeriode()).map(
+                                dp ->  new AktiviteterDTO.Tiltaksaktivitet.DeltakelsesPeriode()
+                                        .setFom(dp.getFom())
+                                        .setTom(dp.getTom())
+                        ).orElse(null)
                 )
                 .setDeltakelseProsent(a.getDeltakelseProsent())
                 .setDeltakerStatus(a.getDeltakerStatus())
