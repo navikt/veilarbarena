@@ -3,6 +3,7 @@ package no.nav.veilarbarena.utils;
 import lombok.SneakyThrows;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,13 @@ public class TestUtils {
         URL fileUrl = TestUtils.class.getClassLoader().getResource(fileName);
         Path resPath = Paths.get(fileUrl.toURI());
         return Files.readString(resPath);
+    }
+
+    @SneakyThrows
+    public static String readTestResourceFile(String fileName, Charset charset) {
+        URL fileUrl = TestUtils.class.getClassLoader().getResource(fileName);
+        Path resPath = Paths.get(fileUrl.toURI());
+        return Files.readString(resPath, charset);
     }
 
     @SneakyThrows
