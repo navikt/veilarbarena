@@ -12,6 +12,7 @@
                 <tom>2017-04-10</tom>
             </deltakelsePeriode>
             <deltakelseProsent>100</deltakelseProsent>
+            <antallDagerPerUke>4,5</antallDagerPerUke>
             <deltakerStatus termnavn="Fullført">FULLF</deltakerStatus>
             <statusSistEndret>2017-04-11</statusSistEndret>
             <begrunnelseInnsoeking>Skal bli murer</begrunnelseInnsoeking>
@@ -26,7 +27,7 @@
                 <fom>2017-02-28</fom>
                 <tom>2017-04-10</tom>
             </deltakelsePeriode>
-            <deltakelseProsent>100</deltakelseProsent>
+            <deltakelseProsent>26,65</deltakelseProsent>
             <deltakerStatus termnavn="Fullført">FULLF</deltakerStatus>
             <statusSistEndret>2017-04-11</statusSistEndret>
             <begrunnelseInnsoeking>Interessert i brannmur</begrunnelseInnsoeking>
