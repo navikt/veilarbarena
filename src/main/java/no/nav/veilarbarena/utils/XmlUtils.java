@@ -36,11 +36,8 @@ public class XmlUtils {
         public Float deserialize(JsonParser parser, DeserializationContext context)
                 throws IOException {
             String floatString = parser.getText();
-            if (floatString.contains(",")) {
-                floatString = floatString.replace(",", ".");
-            }
+            floatString = floatString.replace(",", ".");
             return Float.valueOf(floatString);
         }
-
     }
 }
