@@ -144,7 +144,7 @@ public class ArenaController {
                                         .setTom(dp.getTom())
                         ).orElse(null)
                 )
-                .setDeltakelseProsent(a.getDeltakelseProsent().intValue())
+                .setDeltakelseProsent(a.getDeltakelseProsent() != null ? a.getDeltakelseProsent().intValue() : null)
                 .setDeltakerStatus(a.getDeltakerStatus())
                 .setStatusSistEndret(a.getStatusSistEndret())
                 .setBegrunnelseInnsoking(a.getBegrunnelseInnsoeking())
