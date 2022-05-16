@@ -1,6 +1,8 @@
 package no.nav.veilarbarena.client.ords.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import no.nav.veilarbarena.utils.XmlUtils;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -25,10 +27,12 @@ public class ArenaAktiviteterDTO {
         String arrangoer;
         String bedriftsnummer;
         DeltakelsesPeriode deltakelsePeriode;
-        Integer deltakelseProsent;
+        @JsonDeserialize(using = XmlUtils.ArenaFloatDeserializer.class)
+        Float deltakelseProsent;
         String deltakerStatus;
         LocalDate statusSistEndret;
         String begrunnelseInnsoeking;
+        @JsonDeserialize(using = XmlUtils.ArenaFloatDeserializer.class)
         Float antallDagerPerUke;
 
         @Data

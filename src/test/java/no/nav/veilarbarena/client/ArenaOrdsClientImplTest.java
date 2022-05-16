@@ -80,7 +80,8 @@ public class ArenaOrdsClientImplTest {
         assertEquals("Hjelpearbeider - murer", tiltaksaktivitet.getTiltakLokaltNavn());
         assertEquals("TEST Muligheter AS", tiltaksaktivitet.getArrangoer());
         assertEquals("123543546", tiltaksaktivitet.getBedriftsnummer());
-        assertEquals(Integer.valueOf(100), tiltaksaktivitet.getDeltakelseProsent());
+        assertEquals(Float.valueOf(100), tiltaksaktivitet.getDeltakelseProsent());
+        assertEquals(Float.valueOf("4.5"), tiltaksaktivitet.getAntallDagerPerUke());
         assertEquals(LocalDate.of(2017, 4, 11), tiltaksaktivitet.getStatusSistEndret());
         assertEquals("Skal bli murer", tiltaksaktivitet.getBegrunnelseInnsoeking());
 
