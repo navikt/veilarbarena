@@ -19,7 +19,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static no.nav.common.utils.EnvironmentUtils.isProduction;
 
 @Slf4j
 @Component
@@ -124,7 +127,14 @@ public class OppfolgingsbrukerEndretSchedule {
                 return;
             }
             brukerOppdateringer.forEach(brukerOppdatering -> {
-                oppfolgingsbrukerRepository.hentOppfolgingsbruker(brukerOppdatering.getFodselsnr()).ifPresent(this::publiserPaKafka);
+                LocalDate foreldetMeldingPgaDataWipe = LocalDate.now().minusMonths(1);
+                if (isProduction().orElse(false) || brukerOppdatering.getTidsstempel().toLocalDate().isAfter(foreldetMeldingPgaDataWipe)) {
+                    oppfolgingsbrukerRepository
+                            .hentOppfolgingsbruker(brukerOppdatering.getFodselsnr())
+                            .ifPresent(this::publiserPaKafka);
+                } else {
+                    log.info("Ignorerer rader som har et tidsstempel i som er eldre enn 1 måned");
+               }
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
             });
         }
