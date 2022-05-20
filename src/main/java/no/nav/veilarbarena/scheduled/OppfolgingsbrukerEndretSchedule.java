@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static no.nav.common.utils.EnvironmentUtils.isProduction;
+
 @Slf4j
 @Component
 public class OppfolgingsbrukerEndretSchedule {
@@ -125,13 +127,12 @@ public class OppfolgingsbrukerEndretSchedule {
                 return;
             }
             brukerOppdateringer.forEach(brukerOppdatering -> {
-                LocalDate foreldetMelding = LocalDate.now().minusMonths(1);
-                if (brukerOppdatering.getTidsstempel().toLocalDate().isAfter(foreldetMelding)) {
-                    oppfolgingsbrukerRepository.hentOppfolgingsbruker(brukerOppdatering.getFodselsnr()).ifPresent(this::publiserPaKafka);
+                LocalDate foreldetMeldingPgaDataWipe = LocalDate.now().minusMonths(1);
+                if (isProduction().orElse(false) || brukerOppdatering.getTidsstempel().toLocalDate().isAfter(foreldetMeldingPgaDataWipe)) {
+                    oppfolgingsbrukerRepository
+                            .hentOppfolgingsbruker(brukerOppdatering.getFodselsnr())
+                            .ifPresent(this::publiserPaKafka);
                 } else {
-                    // NB: det er forventet at tidstempelet kan være litt gamelt da det kan bygge seg opp en kø i basen.
-                    // I tillegg kan arena utføre større batch oppdateringer som gjør at et tidstempel blir oppdatert,
-                    // men ikke skrevt til db lenken før etter at batch jobben er fullført.
                     log.info("Ignorerer rader som har et tidsstempel i som er eldre enn 1 måned");
                }
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
