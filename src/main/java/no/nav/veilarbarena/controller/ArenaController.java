@@ -103,7 +103,7 @@ public class ArenaController {
 
         return arenaService.hentArenaAktiviteter(fnr)
                 .map(this::mapArenaAktiviteter)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
 
     private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {
