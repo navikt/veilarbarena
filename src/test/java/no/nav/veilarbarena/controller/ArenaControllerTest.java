@@ -10,6 +10,7 @@ import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -212,6 +213,16 @@ public class ArenaControllerTest {
         LocalDate expectedTilDato = LocalDate.of(2021, 8, 9);
 
         verify(arenaService, times(1)).hentYtelseskontrakt(FNR, expectedFraDato, expectedTilDato);
+    }
+
+    @Test
+    void hentAktiviteter__should_return_204_no_content_when_empty() throws Exception {
+        when(authService.erSystembruker()).thenReturn(true);
+        when(arenaService.hentArenaAktiviteter(any(Fnr.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/arena/aktiviteter")
+                .queryParam("fnr", FNR.get())
+        ).andExpect(status().is(204));
     }
 
     @Test
