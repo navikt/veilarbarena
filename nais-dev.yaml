@@ -60,6 +60,9 @@ spec:
         - application: veilarbaktivitet
           namespace: pto
           cluster: dev-fss
+        - application: veilarbvedtaksstotte
+          namespace: pto
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
