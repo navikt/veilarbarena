@@ -7,9 +7,8 @@ import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.client.aktoroppslag.AktorregisterHttpClient;
 import no.nav.common.client.aktoroppslag.CachedAktorOppslagClient;
-import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.client.aktoroppslag.PdlAktorOppslagClient;
 import no.nav.common.cxf.StsConfig;
 import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.featuretoggle.UnleashClientImpl;
@@ -34,6 +33,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.onPremByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
+import static no.nav.common.utils.UrlUtils.createDevInternalIngressUrl;
+import static no.nav.common.utils.UrlUtils.createProdInternalIngressUrl;
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
 
@@ -76,12 +77,14 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AktorOppslagClient aktorOppslagClient(EnvironmentProperties properties, SystemUserTokenProvider tokenProvider) {
-        AktorregisterClient aktorregisterClient = new AktorregisterHttpClient(
-                properties.getAktorregisterUrl(), APPLICATION_NAME, tokenProvider::getSystemUserToken
+    public AktorOppslagClient aktorOppslagClient(SystemUserTokenProvider systemUserTokenProvider) {
+        AktorOppslagClient aktorOppslagClient = new PdlAktorOppslagClient(
+                internalDevOrProdPdlIngress(),
+                systemUserTokenProvider::getSystemUserToken,
+                systemUserTokenProvider::getSystemUserToken
         );
 
-        return new CachedAktorOppslagClient(aktorregisterClient);
+        return new CachedAktorOppslagClient(aktorOppslagClient);
     }
 
     @Bean
@@ -128,5 +131,15 @@ public class ApplicationConfig {
         return isProduction
                 ? "https://arena-ords.nais.adeo.no"
                 : "https://arena-ords-q1.dev.intern.nav.no";
+    }
+
+    private String internalDevOrProdPdlIngress() {
+        return isProduction()
+                ? createProdInternalIngressUrl("pdl-api")
+                : createDevInternalIngressUrl("pdl-api-q1");
+    }
+
+    private static boolean isProduction() {
+        return EnvironmentUtils.isProduction().orElseThrow();
     }
 }

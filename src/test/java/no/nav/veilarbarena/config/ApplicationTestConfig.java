@@ -14,14 +14,17 @@ import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.AbacClientMock;
-import no.nav.veilarbarena.mock.AktorregisterClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.mock.PepMock;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +66,7 @@ public class ApplicationTestConfig {
 
     @Bean
     public AktorOppslagClient aktorOppslagClient() {
-        return new AktorregisterClientMock();
+        return Mockito.mock(AktorOppslagClient.class);
     }
 
     @Bean
@@ -120,7 +123,17 @@ public class ApplicationTestConfig {
     public ArenaOrdsClient arenaOrdsClient() {
         return new ArenaOrdsClient() {
             @Override
-            public <T> Optional<T> get(String path, String fnr, Class<T> clazz) {
+            public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {
                 return Optional.empty();
             }
 

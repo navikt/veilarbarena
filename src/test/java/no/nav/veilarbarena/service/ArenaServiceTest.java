@@ -2,10 +2,10 @@ package no.nav.veilarbarena.service;
 
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
-import no.nav.veilarbarena.service.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.junit.Test;
 
@@ -57,7 +57,7 @@ public class ArenaServiceTest {
 
         when(oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get())).thenReturn(Optional.empty());
 
-        when(arenaOrdsClient.get("oppfoelgingsstatus", fnr.get(), ArenaOppfolgingsstatusDTO.class)).thenReturn(Optional.of(oppfolgingsstatus));
+        when(arenaOrdsClient.hentArenaOppfolgingsstatus(fnr)).thenReturn(Optional.of(oppfolgingsstatus));
 
         var maybeArenaStatus = arenaService.hentArenaStatus(fnr);
 
@@ -71,7 +71,7 @@ public class ArenaServiceTest {
 
         when(oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get())).thenReturn(Optional.empty());
 
-        when(arenaOrdsClient.get("oppfoelgingsstatus", fnr.get(), ArenaOppfolgingsstatusDTO.class)).thenReturn(Optional.empty());
+        when(arenaOrdsClient.hentArenaOppfolgingsstatus(fnr)).thenReturn(Optional.empty());
 
         var maybeArenaStatus = arenaService.hentArenaStatus(fnr);
 
