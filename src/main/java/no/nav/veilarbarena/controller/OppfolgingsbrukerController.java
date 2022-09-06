@@ -7,11 +7,10 @@ import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.ws.rs.QueryParam;
 
 @Slf4j
 @RestController
@@ -38,8 +37,8 @@ public class OppfolgingsbrukerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{fnr}/hentPersonId")
-    public String getPersonIdForOppfolgingsbruker(@PathVariable("fnr") Fnr fnr) {
+    @GetMapping("/hentPersonId")
+    public String getPersonIdForOppfolgingsbruker(@RequestParam("fnr") Fnr fnr) {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentOppfolgingsbrukerSinPersonId(fnr)
