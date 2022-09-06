@@ -18,8 +18,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class OppfolgingsbrukerRepositoryTest {
 
@@ -63,6 +62,16 @@ public class OppfolgingsbrukerRepositoryTest {
         Optional<OppfolgingsbrukerEntity> bruker = repository.hentOppfolgingsbruker("12345678900");
 
         assertTrue(bruker.isPresent());
+    }
+
+    @Test
+    public void skal_hente_brukers_personId() {
+        OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(LocalH2Database.getDb());
+
+        Optional<OppfolgingsbrukerEntity> bruker = repository.hentOppfolgingsbrukerSinPersonId("12345678900");
+
+        assertTrue(bruker.isPresent());
+        assertEquals("1", bruker.get().getPersonId());
     }
 
     @Test

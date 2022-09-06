@@ -38,4 +38,12 @@ public class OppfolgingsbrukerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/{fnr}/hentPersonId")
+    public String getPersonIdForOppfolgingsbruker(@PathVariable("fnr") Fnr fnr) {
+        authService.sjekkTilgang(fnr);
+
+        return arenaService.hentOppfolgingsbrukerSinPersonId(fnr)
+                .map(OppfolgingsbrukerDTO::fraOppfolgingsbrukerTilPersonId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 }

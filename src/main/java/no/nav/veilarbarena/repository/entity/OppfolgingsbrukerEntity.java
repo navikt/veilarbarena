@@ -24,5 +24,6 @@ public class OppfolgingsbrukerEntity {
     Boolean erDoed;
     ZonedDateTime doedFraDato;
     ZonedDateTime timestamp; // Når brukeren sist ble endret
+    String personId;
 }
 
