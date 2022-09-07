@@ -40,6 +40,5 @@ public class OppfolgingsbrukerDTO {
                 .setEr_doed(bruker.getErDoed())
                 .setDoed_fra_dato(bruker.getDoedFraDato());
     }
-
 }
 
