@@ -42,6 +42,6 @@ public class OppfolgingsbrukerController {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentOppfolgingsbrukerSinPersonId(fnr)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
 }
