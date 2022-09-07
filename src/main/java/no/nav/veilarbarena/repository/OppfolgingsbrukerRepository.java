@@ -35,6 +35,11 @@ public class OppfolgingsbrukerRepository {
         return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
     }
 
+    public Optional<String> hentOppfolgingsbrukerSinPersonId(String fnr){
+        String sql = "SELECT person_id FROM OPPFOLGINGSBRUKER WHERE fodselsnr = ?";
+        return Optional.ofNullable(db.queryForObject(sql, String.class, fnr));
+    }
+
     public List<OppfolgingsbrukerEntity> hentOppfolgingsbrukere(List<String> fnrs) {
         if (fnrs.isEmpty()) {
             return Collections.emptyList();
