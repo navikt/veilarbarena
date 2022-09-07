@@ -68,10 +68,10 @@ public class OppfolgingsbrukerRepositoryTest {
     public void skal_hente_brukers_personId() {
         OppfolgingsbrukerRepository repository = new OppfolgingsbrukerRepository(LocalH2Database.getDb());
 
-        Optional<OppfolgingsbrukerEntity> bruker = repository.hentOppfolgingsbrukerSinPersonId("12345678900");
+        Optional<String> personId = repository.hentOppfolgingsbrukerSinPersonId("12345678900");
 
-        assertTrue(bruker.isPresent());
-        assertEquals("1", bruker.get().getPersonId());
+        assertTrue(personId.isPresent());
+        assertEquals("1", personId.get());
     }
 
     @Test

@@ -42,7 +42,6 @@ public class OppfolgingsbrukerController {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentOppfolgingsbrukerSinPersonId(fnr)
-                .map(OppfolgingsbrukerDTO::fraOppfolgingsbrukerTilPersonId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

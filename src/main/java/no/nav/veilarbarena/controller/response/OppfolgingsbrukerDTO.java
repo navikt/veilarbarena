@@ -40,10 +40,5 @@ public class OppfolgingsbrukerDTO {
                 .setEr_doed(bruker.getErDoed())
                 .setDoed_fra_dato(bruker.getDoedFraDato());
     }
-
-    public static String fraOppfolgingsbrukerTilPersonId(OppfolgingsbrukerEntity bruker) {
-        return bruker.getPersonId();
-    }
-
 }
 

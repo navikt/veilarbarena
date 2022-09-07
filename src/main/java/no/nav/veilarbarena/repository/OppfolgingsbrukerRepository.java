@@ -35,10 +35,9 @@ public class OppfolgingsbrukerRepository {
         return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
     }
 
-    public Optional<OppfolgingsbrukerEntity> hentOppfolgingsbrukerSinPersonId(String fnr){
+    public Optional<String> hentOppfolgingsbrukerSinPersonId(String fnr){
         String sql = "SELECT person_id FROM OPPFOLGINGSBRUKER WHERE fodselsnr = ?";
-        List<OppfolgingsbrukerEntity> brukere = db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbrukerSinPersonId, fnr);
-        return brukere.isEmpty() ? Optional.empty() : Optional.of(brukere.get(0));
+        return Optional.ofNullable(db.queryForObject(sql, String.class, fnr));
     }
 
     public List<OppfolgingsbrukerEntity> hentOppfolgingsbrukere(List<String> fnrs) {
@@ -92,12 +91,6 @@ public class OppfolgingsbrukerRepository {
                 .setErDoed(convertStringToBoolean(rs.getString("er_doed")))
                 .setDoedFraDato(convertTimestampToZonedDateTimeIfPresent(rs.getTimestamp("doed_fra_dato")))
                 .setTimestamp(convertTimestampToZonedDateTimeIfPresent(rs.getTimestamp("tidsstempel")));
-    }
-
-    @SneakyThrows
-    private static OppfolgingsbrukerEntity mapOppfolgingsbrukerSinPersonId(ResultSet rs, int row) {
-        return new OppfolgingsbrukerEntity()
-                .setPersonId(rs.getString("person_id"));
     }
 
     private static boolean convertStringToBoolean(String flag){

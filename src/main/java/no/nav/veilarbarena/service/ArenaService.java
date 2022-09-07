@@ -74,7 +74,7 @@ public class ArenaService {
         return oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get());
     }
 
-    public Optional<OppfolgingsbrukerEntity> hentOppfolgingsbrukerSinPersonId(Fnr fnr) {
+    public Optional<String> hentOppfolgingsbrukerSinPersonId(Fnr fnr) {
         return oppfolgingsbrukerRepository.hentOppfolgingsbrukerSinPersonId(fnr.get());
     }
 
