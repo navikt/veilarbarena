@@ -80,9 +80,8 @@ public class ApplicationConfig {
 
     @Bean
     public AktorOppslagClient aktorOppslagClient(AzureAdMachineToMachineTokenClient tokenClient) {
-        String tokenScope = String.format("api://%s.pdl.%s/.default",
-                isProduction() ? "prod-fss" : "dev-fss",
-                isProduction() ? "pdl-api" : "pdl-api-q1");
+        String tokenScope = String.format("api://%s.pdl.pdl-api/.default",
+                isProduction() ? "prod-fss" : "dev-fss");
 
         AktorOppslagClient aktorOppslagClient = new PdlAktorOppslagClient(
                 internalDevOrProdPdlIngress(),
@@ -140,7 +139,7 @@ public class ApplicationConfig {
     private String internalDevOrProdPdlIngress() {
         return isProduction()
                 ? createProdInternalIngressUrl("pdl-api")
-                : createDevInternalIngressUrl("pdl-api-q1");
+                : createDevInternalIngressUrl("pdl-api");
     }
 
     private static boolean isProduction() {

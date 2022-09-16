@@ -65,11 +65,13 @@ public class OppfolgingsbrukerEndretSchedule {
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
-        if (leaderElectionClient.isLeader()) {
-            if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
-                log.info("Publisering av brukere på kafka er skrudd av");
-            } else {
-                publisereArenaBrukerEndringer();
+        if (isProduction().orElse(false)) {
+            if (leaderElectionClient.isLeader()) {
+                if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
+                    log.info("Publisering av brukere på kafka er skrudd av");
+                } else {
+                    publisereArenaBrukerEndringer();
+                }
             }
         }
     }
@@ -134,7 +136,7 @@ public class OppfolgingsbrukerEndretSchedule {
                             .ifPresent(this::publiserPaKafka);
                 } else {
                     log.info("Ignorerer rader som har et tidsstempel i som er eldre enn 1 måned");
-               }
+                }
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
             });
         }
