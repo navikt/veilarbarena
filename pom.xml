@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2022.04.01_08.27-cbfeb0be0ee0</common.version>
+        <common.version>2.2022.09.15_07.46-e4fa96eb6813</common.version>
         <testcontainers.version>1.16.2</testcontainers.version>
         <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
     </properties>
@@ -161,6 +161,11 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>sts</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>token-client</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>
