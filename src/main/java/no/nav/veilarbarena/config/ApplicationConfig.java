@@ -82,7 +82,7 @@ public class ApplicationConfig {
     public AktorOppslagClient aktorOppslagClient(AzureAdMachineToMachineTokenClient tokenClient) {
         String tokenScope = String.format("api://%s.pdl.%s/.default",
                 isProduction() ? "prod-fss" : "dev-fss",
-                isProduction() ? "pdl" : "pdl-q1");
+                isProduction() ? "pdl-api" : "pdl-api-q1");
 
         AktorOppslagClient aktorOppslagClient = new PdlAktorOppslagClient(
                 internalDevOrProdPdlIngress(),
