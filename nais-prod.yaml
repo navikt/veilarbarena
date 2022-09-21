@@ -66,6 +66,9 @@ spec:
         - application: mulighetsrommet-api
           namespace: team-mulighetsrommet
           cluster: prod-gcp
+        - application: poao-tilgang
+          namespace: poao
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
