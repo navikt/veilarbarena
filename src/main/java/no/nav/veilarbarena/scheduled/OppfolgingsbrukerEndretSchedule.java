@@ -65,7 +65,7 @@ public class OppfolgingsbrukerEndretSchedule {
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
-        if (isProduction().orElse(false)) {
+        if (isProduction().orElseThrow()) {
             if (leaderElectionClient.isLeader()) {
                 if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
                     log.info("Publisering av brukere på kafka er skrudd av");
@@ -73,6 +73,8 @@ public class OppfolgingsbrukerEndretSchedule {
                     publisereArenaBrukerEndringer();
                 }
             }
+        } else {
+            log.info("Publisering av denne onPrem topicen er skrud av i dev. Vi anbefaler å migrere til v2 topicen som ligger på aiven.");
         }
     }
 
