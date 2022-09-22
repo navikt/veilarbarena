@@ -67,7 +67,7 @@ spec:
         - application: mulighetsrommet-api
           namespace: team-mulighetsrommet
           cluster: dev-gcp
-       -  application: poao-tilgang
+        - application: poao-tilgang
           namespace: poao
           cluster: dev-gcp
   vault:
