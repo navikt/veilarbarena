@@ -16,8 +16,8 @@ import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.job.leader_election.LeaderElectionHttpClient;
 import no.nav.common.metrics.InfluxClient;
 import no.nav.common.metrics.MetricsClient;
-import no.nav.common.sts.NaisSystemUserTokenProvider;
-import no.nav.common.sts.SystemUserTokenProvider;
+import no.nav.common.token_client.builder.AzureAdTokenClientBuilder;
+import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.EnvironmentUtils;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
@@ -52,6 +52,13 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public AzureAdMachineToMachineTokenClient azureAdMachineToMachineTokenClient() {
+        return AzureAdTokenClientBuilder.builder()
+                .withNaisDefaults()
+                .buildMachineToMachineTokenClient();
+    }
+
+    @Bean
     public UnleashClient unleashClient(EnvironmentProperties properties) {
         return new UnleashClientImpl(properties.getUnleashUrl(), APPLICATION_NAME);
     }
@@ -67,23 +74,19 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SystemUserTokenProvider systemUserTokenProvider(EnvironmentProperties properties, Credentials serviceUserCredentials) {
-        return new NaisSystemUserTokenProvider(properties.getNaisStsDiscoveryUrl(), serviceUserCredentials.username, serviceUserCredentials.password);
-    }
-
-    @Bean
     public AuthContextHolder authContextHolder() {
         return AuthContextHolderThreadLocal.instance();
     }
 
     @Bean
-    public AktorOppslagClient aktorOppslagClient(SystemUserTokenProvider systemUserTokenProvider) {
+    public AktorOppslagClient aktorOppslagClient(AzureAdMachineToMachineTokenClient tokenClient) {
+        String tokenScope = String.format("api://%s.pdl.pdl-api/.default",
+                isProduction() ? "prod-fss" : "dev-fss");
+
         AktorOppslagClient aktorOppslagClient = new PdlAktorOppslagClient(
                 internalDevOrProdPdlIngress(),
-                systemUserTokenProvider::getSystemUserToken,
-                systemUserTokenProvider::getSystemUserToken
+                () -> tokenClient.createMachineToMachineToken(tokenScope)
         );
-
         return new CachedAktorOppslagClient(aktorOppslagClient);
     }
 
@@ -136,7 +139,7 @@ public class ApplicationConfig {
     private String internalDevOrProdPdlIngress() {
         return isProduction()
                 ? createProdInternalIngressUrl("pdl-api")
-                : createDevInternalIngressUrl("pdl-api-q1");
+                : createDevInternalIngressUrl("pdl-api");
     }
 
     private static boolean isProduction() {

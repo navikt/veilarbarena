@@ -65,12 +65,16 @@ public class OppfolgingsbrukerEndretSchedule {
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafka() {
-        if (leaderElectionClient.isLeader()) {
-            if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
-                log.info("Publisering av brukere på kafka er skrudd av");
-            } else {
-                publisereArenaBrukerEndringer();
+        if (isProduction().orElseThrow()) {
+            if (leaderElectionClient.isLeader()) {
+                if (unleashService.erSkruAvPubliseringPaKafkaEnabled()) {
+                    log.info("Publisering av brukere på kafka er skrudd av");
+                } else {
+                    publisereArenaBrukerEndringer();
+                }
             }
+        } else {
+            log.info("Publisering av denne onPrem topicen er skrud av i dev. Vi anbefaler å migrere til v2 topicen som ligger på aiven.");
         }
     }
 
@@ -134,7 +138,7 @@ public class OppfolgingsbrukerEndretSchedule {
                             .ifPresent(this::publiserPaKafka);
                 } else {
                     log.info("Ignorerer rader som har et tidsstempel i som er eldre enn 1 måned");
-               }
+                }
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
             });
         }

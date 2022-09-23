@@ -21,22 +21,18 @@ public class AuthService {
 
     private final AuthContextHolder authContextHolder;
 
-    private final AktorOppslagClient aktorOppslagClient;
-
     private final Pep veilarbPep;
 
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder, AktorOppslagClient aktorOppslagClient, Pep veilarbPep) {
+    public AuthService(AuthContextHolder authContextHolder,  Pep veilarbPep) {
         this.authContextHolder = authContextHolder;
-        this.aktorOppslagClient = aktorOppslagClient;
         this.veilarbPep = veilarbPep;
     }
 
     public void sjekkTilgang(Fnr fnr) {
-        AktorId aktorId = aktorOppslagClient.hentAktorId(fnr);
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
 
-        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, aktorId)) {
+        if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
