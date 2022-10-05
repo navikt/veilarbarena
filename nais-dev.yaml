@@ -73,6 +73,9 @@ spec:
         - application: poao-tilgang
           namespace: poao
           cluster: dev-fss
+        - application: paw-proxy
+          namespace: paw
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
