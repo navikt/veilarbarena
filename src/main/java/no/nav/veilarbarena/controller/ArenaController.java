@@ -46,7 +46,8 @@ public class ArenaController {
             authService.sjekkAtSystembrukerErWhitelistet(
                     environmentProperties.getAmtTiltakClientId(),
                     environmentProperties.getTiltaksgjennomforingApiClientId(),
-                    environmentProperties.getVeilarbregistreringClientId()
+                    environmentProperties.getVeilarbregistreringClientId(),
+                    environmentProperties.getVeilarbregistreringClientIdGCP()
             );
         }
 
