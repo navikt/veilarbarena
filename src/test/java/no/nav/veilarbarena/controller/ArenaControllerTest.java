@@ -63,7 +63,7 @@ public class ArenaControllerTest {
 
         mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
 
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null);
     }
 
     @Test

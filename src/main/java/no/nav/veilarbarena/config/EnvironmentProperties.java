@@ -37,6 +37,8 @@ public class EnvironmentProperties {
 
     private String veilarbregistreringClientId;
 
+    private String veilarbregistreringClientIdGCP;
+
     private String naisStsDiscoveryUrl;
 
     private String abacUrl;
