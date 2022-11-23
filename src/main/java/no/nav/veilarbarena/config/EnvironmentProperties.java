@@ -33,6 +33,8 @@ public class EnvironmentProperties {
 
     private String amtTiltakClientId;
 
+    private String poaoTilgangClientId;
+
     private String tiltaksgjennomforingApiClientId;
 
     private String veilarbregistreringClientId;
