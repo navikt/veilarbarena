@@ -43,11 +43,13 @@ public class ArenaController {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(fnr);
         } else {
+            // TODO: Dette er en dårlig måte og sjekke tilganger på, bruk heller sjekk på access_as_application
             authService.sjekkAtSystembrukerErWhitelistet(
                     environmentProperties.getAmtTiltakClientId(),
                     environmentProperties.getTiltaksgjennomforingApiClientId(),
                     environmentProperties.getVeilarbregistreringClientId(),
-                    environmentProperties.getVeilarbregistreringClientIdGCP()
+                    environmentProperties.getVeilarbregistreringClientIdGCP(),
+                    environmentProperties.getPoaoTilgangClientId()
             );
         }
 
