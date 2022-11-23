@@ -72,9 +72,6 @@ spec:
         - application: poao-tilgang
           namespace: poao
           cluster: prod-gcp
-        - application: poao-tilgang
-          namespace: poao
-          cluster: prod-fss
   vault:
     enabled: true
     paths:
