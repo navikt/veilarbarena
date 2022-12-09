@@ -10,7 +10,6 @@ import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -63,7 +62,7 @@ public class ArenaControllerTest {
 
         mockMvc.perform(get("/api/arena/status").queryParam("fnr", FNR.get()));
 
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null);
     }
 
     @Test
