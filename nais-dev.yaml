@@ -55,6 +55,9 @@ spec:
         - application: veilarbregistrering
           namespace: paw
           cluster: dev-fss
+        - application: veilarbregistrering
+          namespace: paw
+          cluster: dev-gcp
         - application: veilarboppfolging
           namespace: pto
           cluster: dev-fss
@@ -93,5 +96,9 @@ spec:
       value: dd1086a6-9b1d-4d7e-914e-3d868fb068a7
     - name: VEILARBREGISTRERING_CLIENT_ID
       value: 687bb3b0-a83c-47b7-9562-c6f9fedcc898
+    - name: VEILARBREGISTRERING_CLIENT_ID_GCP
+      value: 8da37db8-6021-4e08-81b3-99045e2c1704
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
       value: 98a17237-0bfc-496e-ba28-cdb320960257
+    - name: POAO_TILGANG_CLIENT_ID
+      value: 986c77da-3cfa-4a9e-b11d-b3d193ada8cd
