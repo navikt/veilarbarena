@@ -29,42 +29,11 @@ public class FilterConfig {
             "srvveilarboppfolging", "srvtiltaksgjennomf", "srvdokumentfordeling", PTO_ADMIN_SERVICE_USER
     );
 
-    private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getVeilarbloginOpenAmClientId())
-                .withIdTokenFinder(new ServiceUserTokenFinder())
-                .withUserRole(UserRole.SYSTEM);
-    }
-
     private OidcAuthenticatorConfig naisStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getNaisStsDiscoveryUrl())
                 .withClientIds(ALLOWED_SERVICE_USERS)
                 .withUserRole(UserRole.SYSTEM);
-    }
-
-    private OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties properties) {
-        List<String> clientIds = List.of(
-                properties.getVeilarbloginOpenAmClientId(),
-                properties.getModialoginOpenAmClientId()
-        );
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientIds(clientIds)
-                .withIdTokenCookieName(OPEN_AM_ID_TOKEN_COOKIE_NAME)
-                .withRefreshTokenCookieName(REFRESH_TOKEN_COOKIE_NAME)
-                .withIdTokenFinder(new UserTokenFinder())
-                .withRefreshUrl(properties.getOpenAmRefreshUrl())
-                .withUserRole(UserRole.INTERN);
-    }
-
-    private OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties environmentProperties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(environmentProperties.getAzureAdDiscoveryUrl())
-                .withClientId(environmentProperties.getVeilarbloginAzureAdClientId())
-                .withIdTokenCookieName(AZURE_AD_ID_TOKEN_COOKIE_NAME)
-                .withUserRole(UserRole.INTERN);
     }
 
     private OidcAuthenticatorConfig loginserviceIdportenConfig(EnvironmentProperties environmentProperties) {
@@ -96,10 +65,7 @@ public class FilterConfig {
         FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
         OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
                 fromConfigs(
-                        openAmAuthConfig(properties),
-                        azureAdAuthConfig(properties),
                         loginserviceIdportenConfig(properties),
-                        openAmStsAuthConfig(properties),
                         naisStsAuthConfig(properties),
                         naisAzureAdConfig(properties)
                 )
