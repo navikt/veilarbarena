@@ -29,14 +29,6 @@ public class FilterConfig {
             "srvveilarboppfolging", "srvtiltaksgjennomf", "srvdokumentfordeling", PTO_ADMIN_SERVICE_USER
     );
 
-    private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getVeilarbloginOpenAmClientId())
-                .withIdTokenFinder(new ServiceUserTokenFinder())
-                .withUserRole(UserRole.SYSTEM);
-    }
-
     private OidcAuthenticatorConfig naisStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getNaisStsDiscoveryUrl())
@@ -74,7 +66,6 @@ public class FilterConfig {
         OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
                 fromConfigs(
                         loginserviceIdportenConfig(properties),
-                        openAmStsAuthConfig(properties),
                         naisStsAuthConfig(properties),
                         naisAzureAdConfig(properties)
                 )
