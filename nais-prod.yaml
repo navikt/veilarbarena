@@ -88,7 +88,7 @@ spec:
     - configmap: loginservice-idporten
   env:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
-      value: aapen-fo-endringPaaOppfoelgingsBruker-v1-p
+      value: pto.endring-paa-oppfolgingsbruker-v2
     - name: AMT_TILTAK_CLIENT_ID
       value: 877dd682-4750-4193-8286-8ad2e08c3aab
     - name: VEILARBREGISTRERING_CLIENT_ID

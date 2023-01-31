@@ -25,13 +25,10 @@ public class KafkaConfig {
     @Data
     @Accessors(chain = true)
     public static class EnvironmentContext {
-        Properties onPremProducerClientProperties;
         Properties aivenProducerClientProperties;
     }
 
     public final static String PRODUCER_CLIENT_ID = "veilarbarena-producer";
-
-    private final KafkaProducerRecordProcessor onPremProducerRecordProcessor;
 
     private final KafkaProducerRecordProcessor aivenProducerRecordProcessor;
 
@@ -46,31 +43,17 @@ public class KafkaConfig {
     ) {
         OracleJdbcTemplateProducerRepository oracleProducerRepository = new OracleJdbcTemplateProducerRepository(jdbcTemplate);
 
-        KafkaProducerClient<byte[], byte[]> onPremProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
-                .withProperties(environmentContext.onPremProducerClientProperties)
-                .withMetrics(meterRegistry)
-                .build();
-
         KafkaProducerClient<byte[], byte[]> aivenProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
                 .withProperties(environmentContext.aivenProducerClientProperties)
                 .withMetrics(meterRegistry)
                 .build();
-
-        onPremProducerRecordProcessor = new KafkaProducerRecordProcessor(
-                oracleProducerRepository,
-                onPremProducerClient,
-                leaderElectionClient,
-                List.of(
-                        kafkaProperties.endringPaaOppfolgingBrukerOnPremTopic
-                )
-        );
 
         aivenProducerRecordProcessor = new KafkaProducerRecordProcessor(
                 oracleProducerRepository,
                 aivenProducerClient,
                 leaderElectionClient,
                 List.of(
-                        kafkaProperties.endringPaaOppfolgingBrukerAivenTopic
+                        kafkaProperties.endringPaaOppfolgingsbrukerTopic
                 )
         );
 
@@ -84,7 +67,6 @@ public class KafkaConfig {
 
     @PostConstruct
     public void start() {
-        onPremProducerRecordProcessor.start();
         aivenProducerRecordProcessor.start();
     }
 

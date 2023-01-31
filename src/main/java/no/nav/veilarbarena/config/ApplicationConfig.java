@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
-import static no.nav.common.kafka.util.KafkaPropertiesPreset.onPremByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
 import static no.nav.common.utils.UrlUtils.createDevInternalIngressUrl;
 import static no.nav.common.utils.UrlUtils.createProdInternalIngressUrl;
@@ -91,9 +90,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public KafkaConfig.EnvironmentContext kafkaConfigEnvContext(KafkaProperties kafkaProperties, Credentials credentials) {
+    public KafkaConfig.EnvironmentContext kafkaConfigEnvContext() {
         return new KafkaConfig.EnvironmentContext()
-                .setOnPremProducerClientProperties(onPremByteProducerProperties(PRODUCER_CLIENT_ID, kafkaProperties.getBrokersUrl(), credentials))
                 .setAivenProducerClientProperties(aivenByteProducerProperties(PRODUCER_CLIENT_ID));
     }
 

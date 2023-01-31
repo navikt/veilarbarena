@@ -91,7 +91,7 @@ spec:
     - name: MODIALOGIN_OPENAM_CLIENT_ID
       value: "modialogin-q1"
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
-      value: aapen-fo-endringPaaOppfoelgingsBruker-v1-q1
+      value: pto.endring-paa-oppfolgingsbruker-v2
     - name: AMT_TILTAK_CLIENT_ID
       value: dd1086a6-9b1d-4d7e-914e-3d868fb068a7
     - name: VEILARBREGISTRERING_CLIENT_ID

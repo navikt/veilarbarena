@@ -1,9 +1,7 @@
 package no.nav.veilarbarena.utils;
 
-import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.pto_schema.enums.arena.*;
-import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV1;
 import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV2;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
@@ -89,28 +87,6 @@ public class DtoMapper {
                 .setOppfolgingsenhet(
                         ofNullable(oppfolgingsbruker.getNavKontor()).map(EnhetId::of).orElse(null)
                 );
-    }
-
-    public static EndringPaaOppfoelgingsBrukerV1 tilEndringPaaOppfoelgingsBrukerV1(OppfolgingsbrukerEntity bruker, AktorId aktorId) {
-        return EndringPaaOppfoelgingsBrukerV1.builder()
-                .fornavn(bruker.getFornavn())
-                .aktoerid(aktorId.get())
-                .etternavn(bruker.getEtternavn())
-                .fodselsnr(bruker.getFodselsnr())
-                .formidlingsgruppekode(bruker.getFormidlingsgruppekode())
-                .iserv_fra_dato(bruker.getIservFraDato())
-                .nav_kontor(bruker.getNavKontor())
-                .kvalifiseringsgruppekode(bruker.getKvalifiseringsgruppekode())
-                .rettighetsgruppekode(bruker.getRettighetsgruppekode())
-                .hovedmaalkode(bruker.getHovedmaalkode())
-                .sikkerhetstiltak_type_kode(bruker.getSikkerhetstiltakTypeKode())
-                .fr_kode(bruker.getFrKode())
-                .har_oppfolgingssak(bruker.getHarOppfolgingssak())
-                .sperret_ansatt(bruker.getSperretAnsatt())
-                .er_doed(bruker.getErDoed())
-                .doed_fra_dato(bruker.getDoedFraDato())
-                .endret_dato(bruker.getTimestamp())
-                .build();
     }
 
     public static EndringPaaOppfoelgingsBrukerV2 tilEndringPaaOppfoelgingsBrukerV2(OppfolgingsbrukerEntity bruker) {
