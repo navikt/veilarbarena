@@ -1,13 +1,14 @@
 package no.nav.veilarbarena.config;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.auth.oidc.filter.AzureAdUserRoleResolver;
 import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter;
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig;
 import no.nav.common.auth.utils.ServiceUserTokenFinder;
 import no.nav.common.auth.utils.UserTokenFinder;
-import no.nav.common.log.LogFilter;
 import no.nav.common.rest.filter.ConsumerIdComplianceFilter;
+import no.nav.common.rest.filter.LogRequestFilter;
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -28,42 +29,11 @@ public class FilterConfig {
             "srvveilarboppfolging", "srvtiltaksgjennomf", "srvdokumentfordeling", PTO_ADMIN_SERVICE_USER
     );
 
-    private OidcAuthenticatorConfig openAmStsAuthConfig(EnvironmentProperties properties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getVeilarbloginOpenAmClientId())
-                .withIdTokenFinder(new ServiceUserTokenFinder())
-                .withUserRole(UserRole.SYSTEM);
-    }
-
     private OidcAuthenticatorConfig naisStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getNaisStsDiscoveryUrl())
                 .withClientIds(ALLOWED_SERVICE_USERS)
                 .withUserRole(UserRole.SYSTEM);
-    }
-
-    private OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties properties) {
-        List<String> clientIds = List.of(
-                properties.getVeilarbloginOpenAmClientId(),
-                properties.getModialoginOpenAmClientId()
-        );
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientIds(clientIds)
-                .withIdTokenCookieName(OPEN_AM_ID_TOKEN_COOKIE_NAME)
-                .withRefreshTokenCookieName(REFRESH_TOKEN_COOKIE_NAME)
-                .withIdTokenFinder(new UserTokenFinder())
-                .withRefreshUrl(properties.getOpenAmRefreshUrl())
-                .withUserRole(UserRole.INTERN);
-    }
-
-    private OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties environmentProperties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(environmentProperties.getAzureAdDiscoveryUrl())
-                .withClientId(environmentProperties.getVeilarbloginAzureAdClientId())
-                .withIdTokenCookieName(AZURE_AD_ID_TOKEN_COOKIE_NAME)
-                .withUserRole(UserRole.INTERN);
     }
 
     private OidcAuthenticatorConfig loginserviceIdportenConfig(EnvironmentProperties environmentProperties) {
@@ -82,9 +52,9 @@ public class FilterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<LogFilter> logFilterRegistrationBean() {
-        FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogFilter(requireApplicationName(), isDevelopment().orElse(false)));
+    public FilterRegistrationBean<LogRequestFilter> logFilterRegistrationBean() {
+        FilterRegistrationBean<LogRequestFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new LogRequestFilter(requireApplicationName(), isDevelopment().orElse(false)));
         registration.setOrder(1);
         registration.addUrlPatterns("/*");
         return registration;
@@ -95,10 +65,7 @@ public class FilterConfig {
         FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
         OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
                 fromConfigs(
-                        openAmAuthConfig(properties),
-                        azureAdAuthConfig(properties),
                         loginserviceIdportenConfig(properties),
-                        openAmStsAuthConfig(properties),
                         naisStsAuthConfig(properties),
                         naisAzureAdConfig(properties)
                 )
@@ -128,4 +95,12 @@ public class FilterConfig {
         return registration;
     }
 
+    @Bean
+    public FilterRegistrationBean<AuthInfoFilter> authInfoFilterRegistrationBean(MeterRegistry meterRegistry) {
+        FilterRegistrationBean<AuthInfoFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new AuthInfoFilter(meterRegistry));
+        registration.setOrder(5);
+        registration.addUrlPatterns("/api/*");
+        return registration;
+    }
 }
