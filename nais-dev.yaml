@@ -67,9 +67,6 @@ spec:
         - application: veilarbvedtaksstotte
           namespace: pto
           cluster: dev-fss
-        - application: mulighetsrommet-api
-          namespace: team-mulighetsrommet
-          cluster: dev-gcp
         - application: poao-tilgang
           namespace: poao
           cluster: dev-gcp
@@ -95,7 +92,7 @@ spec:
     - name: AMT_TILTAK_CLIENT_ID
       value: dd1086a6-9b1d-4d7e-914e-3d868fb068a7
     - name: VEILARBREGISTRERING_CLIENT_ID
-      value: 687bb3b0-a83c-47b7-9562-c6f9fedcc898
+      value: be687d07-407c-43d5-941c-c2dd9939fc00
     - name: VEILARBREGISTRERING_CLIENT_ID_GCP
       value: 8da37db8-6021-4e08-81b3-99045e2c1704
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
