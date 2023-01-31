@@ -92,7 +92,7 @@ public class ApplicationConfig {
     @Bean
     public KafkaConfig.EnvironmentContext kafkaConfigEnvContext() {
         return new KafkaConfig.EnvironmentContext()
-                .setAivenProducerClientProperties(aivenByteProducerProperties(PRODUCER_CLIENT_ID));
+                .setProducerClientProperties(aivenByteProducerProperties(PRODUCER_CLIENT_ID));
     }
 
     @Bean

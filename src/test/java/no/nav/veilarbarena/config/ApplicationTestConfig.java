@@ -105,7 +105,7 @@ public class ApplicationTestConfig {
                 .build();
 
         return new KafkaConfig.EnvironmentContext()
-                .setAivenProducerClientProperties(properties);
+                .setProducerClientProperties(properties);
     }
 
     @Bean

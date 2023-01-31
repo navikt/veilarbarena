@@ -24,7 +24,7 @@ public class KafkaProducerService {
         this.kafkaProperties = kafkaProperties;
     }
 
-    public void publiserEndringPaOppfolgingsbrukerV2Aiven(EndringPaaOppfoelgingsBrukerV2 bruker) {
+    public void publiserEndringPaOppfolgingsbrukerV2(EndringPaaOppfoelgingsBrukerV2 bruker) {
         ProducerRecord<String, Object> jsonRecord = new ProducerRecord<>(
                 kafkaProperties.getEndringPaaOppfolgingsbrukerTopic(),
                 bruker.getFodselsnummer(),

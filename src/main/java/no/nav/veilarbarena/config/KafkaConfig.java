@@ -25,12 +25,12 @@ public class KafkaConfig {
     @Data
     @Accessors(chain = true)
     public static class EnvironmentContext {
-        Properties aivenProducerClientProperties;
+        Properties ProducerClientProperties;
     }
 
     public final static String PRODUCER_CLIENT_ID = "veilarbarena-producer";
 
-    private final KafkaProducerRecordProcessor aivenProducerRecordProcessor;
+    private final KafkaProducerRecordProcessor ProducerRecordProcessor;
 
     private final KafkaProducerRecordStorage producerRecordStorage;
 
@@ -43,14 +43,14 @@ public class KafkaConfig {
     ) {
         OracleJdbcTemplateProducerRepository oracleProducerRepository = new OracleJdbcTemplateProducerRepository(jdbcTemplate);
 
-        KafkaProducerClient<byte[], byte[]> aivenProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
-                .withProperties(environmentContext.aivenProducerClientProperties)
+        KafkaProducerClient<byte[], byte[]> ProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
+                .withProperties(environmentContext.ProducerClientProperties)
                 .withMetrics(meterRegistry)
                 .build();
 
-        aivenProducerRecordProcessor = new KafkaProducerRecordProcessor(
+        ProducerRecordProcessor = new KafkaProducerRecordProcessor(
                 oracleProducerRepository,
-                aivenProducerClient,
+                ProducerClient,
                 leaderElectionClient,
                 List.of(
                         kafkaProperties.endringPaaOppfolgingsbrukerTopic
@@ -67,7 +67,7 @@ public class KafkaConfig {
 
     @PostConstruct
     public void start() {
-        aivenProducerRecordProcessor.start();
+        ProducerRecordProcessor.start();
     }
 
 }

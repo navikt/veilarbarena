@@ -75,7 +75,7 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private void publiserPaKafka(OppfolgingsbrukerEntity bruker) {
         var endringPaBrukerV2 = DtoMapper.tilEndringPaaOppfoelgingsBrukerV2(bruker);
-        kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2Aiven(endringPaBrukerV2);
+        kafkaProducerService.publiserEndringPaOppfolgingsbrukerV2(endringPaBrukerV2);
     }
 
 }
