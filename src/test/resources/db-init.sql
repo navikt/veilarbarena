@@ -61,12 +61,13 @@ DROP TABLE FEILEDE_KAFKA_BRUKERE;
 CREATE SEQUENCE KAFKA_PRODUCER_RECORD_ID_SEQ;
 
 CREATE TABLE KAFKA_PRODUCER_RECORD (
-    ID                      NUMBER(18) NOT NULL PRIMARY KEY,
+    ID                      NUMBER(18) NOT NULL,
     TOPIC                   VARCHAR(100) NOT NULL,
     KEY                     BLOB,
     VALUE                   BLOB,
     HEADERS_JSON            CLOB,
-    CREATED_AT              TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    CREATED_AT              TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (ID)	
 );
 
 -- V1_9__kafka_producer_record.sql (Trigger stottes ikke i H2 databasen)
