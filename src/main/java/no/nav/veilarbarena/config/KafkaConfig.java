@@ -25,12 +25,12 @@ public class KafkaConfig {
     @Data
     @Accessors(chain = true)
     public static class EnvironmentContext {
-        Properties ProducerClientProperties;
+        Properties producerClientProperties;
     }
 
     public final static String PRODUCER_CLIENT_ID = "veilarbarena-producer";
 
-    private final KafkaProducerRecordProcessor ProducerRecordProcessor;
+    private final KafkaProducerRecordProcessor producerRecordProcessor;
 
     private final KafkaProducerRecordStorage producerRecordStorage;
 
@@ -43,14 +43,14 @@ public class KafkaConfig {
     ) {
         OracleJdbcTemplateProducerRepository oracleProducerRepository = new OracleJdbcTemplateProducerRepository(jdbcTemplate);
 
-        KafkaProducerClient<byte[], byte[]> ProducerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
-                .withProperties(environmentContext.ProducerClientProperties)
+        KafkaProducerClient<byte[], byte[]> producerClient = KafkaProducerClientBuilder.<byte[], byte[]>builder()
+                .withProperties(environmentContext.producerClientProperties)
                 .withMetrics(meterRegistry)
                 .build();
 
-        ProducerRecordProcessor = new KafkaProducerRecordProcessor(
+        producerRecordProcessor = new KafkaProducerRecordProcessor(
                 oracleProducerRepository,
-                ProducerClient,
+                producerClient,
                 leaderElectionClient,
                 List.of(
                         kafkaProperties.endringPaaOppfolgingsbrukerTopic
@@ -67,7 +67,7 @@ public class KafkaConfig {
 
     @PostConstruct
     public void start() {
-        ProducerRecordProcessor.start();
+        producerRecordProcessor.start();
     }
 
 }
