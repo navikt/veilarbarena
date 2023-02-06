@@ -13,6 +13,7 @@ import no.nav.common.kafka.util.KafkaPropertiesBuilder;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
+import no.nav.poao_tilgang.client.PoaoTilgangClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
@@ -39,6 +40,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
+import static org.mockito.Mockito.mock;
 
 @Configuration
 @EnableConfigurationProperties({EnvironmentProperties.class})
@@ -183,5 +185,6 @@ public class ApplicationTestConfig {
             }
         };
     }
-
+    @Bean
+    public PoaoTilgangClient poaoTilgangClient() { return mock(PoaoTilgangClient.class); }
 }

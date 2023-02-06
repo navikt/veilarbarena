@@ -16,10 +16,14 @@ import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.job.leader_election.LeaderElectionHttpClient;
 import no.nav.common.metrics.InfluxClient;
 import no.nav.common.metrics.MetricsClient;
+import no.nav.common.rest.client.RestClient;
 import no.nav.common.token_client.builder.AzureAdTokenClientBuilder;
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.EnvironmentUtils;
+import no.nav.poao_tilgang.client.PoaoTilgangCachedClient;
+import no.nav.poao_tilgang.client.PoaoTilgangClient;
+import no.nav.poao_tilgang.client.PoaoTilgangHttpClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
@@ -124,9 +128,22 @@ public class ApplicationConfig {
         return new ArenaOrdsTokenProviderClient(createArenaOrdsUrl());
     }
 
-    @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
         return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
+    }
+
+    @Bean
+    public PoaoTilgangClient poaoTilgangClient(EnvironmentProperties properties, AzureAdMachineToMachineTokenClient tokenClient) {
+        return new PoaoTilgangCachedClient(
+                new PoaoTilgangHttpClient(
+                        properties.getPoaoTilgangUrl(),
+                        () -> tokenClient.createMachineToMachineToken(properties.getPoaoTilgangScope()),
+                        RestClient.baseClient()
+                ),
+                null,
+                null,
+                null
+        );
     }
 
     private static String createArenaOrdsUrl() {

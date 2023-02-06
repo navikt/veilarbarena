@@ -18,13 +18,17 @@
     <description>Microservice som fungerer som anti-corruption-layer foran ARENA</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <common.version>2.2023.01.02_13.51-1c6adeb1653b</common.version>
         <testcontainers.version>1.17.2</testcontainers.version>
         <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
     </properties>
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
         <repository>
             <id>jitpack</id>
             <url>https://jitpack.io</url>
@@ -248,6 +252,10 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.navikt.poao-tilgang</groupId>
+            <artifactId>client</artifactId>
+            <version>2023.01.27_14.49-9fe135865a9f</version>
+        </dependency>
     </dependencies>
-
 </project>
