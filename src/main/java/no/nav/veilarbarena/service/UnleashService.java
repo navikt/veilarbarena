@@ -14,13 +14,5 @@ public class UnleashService {
     public UnleashService(UnleashClient unleashClient) {
         this.unleashClient = unleashClient;
     }
-
-    public boolean erSkruAvPubliseringPaKafkaEnabled() {
-        return unleashClient.isEnabled("veilarbarena.skru_av_publisering_kafka");
-    }
-    public boolean skalBrukePoaoTilgang() {
-        return unleashClient.isEnabled(UNLEASH_POAO_TILGANG_ENABLED);
-    }
-
 }
 
