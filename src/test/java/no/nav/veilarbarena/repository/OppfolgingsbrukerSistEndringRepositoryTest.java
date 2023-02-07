@@ -5,6 +5,7 @@ import no.nav.veilarbarena.utils.LocalH2Database;
 import org.junit.Test;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +16,7 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
     public void skal_oppdatere_og_hente_siste_sjekk() {
         OppfolgingsbrukerSistEndringRepository repository = new OppfolgingsbrukerSistEndringRepository(LocalH2Database.getDb());
 
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = now();
 
         repository.updateLastcheck("test-fnr", now);
 
@@ -23,6 +24,10 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
 
         assertEquals("test-fnr", sistEndret.getFodselsnr());
         assertEquals(now, sistEndret.getOppfolgingsbrukerSistEndring());
+    }
+
+    private static ZonedDateTime now() {
+        return ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS);
     }
 
 
