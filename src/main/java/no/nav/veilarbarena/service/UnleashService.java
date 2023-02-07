@@ -14,5 +14,9 @@ public class UnleashService {
     public UnleashService(UnleashClient unleashClient) {
         this.unleashClient = unleashClient;
     }
+
+    public boolean skalBrukePoaoTilgang(){
+        return unleashClient.isEnabled(UNLEASH_POAO_TILGANG_ENABLED);
+    }
 }
 
