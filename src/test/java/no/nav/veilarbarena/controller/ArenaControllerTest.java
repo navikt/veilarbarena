@@ -44,6 +44,11 @@ public class ArenaControllerTest {
     @MockBean
     private ArenaService arenaService;
 
+
+    public void setUp() {
+
+    }
+
     @Test
     public void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {
         when(authService.erSystembruker()).thenReturn(false);
