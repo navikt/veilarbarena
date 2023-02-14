@@ -9,7 +9,7 @@ public class UnleashService {
 
     private final UnleashClient unleashClient;
 
-    private static final String UNLEASH_POAO_TILGANG_ENABLED = "veilarbveileder.poao-tilgang-enabled";
+    private static final String UNLEASH_POAO_TILGANG_ENABLED = "veilarbarena.poao-tilgang-enabled";
 
     public UnleashService(UnleashClient unleashClient) {
         this.unleashClient = unleashClient;
