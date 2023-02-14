@@ -35,8 +35,13 @@ public class AuthService {
 
     private final PoaoTilgangClient poaoTilgangClient;
 
+
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, UnleashService unleashService, PoaoTilgangClient poaoTilgangClient) {
+    public AuthService(AuthContextHolder authContextHolder,
+                       Pep veilarbPep,
+                       UnleashService unleashService,
+                       PoaoTilgangClient poaoTilgangClient
+    ) {
         this.authContextHolder = authContextHolder;
         this.veilarbPep = veilarbPep;
         this.unleashService = unleashService;
