@@ -1,22 +1,20 @@
 package no.nav.veilarbarena.controller;
 
-import no.nav.common.abac.Pep;
-import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
-import no.nav.poao_tilgang.client.PoaoTilgangClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
+import no.nav.veilarbarena.config.ApplicationTestConfig;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
-import no.nav.veilarbarena.service.UnleashService;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -31,32 +29,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ContextConfiguration(classes = ApplicationTestConfig.class)
 @WebMvcTest(controllers = ArenaController.class)
 public class ArenaControllerTest {
-    private final Pep veilarbPep = mock(Pep.class);
-    private final AuthContextHolder authContextHolder = mock(AuthContextHolder.class);
-    private final EnvironmentProperties environmentProperties = mock(EnvironmentProperties.class);
-    private final PoaoTilgangClient poaoTilgangClient = mock(PoaoTilgangClient.class);
-    private final UnleashService unleashService = mock(UnleashService.class);
+
     private final Fnr FNR = Fnr.of("123456");
 
     @Autowired
     private MockMvc mockMvc;
 
-    private final AuthService authService = new AuthService(
-            authContextHolder,
-            veilarbPep,
-            unleashService,
-            poaoTilgangClient
-    );
+    @MockBean
+    private EnvironmentProperties environmentProperties;
+
+
+    @MockBean
+    private AuthService authService;
 
     @MockBean
     private ArenaService arenaService;
-
-
-    public void setUp() {
-
-    }
 
     @Test
     public void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {

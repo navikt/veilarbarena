@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.config;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import no.finn.unleash.UnleashContext;
 import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
@@ -186,4 +187,10 @@ public class ApplicationTestConfig {
     }
     @Bean
     public PoaoTilgangClient poaoTilgangClient() { return mock(PoaoTilgangClient.class); }
+
+    @Bean
+    public MeterRegistry meterRegistry(){
+        return mock(MeterRegistry.class);
+    }
+
 }
