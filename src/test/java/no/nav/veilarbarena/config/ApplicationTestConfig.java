@@ -100,7 +100,7 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public KafkaConfig.EnvironmentContext kafkaConfigEnvironmentContext(KafkaContainer kafkaContainer) {
+    public KafkaConfig.EnvironmentContext kafkaConfigEnvContext(KafkaContainer kafkaContainer) {
         Properties properties = KafkaPropertiesBuilder.producerBuilder()
                 .withBrokerUrl(kafkaContainer.getBootstrapServers())
                 .withProducerId(PRODUCER_CLIENT_ID)
