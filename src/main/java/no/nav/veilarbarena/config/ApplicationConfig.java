@@ -138,7 +138,7 @@ public class ApplicationConfig {
     public ArenaOrdsTokenProviderClient arenaOrdsTokenProvider() {
         return new ArenaOrdsTokenProviderClient(createArenaOrdsUrl());
     }
-
+    @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
         return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
     }
