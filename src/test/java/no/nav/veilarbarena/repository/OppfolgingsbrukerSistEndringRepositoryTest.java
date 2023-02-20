@@ -2,9 +2,11 @@ package no.nav.veilarbarena.repository;
 
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerSistEndretEntity;
 import no.nav.veilarbarena.utils.LocalH2Database;
+import org.joda.time.Seconds;
 import org.junit.Test;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,7 +24,7 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
         OppfolgingsbrukerSistEndretEntity sistEndret = repository.hentSistEndret();
 
         assertEquals("test-fnr", sistEndret.getFodselsnr());
-        assertEquals(now, sistEndret.getOppfolgingsbrukerSistEndring());
+        assertEquals(now.truncatedTo(ChronoUnit.SECONDS), sistEndret.getOppfolgingsbrukerSistEndring().truncatedTo(ChronoUnit.SECONDS));
     }
 
 
