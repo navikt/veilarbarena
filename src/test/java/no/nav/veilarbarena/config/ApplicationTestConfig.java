@@ -1,6 +1,5 @@
 package no.nav.veilarbarena.config;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import no.finn.unleash.UnleashContext;
 import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
@@ -14,7 +13,6 @@ import no.nav.common.kafka.util.KafkaPropertiesBuilder;
 import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
-import no.nav.poao_tilgang.client.PoaoTilgangClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
@@ -31,7 +29,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -42,7 +39,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
-import static org.mockito.Mockito.mock;
 
 @Configuration
 @EnableConfigurationProperties({EnvironmentProperties.class})
@@ -101,7 +97,7 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public KafkaConfig.EnvironmentContext kafkaConfigEnvContext(KafkaContainer kafkaContainer) {
+    public KafkaConfig.EnvironmentContext kafkaConfigEnvironmentContext(KafkaContainer kafkaContainer) {
         Properties properties = KafkaPropertiesBuilder.producerBuilder()
                 .withBrokerUrl(kafkaContainer.getBootstrapServers())
                 .withProducerId(PRODUCER_CLIENT_ID)
@@ -185,14 +181,6 @@ public class ApplicationTestConfig {
                 return HealthCheckResult.healthy();
             }
         };
-    }
-    @Bean
-    public PoaoTilgangClient poaoTilgangClient() { return mock(PoaoTilgangClient.class); }
-
-    @Bean
-    @Profile("!local")
-    public MeterRegistry meterRegistry(){
-        return mock(MeterRegistry.class);
     }
 
 }
