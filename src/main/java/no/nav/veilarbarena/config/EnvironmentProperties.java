@@ -40,4 +40,8 @@ public class EnvironmentProperties {
 
     private String ytelseskontraktV3Endpoint;
 
+    private String poaoTilgangUrl;
+
+    private String poaoTilgangScope;
+
 }
