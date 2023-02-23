@@ -17,7 +17,7 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
     public void skal_oppdatere_og_hente_siste_sjekk() {
         OppfolgingsbrukerSistEndringRepository repository = new OppfolgingsbrukerSistEndringRepository(LocalH2Database.getDb());
 
-        ZonedDateTime now = now();
+        ZonedDateTime now = ZonedDateTime.now();
 
         repository.updateLastcheck("test-fnr", now);
 
@@ -25,10 +25,6 @@ public class OppfolgingsbrukerSistEndringRepositoryTest {
 
         assertEquals("test-fnr", sistEndret.getFodselsnr());
         assertEquals(now.truncatedTo(ChronoUnit.SECONDS), sistEndret.getOppfolgingsbrukerSistEndring().truncatedTo(ChronoUnit.SECONDS));
-    }
-
-    private static ZonedDateTime now() {
-        return ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS);
     }
 
 
