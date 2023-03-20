@@ -187,6 +187,11 @@
             <artifactId>health</artifactId>
             <version>${common.version}</version>
         </dependency>
+		<dependency>
+			<groupId>com.github.navikt.poao-tilgang</groupId>
+			<artifactId>client</artifactId>
+			<version>2023.03.17_11.36-31ab7c6e4216</version>
+		</dependency>
 
         <!-- Tjenestespesifikasjoner -->
         <dependency>

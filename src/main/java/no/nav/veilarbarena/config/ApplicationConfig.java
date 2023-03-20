@@ -1,5 +1,7 @@
 package no.nav.veilarbarena.config;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.VeilarbPepFactory;
@@ -20,6 +22,13 @@ import no.nav.common.token_client.builder.AzureAdTokenClientBuilder;
 import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.EnvironmentUtils;
+import no.nav.common.rest.client.RestClient;
+import no.nav.poao_tilgang.client.AdGruppe;
+import no.nav.poao_tilgang.client.Decision;
+import no.nav.poao_tilgang.client.PoaoTilgangCachedClient;
+import no.nav.poao_tilgang.client.PoaoTilgangClient;
+import no.nav.poao_tilgang.client.PoaoTilgangHttpClient;
+import no.nav.poao_tilgang.client.PolicyInput;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
@@ -29,6 +38,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.UUID;
 
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
@@ -44,6 +57,15 @@ import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 public class ApplicationConfig {
 
     public static final String APPLICATION_NAME = "veilarbarena";
+	private final Cache<PolicyInput, Decision> policyInputToDecisionCache = Caffeine.newBuilder()
+			.expireAfterWrite(Duration.ofMinutes(30))
+			.build();
+	private final Cache<UUID, List<AdGruppe>> navAnsattIdToAzureAdGrupperCache = Caffeine.newBuilder()
+			.expireAfterWrite(Duration.ofMinutes(30))
+			.build();
+	private final Cache<String, Boolean> norskIdentToErSkjermetCache = Caffeine.newBuilder()
+			.expireAfterWrite(Duration.ofMinutes(30))
+			.build();
 
     @Bean
     public Credentials serviceUserCredentials() {
@@ -126,6 +148,20 @@ public class ApplicationConfig {
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
         return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
     }
+
+	@Bean
+	public PoaoTilgangClient poaoTilgangClient(EnvironmentProperties properties, AzureAdMachineToMachineTokenClient tokenClient) {
+		return new PoaoTilgangCachedClient(
+			new PoaoTilgangHttpClient(
+					properties.getPoaoTilgangUrl(),
+					() -> tokenClient.createMachineToMachineToken(properties.getPoaoTilgangScope()),
+					RestClient.baseClient()
+			),
+			policyInputToDecisionCache,
+			navAnsattIdToAzureAdGrupperCache,
+			norskIdentToErSkjermetCache
+		);
+	}
 
     private static String createArenaOrdsUrl() {
         boolean isProduction = EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Cluster name is missing"));

@@ -100,3 +100,7 @@ spec:
       value: 98a17237-0bfc-496e-ba28-cdb320960257
     - name: POAO_TILGANG_CLIENT_ID
       value: 986c77da-3cfa-4a9e-b11d-b3d193ada8cd
+    - name: POAO_TILGANG_URL
+      value: https://poao-tilgang.dev.intern.nav.no
+    - name: POAO_TILGANG_SCOPE
+      value: api://dev-gcp.poao.poao-tilgang/.default
