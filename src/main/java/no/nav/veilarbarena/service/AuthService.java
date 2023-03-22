@@ -54,7 +54,7 @@ public class AuthService {
         String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
         String tokenIssuer = authContextHolder.getIdTokenClaims().map(JWTClaimsSet::getIssuer).orElse("");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
-        
+
         if (unleashService.skalBrukePoaoTilgang()) {
             secureLog.info("Skal sjekke poaotilgang hvor uuid = {}, pid = {}, NavIdent = {}, subject = {}, userRole = {}, tokenIssuer = {}, requestId = {}",
                     hentInnloggetVeilederUUIDOrElseNull(),
@@ -68,7 +68,7 @@ public class AuthService {
             Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
                     hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
             )).getOrThrow();
-            secureLog.info("Decision is deny = {}", desicion.isDeny());
+            secureLog.info("Decision is deny = {}, requestId = {}", desicion.isDeny(), requestId);
             if (desicion.isDeny()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
