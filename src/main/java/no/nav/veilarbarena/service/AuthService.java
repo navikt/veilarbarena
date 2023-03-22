@@ -3,9 +3,11 @@ package no.nav.veilarbarena.service;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.common.abac.AbacUtils;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.UserRole;
 import no.nav.common.types.identer.Fnr;
 import no.nav.poao_tilgang.client.Decision;
 import no.nav.poao_tilgang.client.NavAnsattTilgangTilEksternBrukerPolicyInput;
@@ -40,7 +42,7 @@ public class AuthService {
     public static Logger secureLog = LoggerFactory.getLogger("SecureLog");
 
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder,  Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
+    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
         this.authContextHolder = authContextHolder;
         this.veilarbPep = veilarbPep;
         this.poaoTilgangClient = poaoTilgangClient;
@@ -48,21 +50,33 @@ public class AuthService {
     }
 
     public void sjekkTilgang(Fnr fnr) {
+        String requestId = UUID.randomUUID().toString();
+        String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
+        String tokenIssuer = authContextHolder.getIdTokenClaims().map(JWTClaimsSet::getIssuer).orElse("");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
+        
         if (unleashService.skalBrukePoaoTilgang()) {
-			Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
-					hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
-			)).getOrThrow();
-            secureLog.info("Decision is deny = {} hvor uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}", desicion.isDeny(), hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken);
-			if (desicion.isDeny()) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-			}
-        } else {
-			if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-			}
-		}
+            secureLog.info("Skal sjekke poaotilgang hvor uuid = {}, pid = {}, NavIdent = {}, subject = {}, userRole = {}, tokenIssuer = {}, requestId = {}",
+                    hentInnloggetVeilederUUIDOrElseNull(),
+                    hentInnloggetVeilederpid(),
+                    hentInnloggetVeilederNavIdent(),
+                    hentInnloggetVeilederSubject(),
+                    userRole,
+                    tokenIssuer,
+                    requestId);
 
+            Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
+                    hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
+            )).getOrThrow();
+            secureLog.info("Decision is deny = {}", desicion.isDeny());
+            if (desicion.isDeny()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
     }
 
     public boolean erSystembruker() {
@@ -80,19 +94,20 @@ public class AuthService {
         }
     }
 
-	public static Optional<String> getStringClaimOrEmpty(JWTClaimsSet claims, String claimName) {
-		try {
-			return ofNullable(claims.getStringClaim(claimName));
-		} catch (Exception e) {
-			return empty();
-		}
-	}
-	public UUID hentInnloggetVeilederUUID() {
-		return authContextHolder.getIdTokenClaims()
-				.flatMap(claims -> getStringClaimOrEmpty(claims, "oid"))
-				.map(UUID::fromString)
-				.orElseThrow (() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Fant ikke oid for innlogget veileder") );
-	}
+    public static Optional<String> getStringClaimOrEmpty(JWTClaimsSet claims, String claimName) {
+        try {
+            return ofNullable(claims.getStringClaim(claimName));
+        } catch (Exception e) {
+            return empty();
+        }
+    }
+
+    public UUID hentInnloggetVeilederUUID() {
+        return authContextHolder.getIdTokenClaims()
+                .flatMap(claims -> getStringClaimOrEmpty(claims, "oid"))
+                .map(UUID::fromString)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Fant ikke oid for innlogget veileder"));
+    }
 
     public UUID hentInnloggetVeilederUUIDOrElseNull() {
         return authContextHolder.getIdTokenClaims()
