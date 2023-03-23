@@ -36,7 +36,7 @@ public class AuthService {
     private final UnleashService unleashService;
 
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder,  Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
+    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
         this.authContextHolder = authContextHolder;
         this.veilarbPep = veilarbPep;
         this.poaoTilgangClient = poaoTilgangClient;
@@ -45,20 +45,21 @@ public class AuthService {
 
     public void sjekkTilgang(Fnr fnr) {
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
-        if (unleashService.skalBrukePoaoTilgang()) {
-			Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
-					hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
-			)).getOrThrow();
-			if (desicion.isDeny()) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-			}
-        } else {
-			if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-			}
-		}
 
+        if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
+            Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
+                    hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
+            )).getOrThrow();
+            if (desicion.isDeny()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
     }
+
 
     public boolean erSystembruker() {
         return authContextHolder.erSystemBruker();
@@ -75,17 +76,18 @@ public class AuthService {
         }
     }
 
-	public static Optional<String> getStringClaimOrEmpty(JWTClaimsSet claims, String claimName) {
-		try {
-			return ofNullable(claims.getStringClaim(claimName));
-		} catch (Exception e) {
-			return empty();
-		}
-	}
-	public UUID hentInnloggetVeilederUUID() {
-		return authContextHolder.getIdTokenClaims()
-				.flatMap(claims -> getStringClaimOrEmpty(claims, "oid"))
-				.map(UUID::fromString)
-				.orElseThrow (() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Fant ikke oid for innlogget veileder") );
-	}
+    public static Optional<String> getStringClaimOrEmpty(JWTClaimsSet claims, String claimName) {
+        try {
+            return ofNullable(claims.getStringClaim(claimName));
+        } catch (Exception e) {
+            return empty();
+        }
+    }
+
+    public UUID hentInnloggetVeilederUUID() {
+        return authContextHolder.getIdTokenClaims()
+                .flatMap(claims -> getStringClaimOrEmpty(claims, "oid"))
+                .map(UUID::fromString)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Fant ikke oid for innlogget veileder"));
+    }
 }
