@@ -53,14 +53,14 @@ public class AuthService {
         String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
         Boolean abacDecision = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr);
-        secureLog.info("abacDecision = {}, requestId , userRole = {}", abacDecision, requestId, userRole);
+        secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
 
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
             secureLog.info("Skal kalle poao-tilgang hvor hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}", requestId, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject());
             Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
                     hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
             )).getOrThrow();
-            secureLog.info("Decision is deny = {} hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}", requestId, desicion.isDeny(), hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken);
+            secureLog.info("Decision is deny = {} hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}", desicion.isDeny(), requestId, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken);
             if (desicion.isDeny()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
