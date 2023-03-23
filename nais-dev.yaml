@@ -104,3 +104,5 @@ spec:
       value: https://poao-tilgang.dev.intern.nav.no
     - name: POAO_TILGANG_SCOPE
       value: api://dev-gcp.poao.poao-tilgang/.default
+  secureLogs:
+    enabled: true
