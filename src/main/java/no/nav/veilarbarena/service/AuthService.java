@@ -53,7 +53,7 @@ public class AuthService {
         String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
         Boolean abacDecision = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr);
-        secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
+        //secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
 
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
             secureLog.info("Skal kalle poao-tilgang hvor hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}", requestId, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject());
