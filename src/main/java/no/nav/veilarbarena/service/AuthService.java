@@ -8,10 +8,7 @@ import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.types.identer.Fnr;
-import no.nav.poao_tilgang.client.Decision;
-import no.nav.poao_tilgang.client.NavAnsattTilgangTilEksternBrukerPolicyInput;
-import no.nav.poao_tilgang.client.PoaoTilgangClient;
-import no.nav.poao_tilgang.client.TilgangType;
+import no.nav.poao_tilgang.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,17 +50,35 @@ public class AuthService {
         String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
         Boolean abacDecision = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr);
-        //secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
 
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
-            secureLog.info("Skal kalle poao-tilgang hvor hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}", requestId, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject());
-            Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
-                    hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
-            )).getOrThrow();
-            secureLog.info("Decision is deny = {} hvor requestId = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}", desicion.isDeny(), requestId, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetVeilederpid(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken);
-            if (desicion.isDeny()) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
+            secureLog.info("Skal kalle poao-tilgang hvor hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, requestId = {}", userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), requestId);
+
+            if (authContextHolder.erEksternBruker()) {
+                Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
+                        hentInnloggetPersonIdent(), fnr.get()
+                )).getOrThrow();
+
+                secureLog.info("Decision from EksternBrukerTilgangTilEksternBrukerPolicyInput is: {} hvor userRole = {}, pid = {}, requestId = {} ", desicion.getType(), userRole, hentInnloggetPersonIdent(), requestId);
+
+                if (desicion.isDeny()) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
+
+
+            } else {
+
+                Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
+                        hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
+                )).getOrThrow();
+                secureLog.info("Decision from NavAnsattTilgangTilEksternBrukerPolicyInput is: {} hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
+
+                if (desicion.isDeny()) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
             }
+
         } else {
             if (!abacDecision) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -110,7 +125,7 @@ public class AuthService {
                 .orElse(null);
     }
 
-    public String hentInnloggetVeilederpid() {
+    public String hentInnloggetPersonIdent() {
         return authContextHolder.getIdTokenClaims()
                 .flatMap(claims -> getStringClaimOrEmpty(claims, "pid"))
                 .orElse(null);
