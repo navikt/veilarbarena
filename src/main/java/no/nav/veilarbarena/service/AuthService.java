@@ -56,6 +56,7 @@ public class AuthService {
             secureLog.info("Skal kalle poao-tilgang hvor hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, requestId = {}", userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), requestId);
 
             if (authContextHolder.erEksternBruker()) {
+                harSikkerhetsNivaa4();
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetPersonIdent(), fnr.get()
                 )).getOrThrow();
@@ -141,5 +142,13 @@ public class AuthService {
         return authContextHolder.getIdTokenClaims()
                 .flatMap(claims -> getStringClaimOrEmpty(claims, "sub"))
                 .orElse(null);
+    }
+
+    public void harSikkerhetsNivaa4() {
+        Optional<String> acrClaim = authContextHolder.getIdTokenClaims()
+                .flatMap(claims -> getStringClaimOrEmpty(claims, "acr"));
+        if(acrClaim.isEmpty() || !acrClaim.get().equals("Level4")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 }
