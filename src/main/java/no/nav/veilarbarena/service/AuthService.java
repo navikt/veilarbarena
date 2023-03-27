@@ -52,29 +52,20 @@ public class AuthService {
         Boolean abacDecision = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr);
 
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
-            secureLog.info("abacDecision = {}, requestId = {} , userRole = {}", abacDecision, requestId, userRole);
-            secureLog.info("Skal kalle poao-tilgang hvor hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, requestId = {}", userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), requestId);
-
             if (authContextHolder.erEksternBruker()) {
                 harSikkerhetsNivaa4();
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetPersonIdent(), fnr.get()
                 )).getOrThrow();
-
-                secureLog.info("Decision from EksternBrukerTilgangTilEksternBrukerPolicyInput is: {} hvor userRole = {}, pid = {}, requestId = {} ", desicion.getType(), userRole, hentInnloggetPersonIdent(), requestId);
-
+                secureLog.info("abacDecision = {}, EksternBrukerTilgangTilEksternBrukerPolicyInput = {}, hvor userRole = {}, pid = {}, requestId = {} ", abacDecision, desicion.getType(), userRole, hentInnloggetPersonIdent(), requestId);
                 if (desicion.isDeny()) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
-
-
             } else {
-
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
                 )).getOrThrow();
-                secureLog.info("Decision from NavAnsattTilgangTilEksternBrukerPolicyInput is: {} hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
-
+                secureLog.info("abacDecision = {}, NavAnsattTilgangTilEksternBrukerPolicyInput decision = {}, hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
                 if (desicion.isDeny()) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
@@ -147,7 +138,7 @@ public class AuthService {
     public void harSikkerhetsNivaa4() {
         Optional<String> acrClaim = authContextHolder.getIdTokenClaims()
                 .flatMap(claims -> getStringClaimOrEmpty(claims, "acr"));
-        if(acrClaim.isEmpty() || !acrClaim.get().equals("Level4")) {
+        if (acrClaim.isEmpty() || !acrClaim.get().equals("Level4")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
