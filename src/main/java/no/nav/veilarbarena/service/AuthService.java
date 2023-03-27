@@ -65,7 +65,7 @@ public class AuthService {
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
                 )).getOrThrow();
-                secureLog.info("abacDecision = {}, NavAnsattTilgangTilEksternBrukerPolicyInput decision = {}, hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
+                secureLog.info("abacDecision = {}, NavAnsattTilgangTilEksternBrukerPolicyInput decision = {}, hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", abacDecision, desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
                 if (desicion.isDeny()) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
