@@ -6,11 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
-import no.nav.common.auth.context.UserRole;
 import no.nav.common.types.identer.Fnr;
 import no.nav.poao_tilgang.client.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,8 +32,6 @@ public class AuthService {
 
     private final UnleashService unleashService;
 
-    public static Logger secureLog = LoggerFactory.getLogger("SecureLog");
-
     @Autowired
     public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
         this.authContextHolder = authContextHolder;
@@ -46,18 +41,13 @@ public class AuthService {
     }
 
     public void sjekkTilgang(Fnr fnr) {
-        String requestId = UUID.randomUUID().toString();
-        String userRole = authContextHolder.getRole().map(UserRole::name).orElse("UKJENT");
         String innloggetBrukerToken = authContextHolder.requireIdTokenString();
-        Boolean abacDecision = veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr);
-
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
             if (authContextHolder.erEksternBruker()) {
                 harSikkerhetsNivaa4();
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetPersonIdent(), fnr.get()
                 )).getOrThrow();
-                secureLog.info("abacDecision = {}, EksternBrukerTilgangTilEksternBrukerPolicyInput = {}, hvor userRole = {}, pid = {}, requestId = {} ", abacDecision, desicion.getType(), userRole, hentInnloggetPersonIdent(), requestId);
                 if (desicion.isDeny()) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
@@ -65,14 +55,12 @@ public class AuthService {
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerPolicyInput(
                         hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
                 )).getOrThrow();
-                secureLog.info("abacDecision = {}, NavAnsattTilgangTilEksternBrukerPolicyInput decision = {}, hvor userRole = {}, uuid = {}, pid = {}, NavIdent = {}, subject = {}, innloggetBrukerToken = {}, requestId = {}", abacDecision, desicion.getType(), userRole, hentInnloggetVeilederUUIDOrElseNull(), hentInnloggetPersonIdent(), hentInnloggetVeilederNavIdent(), hentInnloggetVeilederSubject(), innloggetBrukerToken, requestId);
                 if (desicion.isDeny()) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
             }
-
         } else {
-            if (!abacDecision) {
+            if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
         }
@@ -109,29 +97,9 @@ public class AuthService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Fant ikke oid for innlogget veileder"));
     }
 
-
-    public UUID hentInnloggetVeilederUUIDOrElseNull() {
-        return authContextHolder.getIdTokenClaims()
-                .flatMap(claims -> getStringClaimOrEmpty(claims, "oid"))
-                .map(UUID::fromString)
-                .orElse(null);
-    }
-
     public String hentInnloggetPersonIdent() {
         return authContextHolder.getIdTokenClaims()
                 .flatMap(claims -> getStringClaimOrEmpty(claims, "pid"))
-                .orElse(null);
-    }
-
-    public String hentInnloggetVeilederNavIdent() {
-        return authContextHolder.getIdTokenClaims()
-                .flatMap(claims -> getStringClaimOrEmpty(claims, "NAVident"))
-                .orElse(null);
-    }
-
-    public String hentInnloggetVeilederSubject() {
-        return authContextHolder.getIdTokenClaims()
-                .flatMap(claims -> getStringClaimOrEmpty(claims, "sub"))
                 .orElse(null);
     }
 
