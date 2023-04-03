@@ -213,4 +213,20 @@ public class ArenaOrdsClientImplTest {
         assertThat(healthCheckResult.isHealthy()).isTrue();
     }
 
+    @Test
+    public void checkHealth_skal_feile_med_result() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlPathEqualTo("/arena/api/v1/test/ping"))
+                .willReturn(aResponse()
+                        .withStatus(500))
+        );
+
+        HealthCheckResult healthCheckResult = client.checkHealth();
+        assertThat(healthCheckResult.isHealthy()).isFalse();
+    }
+
+
 }
