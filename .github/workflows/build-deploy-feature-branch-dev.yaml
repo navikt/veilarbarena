@@ -1,10 +1,16 @@
 name: Deploy til Dev
 on:
   workflow_dispatch:
+
+concurrency:
+  group: deploy_feature_branch
+  cancel-in-progress: true
+
 env:
   IMAGE_TAG: ${{ github.sha }}
   IMAGE: ghcr.io/${{ github.repository }}/veilarbarena
   PRINT_PAYLOAD: true
+
 jobs:
   build-and-push:
     name: Build and push

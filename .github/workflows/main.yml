@@ -1,14 +1,22 @@
 name: Build, push and deploy
-on: push
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy_prod
+  cancel-in-progress: true
+
 env:
   IMAGE_TAG: ${{ github.sha }}
   IMAGE: ghcr.io/${{ github.repository }}/veilarbarena
   PRINT_PAYLOAD: true
+
 jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/master'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -80,12 +88,4 @@ jobs:
           CLUSTER: prod-fss
           RESOURCE: nais-prod.yaml
           VAR: version=${{ env.IMAGE_TAG }}
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          name: Release to prod
-          tag_name: release/prod@${{ env.IMAGE_TAG }}
-          target_commitish: master
 
