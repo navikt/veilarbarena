@@ -127,7 +127,7 @@ public class ApplicationTestConfig {
             }
 
             @Override
-            public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
+            public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolgingssak(Fnr fnr) {
                 return Optional.empty();
             }
 

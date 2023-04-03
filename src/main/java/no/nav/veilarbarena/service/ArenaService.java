@@ -83,7 +83,7 @@ public class ArenaService {
     }
 
     public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
-        return arenaOrdsClient.hentArenaOppfolginssak(fnr);
+        return arenaOrdsClient.hentArenaOppfolgingssak(fnr);
     }
 
     public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {

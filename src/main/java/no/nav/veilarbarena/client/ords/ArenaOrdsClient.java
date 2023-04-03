@@ -12,7 +12,7 @@ public interface ArenaOrdsClient extends HealthCheck {
 
     Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr);
 
-    Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr);
+    Optional<ArenaOppfolgingssakDTO> hentArenaOppfolgingssak(Fnr fnr);
 
     Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr);
 

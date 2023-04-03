@@ -1,9 +1,12 @@
 package no.nav.veilarbarena.client;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import no.nav.common.health.HealthCheckResult;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -128,6 +132,85 @@ public class ArenaOrdsClientImplTest {
         assertTrue(aktiviteter.getResponse().getGruppeaktivitetListe().isEmpty());
         assertTrue(aktiviteter.getResponse().getTiltaksaktivitetListe().isEmpty());
         assertTrue(aktiviteter.getResponse().getUtdanningsaktivitetListe().isEmpty());
+    }
+
+    @Test
+    public void hentArenaOppfolgingssak_skal_returnere_saksid() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String jsonResponse = TestUtils.readTestResourceFile("client/ords/oppfoelgingssak_arbeidssoeker.json");
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingssak"))
+                .withQueryParam("p_fnr", equalTo(fnr))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(jsonResponse))
+        );
+
+        Optional<ArenaOppfolgingssakDTO> arenaOppfolgingssakDTO = client.hentArenaOppfolgingssak(Fnr.of(fnr));
+        assertThat(arenaOppfolgingssakDTO).isPresent().get().extracting("saksId").isEqualTo("5514902");
+    }
+
+    @Test
+    public void hentArenaOppfolgingssak_uten_sak_skal_returnere_saksid_null() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String jsonResponse = TestUtils.readTestResourceFile("client/ords/oppfoelgingssak_uten_sak.json");
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingssak"))
+                .withQueryParam("p_fnr", equalTo(fnr))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(jsonResponse))
+        );
+
+        Optional<ArenaOppfolgingssakDTO> arenaOppfolgingssakDTO = client.hentArenaOppfolgingssak(Fnr.of(fnr));
+        assertThat(arenaOppfolgingssakDTO).isPresent().get().extracting("saksId").isNull();
+    }
+
+    @Test
+    public void hentArenaOppfolgingsstatus_arbeidssoker() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String jsonResponse = TestUtils.readTestResourceFile("client/ords/oppfoelgingsstatus_arbeidssoeker.json");
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingsstatus"))
+                .withQueryParam("p_fnr", equalTo(fnr))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(jsonResponse))
+        );
+
+        Optional<ArenaOppfolgingsstatusDTO> arenaOppfolgingsstatusDTO = client.hentArenaOppfolgingsstatus(Fnr.of(fnr));
+        assertThat(arenaOppfolgingsstatusDTO).isPresent().get()
+                .hasFieldOrPropertyWithValue("formidlingsgruppeKode", "ARBS")
+                .hasFieldOrPropertyWithValue("servicegruppeKode", "IKVAL");
+    }
+
+
+    @Test
+    public void checkHealth_kaller_ping() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlPathEqualTo("/arena/api/v1/test/ping"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("OK"))
+        );
+
+        HealthCheckResult healthCheckResult = client.checkHealth();
+        assertThat(healthCheckResult.isHealthy()).isTrue();
     }
 
 }
