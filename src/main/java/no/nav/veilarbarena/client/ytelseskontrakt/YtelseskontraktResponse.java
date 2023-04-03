@@ -13,12 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class YtelseskontraktResponse {
-    List<Vedtak> vedtaksliste;
-    List<Ytelseskontrakt> ytelser;
+    List<VedtakDto> vedtaksliste;
+    List<YtelseskontraktDto> ytelser;
 
     @Data
     @Accessors(chain = true)
-    public static class Vedtak {
+    public static class VedtakDto {
         String vedtakstype;
         String status;
         String aktivitetsfase;
@@ -29,7 +29,7 @@ public class YtelseskontraktResponse {
 
     @Data
     @Accessors(chain = true)
-    public static class Ytelseskontrakt {
+    public static class YtelseskontraktDto {
         String status;
         String ytelsestype;
         XMLGregorianCalendar motattDato;

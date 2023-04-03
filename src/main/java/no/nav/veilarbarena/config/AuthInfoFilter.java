@@ -8,12 +8,12 @@ import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.auth.context.UserRole;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
-import static no.nav.common.rest.filter.JavaxLogRequestFilter.NAV_CONSUMER_ID_HEADER_NAME;
+import static no.nav.common.rest.filter.LogRequestFilter.NAV_CONSUMER_ID_HEADER_NAME;
 
 /**
  * Filter som kan brukes til å finne ut hvor tokens konsumenter av veilarbarena kommer fra. Hovedsaklig til bruk for

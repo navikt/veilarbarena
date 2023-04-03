@@ -228,9 +228,9 @@ public class ArenaControllerTest {
     public void hentYtelser__should_create_correct_response() throws Exception {
         String json = TestUtils.readTestResourceFile("controller/arena/ytelser-response.json");
 
-        List<YtelseskontraktResponse.Vedtak> vedtakListe = new ArrayList<>();
-        vedtakListe.add(
-                new YtelseskontraktResponse.Vedtak()
+        List<YtelseskontraktResponse.VedtakDto> vedtakDtoListe = new ArrayList<>();
+        vedtakDtoListe.add(
+                new YtelseskontraktResponse.VedtakDto()
                         .setVedtakstype("type")
                         .setStatus("status")
                         .setAktivitetsfase("aktivitetsfase")
@@ -239,9 +239,9 @@ public class ArenaControllerTest {
                         .setTilDato(convertToCalendar(LocalDate.of(2021, 8, 6)))
         );
 
-        List<YtelseskontraktResponse.Ytelseskontrakt> ytelseListe = new ArrayList<>();
+        List<YtelseskontraktResponse.YtelseskontraktDto> ytelseListe = new ArrayList<>();
         ytelseListe.add(
-                new YtelseskontraktResponse.Ytelseskontrakt()
+                new YtelseskontraktResponse.YtelseskontraktDto()
                         .setYtelsestype("type")
                         .setStatus("status")
                         .setMotattDato(convertToCalendar(LocalDate.of(2021, 1, 13)))
@@ -249,7 +249,7 @@ public class ArenaControllerTest {
                         .setTilDato(convertToCalendar(LocalDate.of(2021, 2, 3)))
         );
 
-        when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(vedtakListe, ytelseListe));
+        when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(vedtakDtoListe, ytelseListe));
 
         mockMvc.perform(get("/api/arena/ytelser")
                 .queryParam("fnr", FNR.get())

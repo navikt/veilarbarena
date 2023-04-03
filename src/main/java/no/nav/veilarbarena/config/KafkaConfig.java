@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,7 +28,7 @@ public class KafkaConfig {
         Properties producerClientProperties;
     }
 
-    public final static String PRODUCER_CLIENT_ID = "veilarbarena-producer";
+    public static final String PRODUCER_CLIENT_ID = "veilarbarena-producer";
 
     private final KafkaProducerRecordProcessor producerRecordProcessor;
 
