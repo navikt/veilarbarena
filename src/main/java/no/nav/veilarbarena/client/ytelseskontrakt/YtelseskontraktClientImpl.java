@@ -30,6 +30,12 @@ public class YtelseskontraktClientImpl implements YtelseskontraktClient {
                 .build();
     }
 
+    YtelseskontraktClientImpl(String ytelseskontraktV3Endpoint) {
+        ytelseskontrakt = new CXFClient<>(YtelseskontraktV3.class)
+                .address(ytelseskontraktV3Endpoint)
+                .build();
+    }
+
     @Override
     public YtelseskontraktResponse hentYtelseskontraktListe(Fnr personId, XMLGregorianCalendar periodeFom, XMLGregorianCalendar periodeTom) {
         final Periode periode = new Periode();
