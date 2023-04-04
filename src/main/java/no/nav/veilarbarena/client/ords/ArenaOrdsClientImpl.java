@@ -45,7 +45,7 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
     }
 
     @Override
-    public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolginssak(Fnr fnr) {
+    public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolgingssak(Fnr fnr) {
         String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/oppfoelgingssak?p_fnr=" + fnr);
         return get(url)
                 .map(body -> fromJson(body, ArenaOppfolgingssakDTO.class));

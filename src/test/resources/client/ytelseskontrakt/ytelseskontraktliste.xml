@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v3="http://nav.no/tjeneste/virksomhet/ytelseskontrakt/v3">
+    <soapenv:Body>
+        <v3:hentYtelseskontraktListeResponse >
+            <response>
+                <ytelseskontraktListe>
+                    <datoKravMottatt>2023-04-03+02:00</datoKravMottatt>
+                    <status>Inaktiv</status>
+                </ytelseskontraktListe>
+                <ytelseskontraktListe>
+                    <datoKravMottatt>2023-04-03+02:00</datoKravMottatt>
+                    <status>Aktiv</status>
+                    <ytelsestype>Dagpenger</ytelsestype>
+                    <ihtVedtak>
+                        <vedtaksperiode>
+                            <fom>2023-01-03+02:00</fom>
+                            <tom>2023-04-02+02:00</tom>
+                        </vedtaksperiode>
+                        <status>Godkjent</status>
+                        <vedtakstype>Ordinære dagpenger</vedtakstype>
+                    </ihtVedtak>
+                </ytelseskontraktListe>
+            </response>
+        </v3:hentYtelseskontraktListeResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

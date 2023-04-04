@@ -1,0 +1,17 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v3="http://nav.no/tjeneste/virksomhet/ytelseskontrakt/v3">
+    <soapenv:Body>
+        <soapenv:Fault>
+            <faultcode>soapenv:Server</faultcode>
+            <faultstring>Feil i tjeneste</faultstring>
+
+            <detail>
+                <v3:hentYtelseskontraktListesikkerhetsbegrensning>
+                    <feilkilde>PDL</feilkilde>
+                    <feilaarsak>Not Found</feilaarsak>
+                    <feilmelding>Person ikke funnet</feilmelding>
+                    <tidspunkt>2023-04-03T23:21:02+02:00</tidspunkt>
+                </v3:hentYtelseskontraktListesikkerhetsbegrensning>
+            </detail>
+        </soapenv:Fault>
+    </soapenv:Body>
+</soapenv:Envelope>
