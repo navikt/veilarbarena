@@ -71,6 +71,9 @@ spec:
         - application: poao-tilgang
           namespace: poao
           cluster: dev-gcp
+        - application: poao-tilgang
+          namespace: poao
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
