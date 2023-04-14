@@ -74,6 +74,9 @@ spec:
         - application: poao-tilgang
           namespace: poao
           cluster: dev-fss
+        - application: amt-person-service
+          namespace: amt
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
