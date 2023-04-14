@@ -109,4 +109,4 @@ spec:
     - name: POAO_TILGANG_URL
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
-      value: api://dev-gcp.poao.poao-tilgang/.default
+      value: api://dev-fss.poao.poao-tilgang/.default
