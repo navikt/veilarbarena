@@ -104,8 +104,10 @@ spec:
       value: 8da37db8-6021-4e08-81b3-99045e2c1704
     - name: TILTAKSGJENNOMFORING_API_CLIENT_ID
       value: 98a17237-0bfc-496e-ba28-cdb320960257
-    - name: POAO_TILGANG_CLIENT_ID
+    - name: POAO_TILGANG_GCP_CLIENT_ID
       value: 986c77da-3cfa-4a9e-b11d-b3d193ada8cd
+    - name: POAO_TILGANG_FSS_CLIENT_ID
+      value: f49ec26a-1bac-4fe4-b234-39a3902acd12
     - name: POAO_TILGANG_URL
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE

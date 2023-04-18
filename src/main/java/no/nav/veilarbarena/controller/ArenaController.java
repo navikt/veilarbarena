@@ -49,7 +49,8 @@ public class ArenaController {
                     environmentProperties.getTiltaksgjennomforingApiClientId(),
                     environmentProperties.getVeilarbregistreringClientId(),
                     environmentProperties.getVeilarbregistreringClientIdGCP(),
-                    environmentProperties.getPoaoTilgangClientId()
+                    environmentProperties.getPoaoTilgangGCPClientId(),
+                    environmentProperties.getPoaoTilgangFSSClientId()
             );
         }
 
