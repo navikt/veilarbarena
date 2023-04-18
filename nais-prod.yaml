@@ -106,6 +106,6 @@ spec:
     - name: POAO_TILGANG_FSS_CLIENT_ID
       value: f737ff0f-c86a-4a84-8d52-221410234160
     - name: POAO_TILGANG_URL
-      value: https://poao-tilgang.intern.nav.no
+      value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
-      value: api://prod-gcp.poao.poao-tilgang/.default
+      value: api://prod-fss.poao.poao-tilgang/.default
