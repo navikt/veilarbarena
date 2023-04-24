@@ -13,10 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
@@ -40,8 +42,22 @@ public class AuthService {
         this.unleashService = unleashService;
     }
 
+    private boolean harAADRolleForSystemTilSystemTilgang() {
+        return authContextHolder.getIdTokenClaims()
+                .flatMap(claims -> {
+                    try {
+                        return Optional.ofNullable(claims.getStringListClaim("roles"));
+                    } catch (ParseException e) {
+                        return Optional.empty();
+                    }
+                })
+                .orElse(emptyList())
+                .contains("access_as_application");
+    }
+
     public void sjekkTilgang(Fnr fnr) {
-        String innloggetBrukerToken = authContextHolder.requireIdTokenString();
+        /* Systembrukere må være hvitelistet i nais-yaml for å komme inn hit derfor sjekker vi ikke mer */
+        if (erSystembruker() && harAADRolleForSystemTilSystemTilgang()) return;
         if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
             if (authContextHolder.erEksternBruker()) {
                 harSikkerhetsNivaa4();
@@ -60,6 +76,7 @@ public class AuthService {
                 }
             }
         } else {
+            String innloggetBrukerToken = authContextHolder.requireIdTokenString();
             if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
