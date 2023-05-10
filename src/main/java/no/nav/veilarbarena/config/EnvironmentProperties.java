@@ -18,6 +18,8 @@ public class EnvironmentProperties {
 
     private String amtTiltakClientId;
 
+    private String amtPersonServiceClientId;
+
     private String poaoTilgangFSSClientId;
     private String poaoTilgangGCPClientId;
 

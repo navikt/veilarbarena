@@ -46,6 +46,7 @@ public class ArenaController {
             // TODO: Dette er en dårlig måte og sjekke tilganger på, bruk heller sjekk på access_as_application
             authService.sjekkAtSystembrukerErWhitelistet(
                     environmentProperties.getAmtTiltakClientId(),
+                    environmentProperties.getAmtPersonServiceClientId(),
                     environmentProperties.getTiltaksgjennomforingApiClientId(),
                     environmentProperties.getVeilarbregistreringClientId(),
                     environmentProperties.getVeilarbregistreringClientIdGCP(),
