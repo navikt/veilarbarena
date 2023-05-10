@@ -112,3 +112,5 @@ spec:
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
       value: api://dev-fss.poao.poao-tilgang/.default
+    - name: AMT_PERSON_SERVICE_CLIENT_ID
+      value: edad39b1-51a3-40f0-a3eb-b4097e9fcca6
