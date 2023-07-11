@@ -82,18 +82,16 @@ spec:
     paths:
       - kvPath: /serviceuser/data/dev/srvveilarbarena
         mountPath: /var/run/secrets/nais.io/service_user
-      - kvPath: /oracle/data/dev/config/veilarbarena_q1
+      - kvPath: /oracle/data/dev/config/veilarbarena_q1 # Feil i navn, vi bruker (nesten) q2 nå
         mountPath: /var/run/secrets/nais.io/oracle_config
-      - kvPath: /oracle/data/dev/creds/veilarbarena_q1-user
+      - kvPath: /oracle/data/dev/creds/veilarbarena_q1-user # Feil i navn, vi bruker (nesten) q2 nå
         mountPath: /var/run/secrets/nais.io/oracle_creds
-      - kvPath: /kv/preprod/fss/veilarbarena/q1
+      - kvPath: /kv/preprod/fss/veilarbarena/q1 # Feil i navn, vi bruker (nesten) q2 nå
         mountPath: /var/run/secrets/nais.io/vault
   envFrom:
     - configmap: pto-config
     - configmap: loginservice-idporten
   env:
-    - name: MODIALOGIN_OPENAM_CLIENT_ID
-      value: "modialogin-q1"
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: pto.endring-paa-oppfolgingsbruker-v2
     - name: AMT_TILTAK_CLIENT_ID
