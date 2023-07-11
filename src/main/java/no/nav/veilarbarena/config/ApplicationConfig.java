@@ -167,7 +167,7 @@ public class ApplicationConfig {
         boolean isProduction = EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Cluster name is missing"));
         return isProduction
                 ? "https://arena-ords.nais.adeo.no"
-                : "https://arena-ords-q1.dev.intern.nav.no";
+                : "https://arena-ords-q2.dev.intern.nav.no";
     }
 
     private String internalDevOrProdPdlIngress() {
