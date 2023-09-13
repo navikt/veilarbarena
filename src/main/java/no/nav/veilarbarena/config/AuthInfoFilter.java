@@ -44,7 +44,7 @@ public class AuthInfoFilter implements Filter {
             tokenType = "AAD";
         } else if (tokenIssuer.contains("difi.no")) {
             tokenType = "IDPORTEN";
-        } else if (tokenIssuer.contains("tokendings")) {
+        } else if (tokenIssuer.contains("token_x")) {
             tokenType = "TOKENX";
         } else if (tokenIssuer.contains("isso")) {
             tokenType = "OPENAM";
