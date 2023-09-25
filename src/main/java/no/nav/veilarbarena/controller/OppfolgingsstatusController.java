@@ -5,12 +5,10 @@ import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.DtoMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -33,6 +31,16 @@ public class OppfolgingsstatusController {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentArenaOppfolgingsstatus(fnr)
+                .map(DtoMapper::mapTilOppfolgingsstatusDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("/")
+    public OppfolgingsstatusDTO hentArenaOppfolgingsstatusV2(@RequestBody  String fnr) {
+        JSONObject request = new JSONObject(fnr);
+        Fnr fodselsnummer = Fnr.of(request.getString(fnr));
+        authService.sjekkTilgang(fodselsnummer);
+        return arenaService.hentArenaOppfolgingsstatus(fodselsnummer)
                 .map(DtoMapper::mapTilOppfolgingsstatusDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

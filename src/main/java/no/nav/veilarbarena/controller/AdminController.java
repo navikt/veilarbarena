@@ -5,12 +5,10 @@ import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
+import org.json.JSONObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
@@ -54,6 +52,14 @@ public class AdminController {
         sjekkTilgangTilAdmin();
         return JobRunner.runAsync("legg-bruker-pa-v2-topic",
                 () -> oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now()))
+        );
+    }
+    @PostMapping("/republiser/endring-pa-bruker/uten-fnr-i-url")
+    public String republiserTilstandV2(@RequestBody String fnr) {
+        sjekkTilgangTilAdmin();
+        JSONObject request = new JSONObject(fnr);
+        return JobRunner.runAsync("legg-bruker-pa-v2-topic",
+                () -> oppdaterteBrukereRepository.insertOppdatering(request.getString("fnr"), Date.valueOf(LocalDate.now()))
         );
     }
 
