@@ -7,11 +7,10 @@ import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
 
 @RestController
 @RequestMapping("/api/oppfolgingssak")
@@ -33,6 +32,16 @@ public class OppfolgingssakController {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentArenaOppfolginssak(fnr)
+                .map(DtoMapper::mapTilOppfolgingssakDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+    @Deprecated
+    @PostMapping("/")
+    public OppfolgingssakDTO oppfolgingssakV2(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
+        authService.sjekkTilgang(fodselsnummer);
+
+        return arenaService.hentArenaOppfolginssak(fodselsnummer)
                 .map(DtoMapper::mapTilOppfolgingssakDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

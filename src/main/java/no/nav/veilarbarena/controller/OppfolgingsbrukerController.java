@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
+
 
 @Slf4j
 @RestController
@@ -35,12 +37,28 @@ public class OppfolgingsbrukerController {
                 .map(OppfolgingsbrukerDTO::fraOppfolgingsbruker)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+    @PostMapping("/")
+    public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
+        authService.sjekkTilgang(fodselsnummer);
 
+        return arenaService.hentOppfolgingsbruker(fodselsnummer)
+                .map(OppfolgingsbrukerDTO::fraOppfolgingsbruker)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
     @GetMapping("/hentPersonId")
     public String getPersonIdForOppfolgingsbruker(@RequestParam("fnr") Fnr fnr) {
         authService.sjekkTilgang(fnr);
 
         return arenaService.hentOppfolgingsbrukerSinPersonId(fnr)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+    }
+    @PostMapping("/hentPersonId")
+    public String getPersonIdForOppfolgingsbruker(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
+        authService.sjekkTilgang(fodselsnummer);
+
+        return arenaService.hentOppfolgingsbrukerSinPersonId(fodselsnummer)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
 }
