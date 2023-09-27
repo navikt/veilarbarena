@@ -1,4 +1,4 @@
-package no.nav.veilarbarena.controller;
+package no.nav.veilarbarena.controller.v2;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
@@ -10,10 +10,7 @@ import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -22,11 +19,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
+import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/arena")
-public class ArenaController {
+public class ArenaV2Controller {
 
     private static final int MANEDER_BAK_I_TID = 2;
 
@@ -38,10 +36,12 @@ public class ArenaController {
 
     private final EnvironmentProperties environmentProperties;
 
-    @GetMapping("/status")
-    public ArenaStatusDTO hentStatus(@RequestParam("fnr") Fnr fnr) {
+
+    @PostMapping("/status")
+    public ArenaStatusDTO hentStatusV2(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
         if (!authService.erSystembruker()) {
-            authService.sjekkTilgang(fnr);
+            authService.sjekkTilgang(fodselsnummer);
         } else {
             // TODO: Dette er en dårlig måte og sjekke tilganger på, bruk heller sjekk på access_as_application
             authService.sjekkAtSystembrukerErWhitelistet(
@@ -55,37 +55,40 @@ public class ArenaController {
             );
         }
 
-        return arenaService.hentArenaStatus(fnr)
+        return arenaService.hentArenaStatus(fodselsnummer)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/kan-enkelt-reaktiveres")
-    public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveres(@RequestParam("fnr") Fnr fnr) {
+    @PostMapping("/kan-enkelt-reaktiveres")
+    public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveresV2(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
         if (!authService.erSystembruker()) {
-            authService.sjekkTilgang(fnr);
+            authService.sjekkTilgang(fodselsnummer);
         }
 
-        Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fnr);
+        Boolean kanEnkeltReaktivers = arenaService.hentKanEnkeltReaktiveres(fodselsnummer);
 
         return new KanEnkeltReaktiveresDTO(kanEnkeltReaktivers);
     }
 
-    @GetMapping("/oppfolgingssak")
-    public OppfolgingssakDTO hentOppfolgingssak(@RequestParam("fnr") Fnr fnr) {
-        authService.sjekkTilgang(fnr);
+    @PostMapping("/oppfolgingssak")
+    public OppfolgingssakDTO hentOppfolgingssakV2(@RequestBody String fnr) {
+        Fnr fodselsnummer = hentFnr(fnr);
+        authService.sjekkTilgang(fodselsnummer);
 
-        return arenaService.hentArenaOppfolginssak(fnr)
+        return arenaService.hentArenaOppfolginssak(fodselsnummer)
                 .map(DtoMapper::mapTilOppfolgingssakDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/ytelser")
-    public YtelserDTO hentYtelser(
-            @RequestParam("fnr") Fnr fnr,
+    @PostMapping("/ytelser")
+    public YtelserDTO hentYtelserV2(
+            @RequestBody String fnr,
             @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
             @RequestParam(value = "til", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate til
     ) {
-        authService.sjekkTilgang(fnr);
+        Fnr fodselsnummer = hentFnr(fnr);
+        authService.sjekkTilgang(fodselsnummer);
 
         if (fra != null ^ til != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Både \"fra\" og \"til\" må settes eller ingen av de");
@@ -95,22 +98,21 @@ public class ArenaController {
             til = LocalDate.now().plusMonths(MANEDER_FREM_I_TID);
         }
 
-        var ytelseskontrakt = arenaService.hentYtelseskontrakt(fnr, fra, til);
+        var ytelseskontrakt = arenaService.hentYtelseskontrakt(fodselsnummer, fra, til);
 
         return mapTilYtelserDTO(ytelseskontrakt);
     }
 
-    @GetMapping("/aktiviteter")
-    public AktiviteterDTO hentAktiviteter(@RequestParam("fnr") Fnr fnr) {
+    @PostMapping("/aktiviteter")
+    public AktiviteterDTO hentAktiviteterV2(@RequestBody String fnr) {
         if (!authService.erSystembruker()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-
-        return arenaService.hentArenaAktiviteter(fnr)
+        Fnr fodselsnummer = hentFnr(fnr);
+        return arenaService.hentArenaAktiviteter(fodselsnummer)
                 .map(this::mapArenaAktiviteter)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
-
     private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {
         ArenaAktiviteterDTO.Response response = arenaAktiviteterDTO.getResponse();
 
