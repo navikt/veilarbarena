@@ -30,7 +30,7 @@ public class OppfolgingsbrukerV2Controller {
 
     @PostMapping("/")
     public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody String fnr) {
-        Fnr fodselsnummer = hentFnr(fnr);
+        Fnr fodselsnummer = Fnr.of(fnr);
         authService.sjekkTilgang(fodselsnummer);
 
         return arenaService.hentOppfolgingsbruker(fodselsnummer)
