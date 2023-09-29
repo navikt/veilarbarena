@@ -5,6 +5,7 @@ import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.controller.response.OppfolgingsbrukerDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
+import static no.nav.veilarbarena.utils.SecureLog.securelog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class OppfolgingsbrukerV2Controller {
 
     @PostMapping("/")
     public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody String fnr) {
+        securelog.info("vaarena api/v3/oppfolgingsbruker: {}", fnr);
         Fnr fodselsnummer = hentFnr(fnr);
         authService.sjekkTilgang(fodselsnummer);
 
