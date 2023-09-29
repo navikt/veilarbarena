@@ -15,7 +15,7 @@ import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/oppfolgingsbruker")
+@RequestMapping("/api/v3/oppfolgingsbruker")
 public class OppfolgingsbrukerV2Controller {
 
     private final ArenaService arenaService;
