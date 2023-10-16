@@ -1,6 +1,6 @@
 package no.nav.veilarbarena.controller.v2;
 
-import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
@@ -10,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
-
 @RestController
-@RequestMapping("/api/oppfolgingssak")
+@RequestMapping("/api/v2/oppfolgingssak")
 public class OppfolgingssakV2Controller {
 
     private final AuthService authService;
@@ -27,11 +25,11 @@ public class OppfolgingssakV2Controller {
     }
 
     @PostMapping("/")
-    public OppfolgingssakDTO oppfolgingssakV2(@RequestBody String fnr) {
-        Fnr fodselsnummer = hentFnr(fnr);
-        authService.sjekkTilgang(fodselsnummer);
+    public OppfolgingssakDTO oppfolgingssakV2(@RequestBody PersonRequest personRequest) {
 
-        return arenaService.hentArenaOppfolginssak(fodselsnummer)
+        authService.sjekkTilgang(personRequest.getFnr());
+
+        return arenaService.hentArenaOppfolginssak(personRequest.getFnr())
                 .map(DtoMapper::mapTilOppfolgingssakDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

@@ -2,17 +2,17 @@ package no.nav.veilarbarena.controller.v2;
 
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
+import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
+import static no.nav.veilarbarena.utils.TestUtils.verifiserAsynkront;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
-import static no.nav.veilarbarena.utils.TestUtils.verifiserAsynkront;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,13 +31,16 @@ public class AdminV2ControllerTest {
     @MockBean
     private OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
+    private final Fnr FNR = Fnr.of("123");
+    private final Fnr FNRTOM = Fnr.of("");
     @Test
     public void republiserEndringPaBruker__should_return_401_if_user_missing() throws Exception {
         when(authContextHolder.getSubject()).thenReturn(Optional.empty());
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/uten-fnr-i-url")
-                        .content("{}"))
+        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNRTOM.get()+"\"}"))
                 .andExpect(status().is(401));
     }
 
@@ -46,8 +49,9 @@ public class AdminV2ControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/uten-fnr-i-url")
-                        .content("{}"))
+        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNRTOM.get()+"\"}"))
                 .andExpect(status().is(401));
     }
 
@@ -56,8 +60,9 @@ public class AdminV2ControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvmyapp"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/uten-fnr-i-url")
-                        .content("{fnr: '123'}"))
+        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(403));
     }
 
@@ -66,8 +71,9 @@ public class AdminV2ControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.EKSTERN));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/uten-fnr-i-url")
-                        .content("{fnr: '123'}"))
+        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(403));
     }
 
@@ -76,8 +82,9 @@ public class AdminV2ControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/uten-fnr-i-url")
-                        .content("{fnr: '123'}"))
+        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker/fra-dato?fraDato=2021-10-17")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(200))
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 

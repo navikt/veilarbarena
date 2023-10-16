@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.controller.v2;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.types.identer.Fnr;
+import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.controller.response.OppfolgingsbrukerDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
@@ -10,12 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import static no.nav.veilarbarena.utils.FnrMaker.hentFnr;
-
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v3/oppfolgingsbruker")
+@RequestMapping("/api/v2/oppfolgingsbruker")
 public class OppfolgingsbrukerV2Controller {
 
     private final ArenaService arenaService;
@@ -29,21 +27,19 @@ public class OppfolgingsbrukerV2Controller {
     }
 
     @PostMapping("/")
-    public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody String fnr) {
-        Fnr fodselsnummer = Fnr.of(fnr);
-        authService.sjekkTilgang(fodselsnummer);
+    public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody PersonRequest personRequest) {
+        authService.sjekkTilgang(personRequest.getFnr());
 
-        return arenaService.hentOppfolgingsbruker(fodselsnummer)
+        return arenaService.hentOppfolgingsbruker(personRequest.getFnr())
                 .map(OppfolgingsbrukerDTO::fraOppfolgingsbruker)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/hentPersonId")
-    public String getPersonIdForOppfolgingsbrukerV2(@RequestBody String fnr) {
-        Fnr fodselsnummer = hentFnr(fnr);
-        authService.sjekkTilgang(fodselsnummer);
+    public String getPersonIdForOppfolgingsbrukerV2(@RequestBody PersonRequest personRequest) {
+        authService.sjekkTilgang(personRequest.getFnr());
 
-        return arenaService.hentOppfolgingsbrukerSinPersonId(fodselsnummer)
+        return arenaService.hentOppfolgingsbrukerSinPersonId(personRequest.getFnr())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
 }
