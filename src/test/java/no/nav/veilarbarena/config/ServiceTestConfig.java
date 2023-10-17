@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 @Import({
         AuthService.class,
         KafkaProducerService.class,
-        UnleashService.class,
         ArenaService.class
 })
 public class ServiceTestConfig {}
