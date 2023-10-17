@@ -1,12 +1,10 @@
 package no.nav.veilarbarena.config;
 
-import no.finn.unleash.UnleashContext;
 import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
-import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.kafka.util.KafkaPropertiesBuilder;
@@ -139,26 +137,6 @@ public class ApplicationTestConfig {
             @Override
             public HealthCheckResult checkHealth() {
                 return HealthCheckResult.healthy();
-            }
-        };
-    }
-
-    @Bean
-    public UnleashClient unleashClient() {
-        return new UnleashClient() {
-            @Override
-            public HealthCheckResult checkHealth() {
-                return HealthCheckResult.healthy();
-            }
-
-            @Override
-            public boolean isEnabled(String s) {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled(String s, UnleashContext unleashContext) {
-                return true;
             }
         };
     }

@@ -37,8 +37,6 @@ public class EnvironmentProperties {
 
     private String kafkaBrokersUrl;
 
-    private String unleashUrl;
-
     private String soapStsUrl;
 
     private String ytelseskontraktV3Endpoint;

@@ -12,8 +12,6 @@ import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.client.aktoroppslag.CachedAktorOppslagClient;
 import no.nav.common.client.aktoroppslag.PdlAktorOppslagClient;
 import no.nav.common.cxf.StsConfig;
-import no.nav.common.featuretoggle.UnleashClient;
-import no.nav.common.featuretoggle.UnleashClientImpl;
 import no.nav.common.job.leader_election.LeaderElectionClient;
 import no.nav.common.job.leader_election.LeaderElectionHttpClient;
 import no.nav.common.metrics.InfluxClient;
@@ -77,11 +75,6 @@ public class ApplicationConfig {
         return AzureAdTokenClientBuilder.builder()
                 .withNaisDefaults()
                 .buildMachineToMachineTokenClient();
-    }
-
-    @Bean
-    public UnleashClient unleashClient(EnvironmentProperties properties) {
-        return new UnleashClientImpl(properties.getUnleashUrl(), APPLICATION_NAME);
     }
 
     @Bean
