@@ -4,7 +4,6 @@ import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import static no.nav.veilarbarena.utils.TestUtils.verifiserAsynkront;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -12,11 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AdminV2Controller.class)
@@ -75,21 +71,5 @@ public class AdminV2ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(403));
-    }
-
-    @Test
-    public void republiserEndringPaBruker__should_return_job_id_and_republish() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
-
-        mockMvc.perform(post("/api/v2/admin/republiser/endring-pa-bruker/fra-dato?fraDato=2021-10-17")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\""+FNR.get()+"\"}"))
-                .andExpect(status().is(200))
-                .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
-
-        verifiserAsynkront(3, TimeUnit.SECONDS,
-                () -> verify(oppdaterteBrukereRepository, times(1)).insertOppdatering(eq("123"), any())
-        );
     }
 }

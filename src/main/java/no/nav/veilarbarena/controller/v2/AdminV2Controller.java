@@ -6,7 +6,6 @@ import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,9 +27,8 @@ public class AdminV2Controller {
     @PostMapping("/republiser/endring-pa-bruker")
     public String republiserTilstandV2(@RequestBody PersonRequest personRequest) {
         sjekkTilgangTilAdmin();
-        JSONObject request = new JSONObject(personRequest);
         return JobRunner.runAsync("legg-bruker-pa-v2-topic",
-                () -> oppdaterteBrukereRepository.insertOppdatering(request.getString("fnr"), Date.valueOf(LocalDate.now()))
+                () -> oppdaterteBrukereRepository.insertOppdatering(personRequest.getFnr().toString(), Date.valueOf(LocalDate.now()))
         );
     }
     private void sjekkTilgangTilAdmin() {
