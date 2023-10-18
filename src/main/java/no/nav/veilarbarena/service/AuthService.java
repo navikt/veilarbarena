@@ -32,14 +32,11 @@ public class AuthService {
 
     private final PoaoTilgangClient poaoTilgangClient;
 
-    private final UnleashService unleashService;
-
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient, UnleashService unleashService) {
+    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient) {
         this.authContextHolder = authContextHolder;
         this.veilarbPep = veilarbPep;
         this.poaoTilgangClient = poaoTilgangClient;
-        this.unleashService = unleashService;
     }
 
     private boolean harAADRolleForSystemTilSystemTilgang() {
@@ -58,7 +55,7 @@ public class AuthService {
     public void sjekkTilgang(Fnr fnr) {
         /* Systembrukere må være hvitelistet i nais-yaml for å komme inn hit derfor sjekker vi ikke mer */
         if (erSystembruker() && harAADRolleForSystemTilSystemTilgang()) return;
-        if (unleashService.skalBrukePoaoTilgang() && !erSystembruker()) {
+        if (!erSystembruker()) {
             if (authContextHolder.erEksternBruker()) {
                 harSikkerhetsNivaa4();
                 Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
