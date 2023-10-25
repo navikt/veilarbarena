@@ -26,7 +26,7 @@ public class OppfolgingsbrukerV2Controller {
         this.authService = authService;
     }
 
-    @PostMapping("/")
+    @PostMapping
     public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
 

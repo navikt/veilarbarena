@@ -24,7 +24,7 @@ public class OppfolgingsstatusV2Controller {
         this.arenaService = arenaService;
     }
 
-    @PostMapping("/")
+    @PostMapping
     public OppfolgingsstatusDTO hentArenaOppfolgingsstatusV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
         return arenaService.hentArenaOppfolgingsstatus(personRequest.getFnr())
