@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/v2/oppfolgingssak")
+@RequestMapping("/api/v2/oppfolgingssak/hent")
 public class OppfolgingssakV2Controller {
 
     private final AuthService authService;

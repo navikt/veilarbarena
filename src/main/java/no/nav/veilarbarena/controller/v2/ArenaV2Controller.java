@@ -36,7 +36,7 @@ public class ArenaV2Controller {
     private final EnvironmentProperties environmentProperties;
 
 
-    @PostMapping("/status")
+    @PostMapping("/status/hent")
     public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
@@ -57,7 +57,7 @@ public class ArenaV2Controller {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/kan-enkelt-reaktiveres")
+    @PostMapping("/kan-enkelt-reaktiveres/hent")
     public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveresV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
@@ -68,7 +68,7 @@ public class ArenaV2Controller {
         return new KanEnkeltReaktiveresDTO(kanEnkeltReaktivers);
     }
 
-    @PostMapping("/oppfolgingssak")
+    @PostMapping("/oppfolgingssak/hent")
     public OppfolgingssakDTO hentOppfolgingssakV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
 
@@ -77,7 +77,7 @@ public class ArenaV2Controller {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/ytelser")
+    @PostMapping("/ytelser/hent")
     public YtelserDTO hentYtelserV2(
             @RequestBody PersonRequest personRequest,
             @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
@@ -98,7 +98,7 @@ public class ArenaV2Controller {
         return mapTilYtelserDTO(ytelseskontrakt);
     }
 
-    @PostMapping("/aktiviteter")
+    @PostMapping("/aktiviteter/hent")
     public AktiviteterDTO hentAktiviteterV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
