@@ -22,7 +22,7 @@ import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/arena")
+@RequestMapping("/api/arena")
 public class ArenaV2Controller {
 
     private static final int MANEDER_BAK_I_TID = 2;
@@ -36,7 +36,7 @@ public class ArenaV2Controller {
     private final EnvironmentProperties environmentProperties;
 
 
-    @PostMapping("/status/hent")
+    @PostMapping("/hent-status")
     public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
@@ -57,7 +57,7 @@ public class ArenaV2Controller {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/kan-enkelt-reaktiveres/hent")
+    @PostMapping("/hent-kan-enkelt-reaktiveres")
     public KanEnkeltReaktiveresDTO hentKanEnkeltReaktiveresV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
@@ -68,7 +68,7 @@ public class ArenaV2Controller {
         return new KanEnkeltReaktiveresDTO(kanEnkeltReaktivers);
     }
 
-    @PostMapping("/oppfolgingssak/hent")
+    @PostMapping("/hent-oppfolgingssak")
     public OppfolgingssakDTO hentOppfolgingssakV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
 
@@ -77,7 +77,7 @@ public class ArenaV2Controller {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/ytelser/hent")
+    @PostMapping("/hent-ytelser")
     public YtelserDTO hentYtelserV2(
             @RequestBody PersonRequest personRequest,
             @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
@@ -98,7 +98,7 @@ public class ArenaV2Controller {
         return mapTilYtelserDTO(ytelseskontrakt);
     }
 
-    @PostMapping("/aktiviteter/hent")
+    @PostMapping("/aktiviteter-hent")
     public AktiviteterDTO hentAktiviteterV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
