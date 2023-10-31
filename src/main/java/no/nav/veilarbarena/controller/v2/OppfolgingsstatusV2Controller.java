@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/v2/oppfolgingsstatus/hent")
+@RequestMapping("/api/oppfolgingsstatus")
 public class OppfolgingsstatusV2Controller {
 
     private final AuthService authService;
@@ -24,7 +24,7 @@ public class OppfolgingsstatusV2Controller {
         this.arenaService = arenaService;
     }
 
-    @PostMapping
+    @PostMapping("hent-oppfolgingsstatus")
     public OppfolgingsstatusDTO hentArenaOppfolgingsstatusV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
         return arenaService.hentArenaOppfolgingsstatus(personRequest.getFnr())
