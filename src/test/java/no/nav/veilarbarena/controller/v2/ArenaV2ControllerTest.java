@@ -244,14 +244,14 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    void hentAktiviteter__should_return_404_no_content_when_empty() throws Exception {
+    void hentAktiviteter__should_return_204_no_content_when_empty() throws Exception {
         when(authService.erSystembruker()).thenReturn(true);
         when(arenaService.hentArenaAktiviteter(any(Fnr.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/arena/hent-aktiviteter")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
-        ).andExpect(status().is(404));
+        ).andExpect(status().is(204));
     }
 
     @Test

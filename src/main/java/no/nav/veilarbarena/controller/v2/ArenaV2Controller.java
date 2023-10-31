@@ -98,7 +98,7 @@ public class ArenaV2Controller {
         return mapTilYtelserDTO(ytelseskontrakt);
     }
 
-    @PostMapping("/aktiviteter-hent")
+    @PostMapping("/hent-aktiviteter")
     public AktiviteterDTO hentAktiviteterV2(@RequestBody PersonRequest personRequest) {
         if (!authService.erSystembruker()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
