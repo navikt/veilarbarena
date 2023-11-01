@@ -23,7 +23,7 @@ public class AdminV2Controller {
     private final AuthContextHolder authContextHolder;
 
     private final OppdaterteBrukereRepository oppdaterteBrukereRepository;
-//URL følger ikke beslutning 0004, er merket med /v2/ i basepath
+//URL følger ikke beslutning 0004, er merket med /v2/ i basepath. Se https://github.com/navikt/obo-felles/tree/main/beslutninger nummer 0004
     @PostMapping("/republiser/endring-pa-bruker")
     public String republiserTilstandV2(@RequestBody PersonRequest personRequest) {
         sjekkTilgangTilAdmin();

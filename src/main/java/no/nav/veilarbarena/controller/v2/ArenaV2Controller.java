@@ -22,7 +22,7 @@ import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/arena")
+@RequestMapping("/api/v2/arena")
 public class ArenaV2Controller {
 
     private static final int MANEDER_BAK_I_TID = 2;
