@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +44,9 @@ public class YtelseskontraktClientImplTest {
 
         var datatypeFactory = DatatypeFactory.newInstance();
         var now  = datatypeFactory.newXMLGregorianCalendar(new GregorianCalendar());
-        var yesterday = (XMLGregorianCalendar)now.clone();
-        yesterday.setDay(now.getDay() - 1);
+        var cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        var yesterday = datatypeFactory.newXMLGregorianCalendar(cal);
 
         YtelseskontraktResponse ytelseskontraktResponse = client.hentYtelseskontraktListe(Fnr.of(fnr), yesterday, now);
 
