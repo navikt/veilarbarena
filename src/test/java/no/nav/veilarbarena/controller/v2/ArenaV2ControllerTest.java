@@ -53,7 +53,7 @@ public class ArenaV2ControllerTest {
         when(authService.erSystembruker()).thenReturn(false);
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/status")
+        mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
 
@@ -66,7 +66,7 @@ public class ArenaV2ControllerTest {
         when(authService.erSystembruker()).thenReturn(true);
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/status")
+        mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
         verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null, null, null);
@@ -76,7 +76,7 @@ public class ArenaV2ControllerTest {
     public void hentStatus__should_check_authorization() throws Exception {
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/status")
+        mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
 
@@ -96,7 +96,7 @@ public class ArenaV2ControllerTest {
 
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.of(arenaStatusDTO));
 
-        mockMvc.perform(post("/api/v2/arena/status")
+        mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
             .andExpect(status().is(200))
@@ -107,7 +107,7 @@ public class ArenaV2ControllerTest {
     public void hentStatus__should_return_404_if_no_user_found() throws Exception {
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/status")
+        mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(404));
@@ -119,7 +119,7 @@ public class ArenaV2ControllerTest {
     public void hentKanEnkeltReaktiveres__should_check_authorization() throws Exception {
         when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/kan-enkelt-reaktiveres")
+        mockMvc.perform(post("/api/v2/arena/hent-kan-enkelt-reaktiveres")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
 
@@ -132,7 +132,7 @@ public class ArenaV2ControllerTest {
 
         when(arenaService.hentKanEnkeltReaktiveres(FNR)).thenReturn(true);
 
-        mockMvc.perform(post("/api/v2/arena/kan-enkelt-reaktiveres")
+        mockMvc.perform(post("/api/v2/arena/hent-kan-enkelt-reaktiveres")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(200))
@@ -144,7 +144,7 @@ public class ArenaV2ControllerTest {
     public void hentOppfolgingssak__should_check_authorization() throws Exception {
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.of(new ArenaOppfolgingssakDTO("test")));
 
-        mockMvc.perform(post("/api/v2/arena/oppfolgingssak")
+        mockMvc.perform(post("/api/v2/arena/hent-oppfolgingssak")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
 
@@ -157,7 +157,7 @@ public class ArenaV2ControllerTest {
 
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.of(new ArenaOppfolgingssakDTO("test")));
 
-        mockMvc.perform(post("/api/v2/arena/oppfolgingssak")
+        mockMvc.perform(post("/api/v2/arena/hent-oppfolgingssak")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(200))
@@ -168,7 +168,7 @@ public class ArenaV2ControllerTest {
     public void hentOppfolgingssak__should_return_404_if_user_not_found() throws Exception {
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/oppfolgingssak")
+        mockMvc.perform(post("/api/v2/arena/hent-oppfolgingssak")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(404));
@@ -179,7 +179,7 @@ public class ArenaV2ControllerTest {
     public void hentYtelser__should_check_authorization() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(200));
@@ -191,7 +191,7 @@ public class ArenaV2ControllerTest {
     public void hentYtelser__return_400_if_fraDato_not_null_and_tilDato_null() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
                 .queryParam("fra", "2021-06-21")
@@ -202,7 +202,7 @@ public class ArenaV2ControllerTest {
     public void hentYtelser__return_400_if_fraDato_is_null_and_tilDato_not_null() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
                 .queryParam("til", "2021-06-21")
@@ -213,7 +213,7 @@ public class ArenaV2ControllerTest {
     public void hentYtelser__should_use_default_fraDato_and_tilDato() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
         ).andExpect(status().is(200));
@@ -230,7 +230,7 @@ public class ArenaV2ControllerTest {
     public void hentYtelser__should_pass_through_tilDato_and_fraDato() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
                 .queryParam("fra", "2021-06-28")
@@ -248,7 +248,7 @@ public class ArenaV2ControllerTest {
         when(authService.erSystembruker()).thenReturn(true);
         when(arenaService.hentArenaAktiviteter(any(Fnr.class))).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/v2/arena/aktiviteter")
+        mockMvc.perform(post("/api/v2/arena/hent-aktiviteter")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
         ).andExpect(status().is(204));
@@ -281,7 +281,7 @@ public class ArenaV2ControllerTest {
 
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(vedtakDtoListe, ytelseListe));
 
-        mockMvc.perform(post("/api/v2/arena/ytelser")
+        mockMvc.perform(post("/api/v2/arena/hent-ytelser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
         ).andExpect(status().is(200)).andExpect(content().json(json, true));

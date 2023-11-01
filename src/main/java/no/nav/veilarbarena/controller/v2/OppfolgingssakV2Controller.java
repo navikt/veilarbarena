@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/v2/oppfolgingssak")
+@RequestMapping("/api/v2")
 public class OppfolgingssakV2Controller {
 
     private final AuthService authService;
@@ -24,7 +24,7 @@ public class OppfolgingssakV2Controller {
         this.arenaService = arenaService;
     }
 
-    @PostMapping
+    @PostMapping("/hent-oppfolgingssak")
     public OppfolgingssakDTO oppfolgingssakV2(@RequestBody PersonRequest personRequest) {
 
         authService.sjekkTilgang(personRequest.getFnr());

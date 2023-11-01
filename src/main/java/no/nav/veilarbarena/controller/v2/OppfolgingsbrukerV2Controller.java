@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v2/oppfolgingsbruker")
+@RequestMapping("/api/v2")
 public class OppfolgingsbrukerV2Controller {
 
     private final ArenaService arenaService;
@@ -26,7 +26,7 @@ public class OppfolgingsbrukerV2Controller {
         this.authService = authService;
     }
 
-    @PostMapping
+    @PostMapping("/hent-oppfolgingsbruker")
     public OppfolgingsbrukerDTO getOppfolgingsbrukerV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
 
@@ -35,7 +35,7 @@ public class OppfolgingsbrukerV2Controller {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/hentPersonId")
+    @PostMapping("/oppfolgingsbruker/hent-personId")
     public String getPersonIdForOppfolgingsbrukerV2(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
 
