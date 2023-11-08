@@ -142,8 +142,8 @@ public class ArenaOrdsClientImplTest {
 
         ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
 
-        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingssak"))
-                .withQueryParam("p_fnr", equalTo(fnr))
+        givenThat(get(urlPathEqualTo("/arena/api/v2/person/oppfoelging/oppfoelgingssak"))
+                .withHeader("fnr", equalTo(fnr))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -162,8 +162,8 @@ public class ArenaOrdsClientImplTest {
 
         ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
 
-        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingssak"))
-                .withQueryParam("p_fnr", equalTo(fnr))
+        givenThat(get(urlPathEqualTo("/arena/api/v2/person/oppfoelging/oppfoelgingssak"))
+                .withHeader("fnr", equalTo(fnr))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -182,8 +182,8 @@ public class ArenaOrdsClientImplTest {
 
         ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
 
-        givenThat(get(urlPathEqualTo("/arena/api/v1/person/oppfoelging/oppfoelgingsstatus"))
-                .withQueryParam("p_fnr", equalTo(fnr))
+        givenThat(get(urlPathEqualTo("/arena/api/v2/person/oppfoelging/oppfoelgingsstatus"))
+                .withHeader("fnr", equalTo(fnr))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
                 .willReturn(aResponse()
                         .withStatus(200)
