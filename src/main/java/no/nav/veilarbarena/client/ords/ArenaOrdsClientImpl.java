@@ -39,15 +39,15 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
     @Override
     public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
-        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/oppfoelgingsstatus?p_fnr=" + fnr);
-        return get(url)
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v2/person/oppfoelging/oppfoelgingsstatus");
+        return get(url, fnr)
                 .map(body -> fromJson(body, ArenaOppfolgingsstatusDTO.class));
     }
 
     @Override
     public Optional<ArenaOppfolgingssakDTO> hentArenaOppfolgingssak(Fnr fnr) {
-        String url = joinPaths(arenaOrdsUrl, "arena/api/v1/person/oppfoelging/oppfoelgingssak?p_fnr=" + fnr);
-        return get(url)
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v2/person/oppfoelging/oppfoelgingssak");
+        return get(url, fnr)
                 .map(body -> fromJson(body, ArenaOppfolgingssakDTO.class));
     }
 
@@ -70,9 +70,10 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
     }
 
     @SneakyThrows
-    private Optional<String> get(String path) {
+    private Optional<String> get(String path, Fnr fnr) {
         Request request = new Request.Builder()
                 .url(path)
+                .header("fnr", fnr.get())
                 .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
                 .build();
 
