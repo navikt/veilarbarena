@@ -1,7 +1,5 @@
 package no.nav.veilarbarena.config;
 
-import no.nav.common.abac.AbacClient;
-import no.nav.common.abac.Pep;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
@@ -17,9 +15,7 @@ import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
-import no.nav.veilarbarena.mock.AbacClientMock;
 import no.nav.veilarbarena.mock.MetricsClientMock;
-import no.nav.veilarbarena.mock.PepMock;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.mockito.Mockito;
@@ -68,18 +64,8 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public AbacClient abacClient() {
-        return new AbacClientMock();
-    }
-
-    @Bean
     public LeaderElectionClient leaderElectionClient() {
         return () -> true;
-    }
-
-    @Bean
-    public Pep veilarbPep(AbacClient abacClient) {
-        return new PepMock(abacClient);
     }
 
     @Bean
