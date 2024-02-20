@@ -61,15 +61,16 @@ jobs:
   deploy-prod:
     name: Deploy application to prod
     needs: test-build-and-push
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: nais-prod.yaml
           VAR: image=${{ needs.test-build-and-push.outputs.image }}
