@@ -45,6 +45,8 @@ jobs:
   deploy-dev:
     name: Deploy application to dev
     needs: test-build-and-push
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
