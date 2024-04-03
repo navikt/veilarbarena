@@ -74,6 +74,9 @@ spec:
         - application: amt-person-service
           namespace: amt
           cluster: dev-gcp
+        - application: azure-token-generator
+          namespace: aura
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
