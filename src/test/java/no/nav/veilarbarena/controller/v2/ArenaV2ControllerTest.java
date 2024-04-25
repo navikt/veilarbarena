@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ArenaV2Controller.class)
-public class ArenaV2ControllerTest {
+class ArenaV2ControllerTest {
 
     private final Fnr FNR = Fnr.of("123456");
 
@@ -48,10 +48,10 @@ public class ArenaV2ControllerTest {
 
 
     @Test
-    public void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {
+    void hentStatus__should_check_authorizaton_if_not_system_user() throws Exception {
 
         when(authService.erSystembruker()).thenReturn(false);
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,10 +61,10 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentStatus__should_check_whitelist_if_system_user() throws Exception {
+    void hentStatus__should_check_whitelist_if_system_user() throws Exception {
         when(environmentProperties.getAmtTiltakClientId()).thenReturn("amt-tiltak");
         when(authService.erSystembruker()).thenReturn(true);
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -73,8 +73,8 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentStatus__should_check_authorization() throws Exception {
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+    void hentStatus__should_check_authorization() throws Exception {
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +84,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentStatus__should_return_correct_json_and_status() throws Exception {
+    void hentStatus__should_return_correct_json_and_status() throws Exception {
         String json = TestUtils.readTestResourceFile("controller/arena/status-response.json");
 
         ArenaStatusDTO arenaStatusDTO = new ArenaStatusDTO()
@@ -94,7 +94,7 @@ public class ArenaV2ControllerTest {
                 .setIservFraDato(LocalDate.of(2021, 10, 15))
                 .setOppfolgingsenhet(EnhetId.of("1234"));
 
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.of(arenaStatusDTO));
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.of(arenaStatusDTO));
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -104,8 +104,8 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentStatus__should_return_404_if_no_user_found() throws Exception {
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+    void hentStatus__should_return_404_if_no_user_found() throws Exception {
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -116,8 +116,8 @@ public class ArenaV2ControllerTest {
 
 
     @Test
-    public void hentKanEnkeltReaktiveres__should_check_authorization() throws Exception {
-        when(arenaService.hentArenaStatus(FNR)).thenReturn(Optional.empty());
+    void hentKanEnkeltReaktiveres__should_check_authorization() throws Exception {
+        when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-kan-enkelt-reaktiveres")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +127,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentKanEnkeltReaktiveres__return_correct_json_and_status() throws Exception {
+    void hentKanEnkeltReaktiveres__return_correct_json_and_status() throws Exception {
         String json = TestUtils.readTestResourceFile("controller/arena/kan-enkelt-reaktiveres-response.json");
 
         when(arenaService.hentKanEnkeltReaktiveres(FNR)).thenReturn(true);
@@ -141,7 +141,7 @@ public class ArenaV2ControllerTest {
 
 
     @Test
-    public void hentOppfolgingssak__should_check_authorization() throws Exception {
+    void hentOppfolgingssak__should_check_authorization() throws Exception {
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.of(new ArenaOppfolgingssakDTO("test")));
 
         mockMvc.perform(post("/api/v2/arena/hent-oppfolgingssak")
@@ -152,7 +152,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentOppfolgingssak__should_return_correct_json_and_status() throws Exception {
+    void hentOppfolgingssak__should_return_correct_json_and_status() throws Exception {
         String json = TestUtils.readTestResourceFile("controller/arena/oppfolgingssak-response.json");
 
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.of(new ArenaOppfolgingssakDTO("test")));
@@ -165,7 +165,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentOppfolgingssak__should_return_404_if_user_not_found() throws Exception {
+    void hentOppfolgingssak__should_return_404_if_user_not_found() throws Exception {
         when(arenaService.hentArenaOppfolginssak(FNR)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/v2/arena/hent-oppfolgingssak")
@@ -176,7 +176,7 @@ public class ArenaV2ControllerTest {
 
 
     @Test
-    public void hentYtelser__should_check_authorization() throws Exception {
+    void hentYtelser__should_check_authorization() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
         mockMvc.perform(post("/api/v2/arena/hent-ytelser")
@@ -188,7 +188,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentYtelser__return_400_if_fraDato_not_null_and_tilDato_null() throws Exception {
+    void hentYtelser__return_400_if_fraDato_not_null_and_tilDato_null() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
         mockMvc.perform(post("/api/v2/arena/hent-ytelser")
@@ -199,7 +199,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentYtelser__return_400_if_fraDato_is_null_and_tilDato_not_null() throws Exception {
+    void hentYtelser__return_400_if_fraDato_is_null_and_tilDato_not_null() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
         mockMvc.perform(post("/api/v2/arena/hent-ytelser")
@@ -210,7 +210,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentYtelser__should_use_default_fraDato_and_tilDato() throws Exception {
+    void hentYtelser__should_use_default_fraDato_and_tilDato() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
         mockMvc.perform(post("/api/v2/arena/hent-ytelser")
@@ -227,7 +227,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentYtelser__should_pass_through_tilDato_and_fraDato() throws Exception {
+    void hentYtelser__should_pass_through_tilDato_and_fraDato() throws Exception {
         when(arenaService.hentYtelseskontrakt(any(), any(), any())).thenReturn(new YtelseskontraktResponse(emptyList(), emptyList()));
 
         mockMvc.perform(post("/api/v2/arena/hent-ytelser")
@@ -255,7 +255,7 @@ public class ArenaV2ControllerTest {
     }
 
     @Test
-    public void hentYtelser__should_create_correct_response() throws Exception {
+    void hentYtelser__should_create_correct_response() throws Exception {
         String json = TestUtils.readTestResourceFile("controller/arena/ytelser-response.json");
 
         List<YtelseskontraktResponse.VedtakDto> vedtakDtoListe = new ArrayList<>();

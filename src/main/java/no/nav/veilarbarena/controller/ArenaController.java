@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
@@ -55,7 +54,7 @@ public class ArenaController {
             );
         }
 
-        return arenaService.hentArenaStatus(fnr)
+        return arenaService.hentArenaStatus(fnr, false)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -117,17 +116,17 @@ public class ArenaController {
         List<AktiviteterDTO.Tiltaksaktivitet> tiltaksaktiviteter = response.getTiltaksaktivitetListe()
                 .stream()
                 .map(this::mapTiltaksaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         List<AktiviteterDTO.Gruppeaktivitet> gruppeaktiviteter = response.getGruppeaktivitetListe()
                 .stream()
                 .map(this::mapGruppeaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         List<AktiviteterDTO.Utdanningsaktivitet> utdanningsaktiviteter = response.getUtdanningsaktivitetListe()
                 .stream()
                 .map(this::mapUtdanningsaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         return new AktiviteterDTO()
                 .setTiltaksaktiviteter(tiltaksaktiviteter)
@@ -159,7 +158,7 @@ public class ArenaController {
     private AktiviteterDTO.Gruppeaktivitet mapGruppeaktivitet(ArenaAktiviteterDTO.Gruppeaktivitet a) {
         List<AktiviteterDTO.Gruppeaktivitet.Moteplan> moteplanListe = null;
         if (a.getMoeteplanListe() != null) {
-            moteplanListe = a.getMoeteplanListe().stream().map(this::mapMoteplan).collect(Collectors.toList());
+            moteplanListe = a.getMoeteplanListe().stream().map(this::mapMoteplan).toList();
         }
         return new AktiviteterDTO.Gruppeaktivitet()
                 .setAktivitetId(a.getAktivitetId())
