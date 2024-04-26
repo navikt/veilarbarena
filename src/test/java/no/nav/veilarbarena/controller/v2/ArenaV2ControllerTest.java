@@ -103,6 +103,27 @@ class ArenaV2ControllerTest {
             .andExpect(content().json(json, true));
     }
 
+
+    @Test
+    void hentStatus__should_support_forceSync() throws Exception {
+        String json = TestUtils.readTestResourceFile("controller/arena/status-response.json");
+
+        ArenaStatusDTO arenaStatusDTO = new ArenaStatusDTO()
+                .setFormidlingsgruppe("ARBS")
+                .setKvalifiseringsgruppe("VURDI")
+                .setRettighetsgruppe("DAGP")
+                .setIservFraDato(LocalDate.of(2021, 10, 15))
+                .setOppfolgingsenhet(EnhetId.of("1234"));
+
+        when(arenaService.hentArenaStatus(FNR, true)).thenReturn(Optional.of(arenaStatusDTO));
+
+        mockMvc.perform(post("/api/v2/arena/hent-status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\""+FNR.get()+"\"}").queryParam("forceSync", "true"))
+                .andExpect(status().is(200))
+                .andExpect(content().json(json, true));
+    }
+
     @Test
     void hentStatus__should_return_404_if_no_user_found() throws Exception {
         when(arenaService.hentArenaStatus(FNR, false)).thenReturn(Optional.empty());
