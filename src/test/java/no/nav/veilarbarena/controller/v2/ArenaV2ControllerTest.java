@@ -119,7 +119,8 @@ class ArenaV2ControllerTest {
 
         mockMvc.perform(post("/api/v2/arena/hent-status")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\""+FNR.get()+"\"}").queryParam("forceSync", "true"))
+                        .header("forceSync", true)
+                        .content("{\"fnr\":\""+FNR.get()+"\"}"))
                 .andExpect(status().is(200))
                 .andExpect(content().json(json, true));
     }
