@@ -36,7 +36,7 @@ public class ArenaV2Controller {
 
 
     @PostMapping("/hent-status")
-    public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest, @RequestParam(required = false) boolean forceSync) {
+    public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest, @RequestParam(name = "forceSync", required = false) boolean forceSync) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
         } else {
