@@ -51,7 +51,6 @@ public class ArenaService {
      */
     public Optional<ArenaStatusDTO> hentArenaStatus(Fnr fnr, boolean forceSync) {
         if (forceSync) {
-            log.debug("hentArenaStatus - forceSync=true");
             return hentArenaOppfolgingsstatus(fnr)
                     .map(DtoMapper::mapTilArenaStatusDTO);
         } else {
