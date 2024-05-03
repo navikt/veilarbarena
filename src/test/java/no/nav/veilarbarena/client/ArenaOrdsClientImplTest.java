@@ -228,5 +228,27 @@ public class ArenaOrdsClientImplTest {
         assertThat(healthCheckResult.isHealthy()).isFalse();
     }
 
+    @Test
+    public void skal_prøve_igjen_hvis_første_kall_feiler() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String xmlResponse = TestUtils.readTestResourceFile("client/ords/aktiviteter_empty_response.xml", StandardCharsets.ISO_8859_1);
+
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+
+        givenThat(get(urlEqualTo("/arena/api/v1/person/oppfoelging/aktiviteter"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withHeader("fnr", equalTo(fnr))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(xmlResponse))
+        );
+
+        Optional<ArenaAktiviteterDTO> maybeAktiviteter = client.hentArenaAktiviteter(Fnr.of(fnr));
+
+        assertTrue(maybeAktiviteter.isPresent());
+
+    }
+
 
 }

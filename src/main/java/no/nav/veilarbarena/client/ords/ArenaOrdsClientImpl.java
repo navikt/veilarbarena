@@ -13,11 +13,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static no.nav.common.json.JsonUtils.fromJson;
 import static no.nav.common.utils.UrlUtils.joinPaths;
+import static no.nav.veilarbarena.utils.RetryUtils.requestWithRetry;
 import static no.nav.veilarbarena.utils.XmlUtils.fromXml;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -62,7 +64,7 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
                 .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
+        try (Response response = requestWithRetry(client, request)) {
             RestUtils.throwIfNotSuccessful(response);
             return RestUtils.getBodyStr(response)
                     .map(body -> fromXml(body, ArenaAktiviteterDTO.class));
