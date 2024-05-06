@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class RetryUtils {
@@ -13,15 +14,19 @@ public class RetryUtils {
 
     @SneakyThrows
     public static Response requestWithRetry(OkHttpClient client, Request request) {
-        var response = client.newCall(request).execute();
-        if(!response.isSuccessful()) {
-            log.info("Kall feilet, forsøker på nytt");
-            Thread.sleep(700);
+        try {
+            var response = client.newCall(request).execute();
+            if(!response.isSuccessful()) {
+                log.info("Kall feilet, forsøker på nytt");
+                Thread.sleep(700);
+                return client.newCall(request).execute();
+            } else {
+                log.info("Kall var vellykket første gang");
+                return response;
+            }
+        } catch (IOException e) {
+            log.info("Kall feilet pga IOException, prøver likevel på nytt");
             return client.newCall(request).execute();
-        } else {
-            log.info("Kall var vellykket første gang");
-            return response;
         }
-
     }
 }
