@@ -38,7 +38,7 @@ public class ArenaServiceTest {
 
         when(oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get())).thenReturn(Optional.of(oppfolgingsbruker));
 
-        var maybeArenaStatus = arenaService.hentArenaStatus(fnr);
+        var maybeArenaStatus = arenaService.hentArenaStatus(fnr, false);
 
         assertTrue(maybeArenaStatus.isPresent());
         assertEquals(DtoMapper.mapTilArenaStatusDTO(oppfolgingsbruker), maybeArenaStatus.get());
@@ -59,8 +59,26 @@ public class ArenaServiceTest {
 
         when(arenaOrdsClient.hentArenaOppfolgingsstatus(fnr)).thenReturn(Optional.of(oppfolgingsstatus));
 
-        var maybeArenaStatus = arenaService.hentArenaStatus(fnr);
+        var maybeArenaStatus = arenaService.hentArenaStatus(fnr, false);
 
+        assertTrue(maybeArenaStatus.isPresent());
+        assertEquals(DtoMapper.mapTilArenaStatusDTO(oppfolgingsstatus), maybeArenaStatus.get());
+    }
+
+    @Test
+    public void hentArenaStatus__skal_returnere_status_fra_arena_hvis_forceSync_true() {
+        Fnr fnr = Fnr.of("1234554");
+
+        var oppfolgingsstatus = new ArenaOppfolgingsstatusDTO()
+                .setFormidlingsgruppeKode("test")
+                .setInaktiveringsdato(LocalDate.now())
+                .setNavOppfoelgingsenhet("1234");
+
+        when(arenaOrdsClient.hentArenaOppfolgingsstatus(fnr)).thenReturn(Optional.of(oppfolgingsstatus));
+
+        var maybeArenaStatus = arenaService.hentArenaStatus(fnr, true);
+
+        verifyNoInteractions(oppfolgingsbrukerRepository);
         assertTrue(maybeArenaStatus.isPresent());
         assertEquals(DtoMapper.mapTilArenaStatusDTO(oppfolgingsstatus), maybeArenaStatus.get());
     }
@@ -73,7 +91,7 @@ public class ArenaServiceTest {
 
         when(arenaOrdsClient.hentArenaOppfolgingsstatus(fnr)).thenReturn(Optional.empty());
 
-        var maybeArenaStatus = arenaService.hentArenaStatus(fnr);
+        var maybeArenaStatus = arenaService.hentArenaStatus(fnr, false);
 
         assertTrue(maybeArenaStatus.isEmpty());
     }

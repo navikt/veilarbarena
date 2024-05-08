@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
@@ -37,7 +36,7 @@ public class ArenaV2Controller {
 
 
     @PostMapping("/hent-status")
-    public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest) {
+    public ArenaStatusDTO hentStatusV2(@RequestBody PersonRequest personRequest, @RequestHeader(value = "forceSync", required = false) boolean forceSync) {
         if (!authService.erSystembruker()) {
             authService.sjekkTilgang(personRequest.getFnr());
         } else {
@@ -53,7 +52,7 @@ public class ArenaV2Controller {
             );
         }
 
-        return arenaService.hentArenaStatus(personRequest.getFnr())
+        return arenaService.hentArenaStatus(personRequest.getFnr(), forceSync)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -114,17 +113,17 @@ public class ArenaV2Controller {
         List<AktiviteterDTO.Tiltaksaktivitet> tiltaksaktiviteter = response.getTiltaksaktivitetListe()
                 .stream()
                 .map(this::mapTiltaksaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         List<AktiviteterDTO.Gruppeaktivitet> gruppeaktiviteter = response.getGruppeaktivitetListe()
                 .stream()
                 .map(this::mapGruppeaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         List<AktiviteterDTO.Utdanningsaktivitet> utdanningsaktiviteter = response.getUtdanningsaktivitetListe()
                 .stream()
                 .map(this::mapUtdanningsaktivitet)
-                .collect(Collectors.toList());
+                .toList();
 
         return new AktiviteterDTO()
                 .setTiltaksaktiviteter(tiltaksaktiviteter)
@@ -156,7 +155,7 @@ public class ArenaV2Controller {
     private AktiviteterDTO.Gruppeaktivitet mapGruppeaktivitet(ArenaAktiviteterDTO.Gruppeaktivitet a) {
         List<AktiviteterDTO.Gruppeaktivitet.Moteplan> moteplanListe = null;
         if (a.getMoeteplanListe() != null) {
-            moteplanListe = a.getMoeteplanListe().stream().map(this::mapMoteplan).collect(Collectors.toList());
+            moteplanListe = a.getMoeteplanListe().stream().map(this::mapMoteplan).toList();
         }
         return new AktiviteterDTO.Gruppeaktivitet()
                 .setAktivitetId(a.getAktivitetId())
