@@ -73,8 +73,10 @@ public class AuthService {
                 }
             }
         } else {
+            log.warn("Har systembruker rolle men mangler rolle access_as_application in claims. Dette skal ikke skje.");
             String innloggetBrukerToken = authContextHolder.requireIdTokenString();
             if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
+                log.warn("Systembruker tilgang avvist via abac");
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
         }
