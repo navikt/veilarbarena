@@ -73,6 +73,9 @@ spec:
         - application: amt-person-service
           namespace: amt
           cluster: prod-gcp
+        - application: veilarbportefolje
+          namespace: pto
+          cluster: prod-fss
   vault:
     enabled: true
     paths:

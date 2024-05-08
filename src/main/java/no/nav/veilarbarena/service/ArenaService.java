@@ -1,5 +1,6 @@
 package no.nav.veilarbarena.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static no.nav.veilarbarena.utils.DateUtils.convertToCalendar;
 
 @Service
+@Slf4j
 public class ArenaService {
 
     private final ArenaOrdsClient arenaOrdsClient;
@@ -42,19 +44,26 @@ public class ArenaService {
 
     /**
      * Sjekker først i lokal database om bruker ligger der, hvis ikke så går vi direkte mot Arena for å hente status.
-     * @param fnr fødselsnummer/dnr til bruker
+     *
+     * @param fnr       fødselsnummer/dnr til bruker
+     * @param forceSync Ikke bruk lokal database, men hent status direkte fra arena
      * @return status fra lokal database eller direkte fra Arena
      */
-    public Optional<ArenaStatusDTO> hentArenaStatus(Fnr fnr) {
-        var maybeDbLinkArenaStatus = oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get())
-                .map(DtoMapper::mapTilArenaStatusDTO);
+    public Optional<ArenaStatusDTO> hentArenaStatus(Fnr fnr, boolean forceSync) {
+        if (forceSync) {
+            return hentArenaOppfolgingsstatus(fnr)
+                    .map(DtoMapper::mapTilArenaStatusDTO);
+        } else {
+            var maybeDbLinkArenaStatus = oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr.get())
+                    .map(DtoMapper::mapTilArenaStatusDTO);
 
-        if (maybeDbLinkArenaStatus.isPresent()) {
-            return maybeDbLinkArenaStatus;
+            if (maybeDbLinkArenaStatus.isPresent()) {
+                return maybeDbLinkArenaStatus;
+            }
+
+            return hentArenaOppfolgingsstatus(fnr)
+                    .map(DtoMapper::mapTilArenaStatusDTO);
         }
-
-        return hentArenaOppfolgingsstatus(fnr)
-                .map(DtoMapper::mapTilArenaStatusDTO);
     }
 
     public Boolean hentKanEnkeltReaktiveres(Fnr fnr) {

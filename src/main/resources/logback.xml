@@ -3,4 +3,5 @@
     <include resource="no/nav/common/log/logback-stdout-json.xml"/>
     <include resource="no/nav/common/log/logback-naudit.xml"/>
     <include resource="no/nav/common/log/logback-cxf.xml"/>
+    <logger name = "no.nav.veilarbarena" level="DEBUG"/>
 </configuration>
