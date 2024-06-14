@@ -43,3 +43,7 @@ Spørsmål knyttet til koden eller prosjektet kan stilles via issues her på git
 ## For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #poao-tech.
+
+## Kode generert av GitHub Copilot
+
+Dette repoet bruker GitHub Copilot til å generere kode.
