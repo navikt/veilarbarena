@@ -3,9 +3,6 @@ package no.nav.veilarbarena.config;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.abac.Pep;
-import no.nav.common.abac.VeilarbPepFactory;
-import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
@@ -108,14 +105,6 @@ public class ApplicationConfig {
     public KafkaConfig.EnvironmentContext kafkaConfigEnvContext() {
         return new KafkaConfig.EnvironmentContext()
                 .setProducerClientProperties(aivenByteProducerProperties(PRODUCER_CLIENT_ID));
-    }
-
-    @Bean
-    public Pep veilarbPep(EnvironmentProperties properties, Credentials serviceUserCredentials) {
-        return VeilarbPepFactory.get(
-                properties.getAbacUrl(), serviceUserCredentials.username,
-                serviceUserCredentials.password, new SpringAuditRequestInfoSupplier()
-        );
     }
 
     @Bean
