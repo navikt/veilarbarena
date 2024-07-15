@@ -31,8 +31,6 @@ public class EnvironmentProperties {
 
     private String naisStsDiscoveryUrl;
 
-    private String abacUrl;
-
     private String dbUrl;
 
     private String kafkaBrokersUrl;

@@ -3,8 +3,6 @@ package no.nav.veilarbarena.service;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.abac.Pep;
-import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.types.identer.Fnr;
 import no.nav.poao_tilgang.client.*;
@@ -28,14 +26,11 @@ public class AuthService {
 
     private final AuthContextHolder authContextHolder;
 
-    private final Pep veilarbPep;
-
     private final PoaoTilgangClient poaoTilgangClient;
 
     @Autowired
-    public AuthService(AuthContextHolder authContextHolder, Pep veilarbPep, PoaoTilgangClient poaoTilgangClient) {
+    public AuthService(AuthContextHolder authContextHolder, PoaoTilgangClient poaoTilgangClient) {
         this.authContextHolder = authContextHolder;
-        this.veilarbPep = veilarbPep;
         this.poaoTilgangClient = poaoTilgangClient;
     }
 
@@ -74,11 +69,7 @@ public class AuthService {
             }
         } else {
             log.warn("Har systembruker rolle men mangler rolle access_as_application in claims. Dette skal ikke skje.");
-            String innloggetBrukerToken = authContextHolder.requireIdTokenString();
-            if (!veilarbPep.harTilgangTilPerson(innloggetBrukerToken, ActionId.READ, fnr)) {
-                log.warn("Systembruker tilgang avvist via abac");
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-            }
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
