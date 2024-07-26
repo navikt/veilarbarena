@@ -12,6 +12,7 @@ spec:
     - https://veilarbarena-q1.nais.preprod.local
     - https://app-q1.adeo.no/veilarbarena
     - https://veilarbarena.dev.intern.nav.no
+    - https://veilarbarena.intern.dev.nav.no
   port: 8080
   prometheus:
     enabled: true
@@ -80,6 +81,9 @@ spec:
         - application: veilarbportefolje
           namespace: pto
           cluster: dev-fss
+        - application: veilarbaktivitet
+          namespace: dab
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
