@@ -76,6 +76,9 @@ spec:
         - application: veilarbportefolje
           namespace: pto
           cluster: prod-fss
+        - application: veilarbportefolje
+          namespace: obo
+          cluster: prod-gcp
         - application: veilarbaktivitet
           namespace: dab
           cluster: prod-gcp
