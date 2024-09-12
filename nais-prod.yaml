@@ -82,6 +82,9 @@ spec:
         - application: veilarbaktivitet
           namespace: dab
           cluster: prod-gcp
+        - application: veilarbpersonflate
+          namespace: poao
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
