@@ -58,6 +58,9 @@ spec:
         - application: veilarboppfolging
           namespace: pto
           cluster: prod-fss
+        - application: veilarboppfolging
+          namespace: poao
+          cluster: prod-gcp
         - application: veilarbaktivitet
           namespace: pto
           cluster: prod-fss
@@ -76,8 +79,14 @@ spec:
         - application: veilarbportefolje
           namespace: pto
           cluster: prod-fss
+        - application: veilarbportefolje
+          namespace: obo
+          cluster: prod-gcp
         - application: veilarbaktivitet
           namespace: dab
+          cluster: prod-gcp
+        - application: veilarbpersonflate
+          namespace: poao
           cluster: prod-gcp
   vault:
     enabled: true
