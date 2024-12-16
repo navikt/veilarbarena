@@ -22,7 +22,7 @@
         <testcontainers.version>1.20.1</testcontainers.version>
         <common.version>3.2024.04.22_13.50-7815154a2573</common.version>
         <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
-        <cxf-codegen.version>4.0.5</cxf-codegen.version>
+        <cxf-codegen.version>4.1.0</cxf-codegen.version>
     </properties>
 
     <repositories>
