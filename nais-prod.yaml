@@ -91,6 +91,9 @@ spec:
         - application: veilarbpersonflate
           namespace: poao
           cluster: prod-gcp
+        - application: oppgave
+          namespace: aap
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
