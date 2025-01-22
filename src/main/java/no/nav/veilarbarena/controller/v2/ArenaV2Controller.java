@@ -48,7 +48,8 @@ public class ArenaV2Controller {
                     environmentProperties.getVeilarbregistreringClientId(),
                     environmentProperties.getVeilarbregistreringClientIdGCP(),
                     environmentProperties.getPoaoTilgangGCPClientId(),
-                    environmentProperties.getPoaoTilgangFSSClientId()
+                    environmentProperties.getPoaoTilgangFSSClientId(),
+                    environmentProperties.getAapOppgaveClientId()
             );
         }
 

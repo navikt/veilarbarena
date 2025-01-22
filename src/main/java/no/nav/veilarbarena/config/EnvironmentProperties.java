@@ -29,6 +29,8 @@ public class EnvironmentProperties {
 
     private String veilarbregistreringClientIdGCP;
 
+    private String aapOppgaveClientId;
+
     private String naisStsDiscoveryUrl;
 
     private String dbUrl;
