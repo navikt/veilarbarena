@@ -52,7 +52,7 @@ public class OppfolgingsbrukerEndretSchedule {
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
     public void publiserBrukereSomErEndretPaKafkaV2() {
-        if (leaderElectionClient.isLeader()) {
+        if (leaderElectionClient.isLeader() && !veilarbaktivitetUnleashClient.oppfolgingsbrukerBatchIsDisabled().orElse(false)) {
             publisereArenaBrukerEndringerV2();
         }
     }
