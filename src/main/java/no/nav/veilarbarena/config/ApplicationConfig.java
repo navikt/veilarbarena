@@ -159,13 +159,6 @@ public class ApplicationConfig {
                 : "https://arena-ords-q2.dev.intern.nav.no";
     }
 
-    private static String createVeilarbaktivitetUrl() {
-        boolean isProduction = EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Cluster name is missing"));
-        return isProduction
-                ? "https://arena-ords.nais.adeo.no"
-                : "https://arena-ords-q2.dev.intern.nav.no";
-    }
-
     private String internalDevOrProdPdlIngress() {
         return isProduction()
                 ? createProdInternalIngressUrl("pdl-api")

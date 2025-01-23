@@ -21,11 +21,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class VeilarbaktivitetUnleashClientImpl implements VeilarbaktivitetUnleashClient {
 
-    private final OkHttpClient client = RestClient.baseClient();;
+    private final OkHttpClient client = RestClient.baseClient();
     final String veilarbaktivitetUrl;
     final Supplier<String> tokenProvider;
 
-    public static final String featureToggleName = "veilarbarena.oppfolgingsbrukerBatchDisabled";
+    public static final String FEATURE_TOGGLE_NAME = "veilarbarena.oppfolgingsbrukerBatchDisabled";
 
     public VeilarbaktivitetUnleashClientImpl(String veilarbaktivitetUrl, Supplier<String> tokenProvider) {
         this.veilarbaktivitetUrl = veilarbaktivitetUrl;
@@ -34,7 +34,7 @@ public class VeilarbaktivitetUnleashClientImpl implements VeilarbaktivitetUnleas
 
     @Override
     public Optional<Boolean> oppfolgingsbrukerBatchIsDisabled() {
-        String url = joinPaths(veilarbaktivitetUrl, String.format("veilarbaktivitet/api/feature?feature=%s", featureToggleName));
+        String url = joinPaths(veilarbaktivitetUrl, String.format("veilarbaktivitet/api/feature?feature=%s", FEATURE_TOGGLE_NAME));
 
         Request request = new Request.Builder()
                 .url(url)
@@ -44,17 +44,16 @@ public class VeilarbaktivitetUnleashClientImpl implements VeilarbaktivitetUnleas
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
 
-            Optional<Boolean> result = RestUtils.getBodyStr(response)
+            return RestUtils.getBodyStr(response)
                     .flatMap(stringBody -> {
                         TypeReference<HashMap<String, Boolean>> typeRef = new TypeReference<>() {};
                         try {
                             Map<String, Boolean> map = JsonUtils.getMapper().readValue(stringBody, typeRef);
-                            return Optional.ofNullable(map.get(featureToggleName));
+                            return Optional.ofNullable(map.get(FEATURE_TOGGLE_NAME));
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
                     });
-            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

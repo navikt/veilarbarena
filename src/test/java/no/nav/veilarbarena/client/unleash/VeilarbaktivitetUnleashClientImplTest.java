@@ -19,7 +19,7 @@ public class VeilarbaktivitetUnleashClientImplTest {
         String apiUrl = "http://localhost:" + wireMockRule.port();
         VeilarbaktivitetUnleashClient client = new VeilarbaktivitetUnleashClientImpl(apiUrl, () -> "TEST");
 
-        givenThat(get(urlEqualTo("/veilarbaktivitet/api/feature?feature=" + VeilarbaktivitetUnleashClientImpl.featureToggleName))
+        givenThat(get(urlEqualTo("/veilarbaktivitet/api/feature?feature=" + VeilarbaktivitetUnleashClientImpl.FEATURE_TOGGLE_NAME))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
                 .willReturn(aResponse()
                         .withStatus(200)
