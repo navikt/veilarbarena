@@ -44,6 +44,11 @@ spec:
         extra:
           - "NAVident"
   accessPolicy:
+    outbound:
+      rules:
+        - application: veilarbaktivitet
+          namespace: dab
+          cluster: dev-gcp
     inbound:
       rules:
         - application: tiltaksgjennomforing-api
@@ -124,5 +129,9 @@ spec:
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
       value: api://prod-fss.poao.poao-tilgang/.default
+    - name: VEILARBAKTIVITET_URL
+      value: https://veilarbaktivitet.intern.nav.no
+    - name: VEILARBAKTIVITET_SCOPE
+      value: api://prod-gcp.dab.veilarbaktivitet/.default
     - name: AMT_PERSON_SERVICE_CLIENT_ID
       value: 71948d71-65be-4335-974f-987e95fc99e5

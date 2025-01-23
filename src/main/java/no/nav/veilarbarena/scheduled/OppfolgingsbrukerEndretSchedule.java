@@ -2,6 +2,7 @@ package no.nav.veilarbarena.scheduled;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.job.leader_election.LeaderElectionClient;
+import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.entity.OppdatertBrukerEntity;
@@ -31,18 +32,22 @@ public class OppfolgingsbrukerEndretSchedule {
 
     private final KafkaProducerService kafkaProducerService;
 
+    private final VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient;
+
 
     @Autowired
     public OppfolgingsbrukerEndretSchedule(
             OppfolgingsbrukerRepository oppfolgingsbrukerRepository,
             OppdaterteBrukereRepository oppdaterteBrukereRepository,
             LeaderElectionClient leaderElectionClient,
-            KafkaProducerService kafkaProducerService
+            KafkaProducerService kafkaProducerService,
+            VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient
     ) {
         this.oppfolgingsbrukerRepository = oppfolgingsbrukerRepository;
         this.oppdaterteBrukereRepository = oppdaterteBrukereRepository;
         this.leaderElectionClient = leaderElectionClient;
         this.kafkaProducerService = kafkaProducerService;
+        this.veilarbaktivitetUnleashClient = veilarbaktivitetUnleashClient;
     }
 
     @Scheduled(fixedDelay = TEN_SECONDS, initialDelay = TEN_SECONDS)
@@ -54,7 +59,16 @@ public class OppfolgingsbrukerEndretSchedule {
 
     void publisereArenaBrukerEndringerV2() {
         log.info("Skal sende {} bruker oppdateringer til kafka", oppdaterteBrukereRepository.hentAntallBrukereSomSkalOppdaters());
+        /* Only check feature toggle every 1000 processed messages */
+        int prosessedSinceLaseUnleashCheck = 0;
         while (true) {
+            if (prosessedSinceLaseUnleashCheck > 1000) {
+                prosessedSinceLaseUnleashCheck = 0;
+                if (veilarbaktivitetUnleashClient.oppfolgingsbrukerBatchIsDisabled().orElse(false)) {
+                    break;
+                }
+            }
+
             List<OppdatertBrukerEntity> brukerOppdateringer = oppdaterteBrukereRepository.hentBrukereMedEldsteEndringer();
             if (brukerOppdateringer == null || brukerOppdateringer.isEmpty()) {
                 return;
@@ -70,6 +84,7 @@ public class OppfolgingsbrukerEndretSchedule {
                 }
                 oppdaterteBrukereRepository.slettOppdatering(brukerOppdatering);
             });
+            prosessedSinceLaseUnleashCheck += 10;
         }
     }
 
