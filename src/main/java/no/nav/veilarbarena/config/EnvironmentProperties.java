@@ -44,4 +44,8 @@ public class EnvironmentProperties {
 	private String poaoTilgangUrl;
 
 	private String poaoTilgangScope;
+
+    private String veilarbaktivitetScope;
+
+    private String veilarbaktivitetUrl;
 }

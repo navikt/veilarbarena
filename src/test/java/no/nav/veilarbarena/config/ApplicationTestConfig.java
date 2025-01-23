@@ -13,6 +13,7 @@ import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.MetricsClientMock;
@@ -125,6 +126,10 @@ public class ApplicationTestConfig {
                 return HealthCheckResult.healthy();
             }
         };
+    }
+
+    @Bean VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient() {
+        return () -> Optional.of(false);
     }
 
     @Bean
