@@ -3,6 +3,7 @@ package no.nav.veilarbarena.controller.v2;
 import lombok.RequiredArgsConstructor;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.*;
 import no.nav.veilarbarena.service.ArenaService;
@@ -113,9 +114,9 @@ public class ArenaV2Controller {
      * Registrer ikke-arbeidssøker i arena
      */
     @PostMapping("/registrer-ikke-arbeidssoker")
-    public String registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
+    public RegistrerIkkeArbeidssokerResponse registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
         authService.sjekkTilgang(personRequest.getFnr());
-        return arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse("Bruker ikke registrert");
+        return arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(new RegistrerIkkeArbeidssokerResponse("Bruker ikke registrert"));
     }
 
     private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {

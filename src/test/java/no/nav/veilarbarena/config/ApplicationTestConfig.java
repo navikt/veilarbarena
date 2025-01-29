@@ -13,6 +13,7 @@ import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
@@ -122,7 +123,7 @@ public class ApplicationTestConfig {
             }
 
             @Override
-            public Optional<String> registrerIkkeArbeidssoker(Fnr fnr) {
+            public Optional<RegistrerIkkeArbeidssokerResponse> registrerIkkeArbeidssoker(Fnr fnr) {
                 return Optional.empty();
             }
 

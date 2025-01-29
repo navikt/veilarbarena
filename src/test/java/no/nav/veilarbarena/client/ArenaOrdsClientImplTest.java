@@ -2,11 +2,13 @@ package no.nav.veilarbarena.client;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import no.nav.common.health.HealthCheckResult;
+import no.nav.common.json.JsonUtils;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -201,16 +203,18 @@ public class ArenaOrdsClientImplTest {
         String apiUrl = "http://localhost:" + wireMockRule.port();
         String fnr = "3628714324";
         String response = "Ny bruker ble registrert ok som IARBS";
+        RegistrerIkkeArbeidssokerResponse resultat = new RegistrerIkkeArbeidssokerResponse(response);
+        String jsonResonse = JsonUtils.toJson(resultat);
         ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
         givenThat(post(urlPathEqualTo("/arena/api/v2/person/oppfoelging/registrer"))
                 .withHeader("Authorization", equalTo("Bearer TEST"))
                 .withRequestBody(equalToJson("{\"personident\":\"3628714324\"}"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withBody(response))
+                        .withBody(jsonResonse))
         );
-        Optional<String> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
-        assertThat(result).isPresent().get().isEqualTo(response);
+        Optional<RegistrerIkkeArbeidssokerResponse> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(result).isPresent().get().isEqualTo(resultat);
     }
 
 

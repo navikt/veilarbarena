@@ -5,6 +5,7 @@ import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 
 import java.util.Optional;
 
@@ -16,6 +17,6 @@ public interface ArenaOrdsClient extends HealthCheck {
 
     Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr);
 
-    Optional<String> registrerIkkeArbeidssoker(Fnr fnr);
+    Optional<RegistrerIkkeArbeidssokerResponse> registrerIkkeArbeidssoker(Fnr fnr);
 
 }

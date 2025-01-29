@@ -3,6 +3,7 @@ package no.nav.veilarbarena.controller.v2;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
@@ -311,9 +312,10 @@ class ArenaV2ControllerTest {
 
    @Test
     void registrer_ikke_arbeidssoker_should_create_string_response() throws Exception {
-       String result = "Bruker ikke registrert";
+       String result = "{\"resultat\":\"Bruker ikke registrert\"}";
+       RegistrerIkkeArbeidssokerResponse response = new RegistrerIkkeArbeidssokerResponse(result);
 
-       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(result));
+       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(response));
 
        mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
                .contentType(MediaType.APPLICATION_JSON)

@@ -9,6 +9,7 @@ import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -73,7 +74,7 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
     @Override
     @SneakyThrows
-    public Optional<String> registrerIkkeArbeidssoker(Fnr fnr) {
+    public Optional<RegistrerIkkeArbeidssokerResponse> registrerIkkeArbeidssoker(Fnr fnr) {
         String json = "{\"personident\":\"" + fnr.get() + "\"}";
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
         String url = joinPaths(arenaOrdsUrl, "arena/api/v2/person/oppfoelging/registrer");
@@ -85,7 +86,7 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.getBodyStr(response);
+            return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class);
         }
     }
 
