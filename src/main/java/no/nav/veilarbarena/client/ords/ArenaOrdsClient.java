@@ -16,4 +16,6 @@ public interface ArenaOrdsClient extends HealthCheck {
 
     Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr);
 
+    Optional<String> registrerIkkeArbeidssoker(Fnr fnr);
+
 }

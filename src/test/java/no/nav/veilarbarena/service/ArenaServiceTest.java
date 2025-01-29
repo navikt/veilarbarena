@@ -96,5 +96,14 @@ public class ArenaServiceTest {
         assertTrue(maybeArenaStatus.isEmpty());
     }
 
+    @Test
+    public void registrer_ikke_arbeidssoker__skal_kalle_ords_client() {
+        Fnr fnr = Fnr.of("1234554");
+
+        arenaService.registrerIkkeArbeidssoker(fnr);
+
+        verify(arenaOrdsClient).registrerIkkeArbeidssoker(fnr);
+    }
+
 
 }

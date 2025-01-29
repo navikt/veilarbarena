@@ -309,4 +309,15 @@ class ArenaV2ControllerTest {
         ).andExpect(status().is(200)).andExpect(content().json(json, true));
     }
 
+   @Test
+    void registrer_ikke_arbeidssoker_should_create_string_response() throws Exception {
+       String result = "Bruker ikke registrert";
+
+       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(result));
+
+       mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content("{\"personident\":\"" + FNR.get() + "\"}")
+       ).andExpect(status().is(200)).andExpect(content().string(result));
+   }
 }

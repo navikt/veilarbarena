@@ -122,6 +122,11 @@ public class ApplicationTestConfig {
             }
 
             @Override
+            public Optional<String> registrerIkkeArbeidssoker(Fnr fnr) {
+                return Optional.empty();
+            }
+
+            @Override
             public HealthCheckResult checkHealth() {
                 return HealthCheckResult.healthy();
             }

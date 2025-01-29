@@ -9,9 +9,7 @@ import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -66,6 +64,24 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
             RestUtils.throwIfNotSuccessful(response);
             return RestUtils.getBodyStr(response)
                     .map(body -> fromXml(body, ArenaAktiviteterDTO.class));
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public Optional<String> registrerIkkeArbeidssoker(Fnr fnr) {
+        String json = "{\"personident\":\"" + fnr.get() + "\"}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v2/person/oppfoelging/registrer");
+        Request request = new Request.Builder()
+                .url(url)
+                .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
+                .post(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.getBodyStr(response);
         }
     }
 

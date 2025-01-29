@@ -99,4 +99,8 @@ public class ArenaService {
         return arenaOrdsClient.hentArenaAktiviteter(fnr);
     }
 
+    public Optional<String> registrerIkkeArbeidssoker(Fnr fnr) {
+        return arenaOrdsClient.registrerIkkeArbeidssoker(fnr);
+    }
+
 }

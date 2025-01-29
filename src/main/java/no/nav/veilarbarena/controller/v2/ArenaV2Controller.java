@@ -108,6 +108,16 @@ public class ArenaV2Controller {
                 .map(this::mapArenaAktiviteter)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
     }
+
+    /**
+     * Registrer ikke-arbeidssøker i arena
+     */
+    @PostMapping("/registrer-ikke-arbeidssoker")
+    public String registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
+        authService.sjekkTilgang(personRequest.getFnr());
+        return arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse("Bruker ikke registrert");
+    }
+
     private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {
         ArenaAktiviteterDTO.Response response = arenaAktiviteterDTO.getResponse();
 

@@ -196,6 +196,23 @@ public class ArenaOrdsClientImplTest {
                 .hasFieldOrPropertyWithValue("servicegruppeKode", "IKVAL");
     }
 
+    @Test
+    public void registrer_ikke_arbeidssoker_returnerer_streng() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String response = "Ny bruker ble registrert ok som IARBS";
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+        givenThat(post(urlPathEqualTo("/arena/api/v2/person/oppfoelging/registrer"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withRequestBody(equalToJson("{\"personident\":\"3628714324\"}"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(response))
+        );
+        Optional<String> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(result).isPresent().get().isEqualTo(response);
+    }
+
 
     @Test
     public void checkHealth_kaller_ping() {
