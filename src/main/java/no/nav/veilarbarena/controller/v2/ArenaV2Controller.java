@@ -115,6 +115,7 @@ public class ArenaV2Controller {
      */
     @PostMapping("/registrer-ikke-arbeidssoker")
     public RegistrerIkkeArbeidssokerResponse registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
+
         authService.sjekkTilgang(personRequest.getFnr());
         return arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(new RegistrerIkkeArbeidssokerResponse("Bruker ikke registrert"));
     }

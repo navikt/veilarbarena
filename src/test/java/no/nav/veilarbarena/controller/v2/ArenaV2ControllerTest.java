@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -312,14 +314,35 @@ class ArenaV2ControllerTest {
 
    @Test
     void registrer_ikke_arbeidssoker_should_create_string_response() throws Exception {
-       String result = "{\"resultat\":\"Bruker ikke registrert\"}";
-       RegistrerIkkeArbeidssokerResponse response = new RegistrerIkkeArbeidssokerResponse(result);
+       String resultMessage = "Bruker ikke registrert";
+       String result = "{\"resultat\":\""+resultMessage+"\"}";
+       RegistrerIkkeArbeidssokerResponse response = new RegistrerIkkeArbeidssokerResponse(resultMessage);
 
        when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(response));
 
        mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
                .contentType(MediaType.APPLICATION_JSON)
-               .content("{\"personident\":\"" + FNR.get() + "\"}")
+               .content("{\"fnr\":\"" + FNR.get() + "\"}")
        ).andExpect(status().is(200)).andExpect(content().string(result));
+   }
+
+    @Test
+    void registrer_ikke_arbeidssoker_should_return_400_if_invalid_request() throws Exception {
+        when(arenaService.registrerIkkeArbeidssoker(FNR)).thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
+
+        mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"something\":\"something\"}")
+        ).andExpect(status().is(400));
+    }
+
+   @Test
+    void registrer_ikke_arbeidssoker_should_return_422_if_user_not_activated() throws Exception {
+       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
+
+       mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content("{\"fnr\":\"" + FNR.get() + "\"}")
+       ).andExpect(status().is(422)).andExpect(status().reason("Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
    }
 }

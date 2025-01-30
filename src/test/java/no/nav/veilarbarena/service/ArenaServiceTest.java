@@ -104,6 +104,4 @@ public class ArenaServiceTest {
 
         verify(arenaOrdsClient).registrerIkkeArbeidssoker(fnr);
     }
-
-
 }

@@ -12,6 +12,7 @@ import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -19,8 +20,7 @@ import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArenaOrdsClientImplTest {
 
@@ -217,6 +217,25 @@ public class ArenaOrdsClientImplTest {
         assertThat(result).isPresent().get().isEqualTo(resultat);
     }
 
+    @Test
+    public void registrer_ikke_arbeidssoker_kan_feile_med_422() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String response = "Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker";
+        RegistrerIkkeArbeidssokerResponse resultat = new RegistrerIkkeArbeidssokerResponse(response);
+        String jsonResonse = JsonUtils.toJson(resultat);
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+        givenThat(post(urlPathEqualTo("/arena/api/v2/person/oppfoelging/registrer"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withRequestBody(equalToJson("{\"personident\":\"3628714324\"}"))
+                .willReturn(aResponse()
+                        .withStatus(422)
+                        .withBody(jsonResonse))
+        );
+        ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> client.registrerIkkeArbeidssoker(Fnr.of(fnr)));
+        assertThat(responseStatusException.getStatusCode().value()).isEqualTo(422);
+        assertThat(responseStatusException.getReason()).isEqualTo(jsonResonse);
+    }
 
     @Test
     public void checkHealth_kaller_ping() {
