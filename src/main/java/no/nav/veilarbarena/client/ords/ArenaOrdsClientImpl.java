@@ -15,6 +15,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -85,7 +87,6 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            // TODO: vi bør utvide feilhåndteringen spesielt for kode 422
             /*
             422-status-response fra REST-tjeneste:
 { "resultat":"Fødselsnummer 22*******38 finnes ikke i Folkeregisteret" }
@@ -93,6 +94,9 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS" }
 { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS" }
              */
+            if (response.code() == 422) {
+                throw new ResponseStatusException(HttpStatusCode.valueOf(response.code()), RestUtils.getBodyStr(response).orElse("Ukjent feil"));
+            }
             RestUtils.throwIfNotSuccessful(response);
             return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class);
         }
