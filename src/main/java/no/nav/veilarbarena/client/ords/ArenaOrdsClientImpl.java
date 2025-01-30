@@ -85,6 +85,14 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
+            // TODO: vi bør utvide feilhåndteringen spesielt for kode 422
+            /*
+            422-status-response fra REST-tjeneste:
+{ "resultat":"Fødselsnummer 22*******38 finnes ikke i Folkeregisteret" }
+{ "resultat":"Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker" }
+{ "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS" }
+{ "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS" }
+             */
             RestUtils.throwIfNotSuccessful(response);
             return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class);
         }
