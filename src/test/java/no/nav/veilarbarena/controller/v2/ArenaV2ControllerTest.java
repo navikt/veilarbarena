@@ -3,6 +3,7 @@ package no.nav.veilarbarena.controller.v2;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
@@ -10,6 +11,7 @@ import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.TestUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -314,13 +316,13 @@ class ArenaV2ControllerTest {
 
    @Test
     void registrer_ikke_arbeidssoker_should_create_string_response() throws Exception {
-       String resultMessage = "Bruker ikke registrert";
-       String result = "{\"resultat\":\""+resultMessage+"\"}";
-       RegistrerIkkeArbeidssokerResponse response = new RegistrerIkkeArbeidssokerResponse(resultMessage);
+       String resultMessage = "Ny bruker ble registrert ok som IARBS";
+       String result = "{\"resultat\":\""+resultMessage+"\",\"kode\":\"OK_REGISTRERT_I_ARENA\"}";
+       RegistrerIkkeArbeidssokerDto response = RegistrerIkkeArbeidssokerDto.okResult(resultMessage);
 
        when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(response));
 
-       mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+       mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
                .contentType(MediaType.APPLICATION_JSON)
                .content("{\"fnr\":\"" + FNR.get() + "\"}")
        ).andExpect(status().is(200)).andExpect(content().string(result));
@@ -330,19 +332,19 @@ class ArenaV2ControllerTest {
     void registrer_ikke_arbeidssoker_should_return_400_if_invalid_request() throws Exception {
         when(arenaService.registrerIkkeArbeidssoker(FNR)).thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
 
-        mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+        mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"something\":\"something\"}")
         ).andExpect(status().is(400));
     }
 
    @Test
-    void registrer_ikke_arbeidssoker_should_return_422_if_user_not_activated() throws Exception {
-       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
+    void registrer_ikke_arbeidssoker_should_return_result_if_user_not_activated() throws Exception {
+       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult("Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker")));
 
-       mockMvc.perform(post("/api/v2/arena/registrer-ikke-arbeidssoker")
+       mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
                .contentType(MediaType.APPLICATION_JSON)
                .content("{\"fnr\":\"" + FNR.get() + "\"}")
-       ).andExpect(status().is(422)).andExpect(status().reason("Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
+       ).andExpect(status().is(422)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\"KAN_REAKTIVERES_FORENKLET\"")));
    }
 }

@@ -5,10 +5,7 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
-import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
-import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
+import no.nav.veilarbarena.client.ords.dto.*;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -213,12 +210,12 @@ public class ArenaOrdsClientImplTest {
                         .withStatus(200)
                         .withBody(jsonResonse))
         );
-        Optional<RegistrerIkkeArbeidssokerResponse> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
-        assertThat(result).isPresent().get().isEqualTo(resultat);
+        Optional<RegistrerIkkeArbeidssokerDto> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(result).isPresent().get().matches(a -> a.getResultat().equals(response));
     }
 
     @Test
-    public void registrer_ikke_arbeidssoker_kan_feile_med_422() {
+    public void registrer_ikke_arbeidssoker_kan_gi_feilresultat() {
         String apiUrl = "http://localhost:" + wireMockRule.port();
         String fnr = "3628714324";
         String response = "Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker";
@@ -232,9 +229,9 @@ public class ArenaOrdsClientImplTest {
                         .withStatus(422)
                         .withBody(jsonResonse))
         );
-        ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> client.registrerIkkeArbeidssoker(Fnr.of(fnr)));
-        assertThat(responseStatusException.getStatusCode().value()).isEqualTo(422);
-        assertThat(responseStatusException.getReason()).isEqualTo(jsonResonse);
+        var forventetResultat = RegistrerIkkeArbeidssokerDto.errorResult(response);
+        Optional<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssokerDto = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(registrerIkkeArbeidssokerDto).isPresent().get().isEqualTo(forventetResultat);
     }
 
     @Test

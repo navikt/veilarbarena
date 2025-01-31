@@ -1,8 +1,10 @@
 package no.nav.veilarbarena.controller.v2;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.*;
@@ -11,6 +13,7 @@ import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -113,12 +116,18 @@ public class ArenaV2Controller {
     /**
      * Registrer ikke-arbeidssøker i arena
      */
-    @PostMapping("/registrer-ikke-arbeidssoker")
-    public RegistrerIkkeArbeidssokerResponse registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
+    @PostMapping("/registrer-i-arena")
+    public ResponseEntity<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
 
         authService.sjekkTilgang(personRequest.getFnr());
-        return arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(new RegistrerIkkeArbeidssokerResponse("Bruker ikke registrert"));
+        RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
+        if (registrert.getKode() == RegistrerIkkeArbeidssokerDto.RESULTAT.OK_REGISTRERT_I_ARENA) {
+            return new ResponseEntity<>(registrert, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
+
 
     private AktiviteterDTO mapArenaAktiviteter(ArenaAktiviteterDTO arenaAktiviteterDTO) {
         ArenaAktiviteterDTO.Response response = arenaAktiviteterDTO.getResponse();
