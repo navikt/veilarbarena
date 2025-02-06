@@ -1,6 +1,7 @@
 package no.nav.veilarbarena.controller.v2;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
@@ -25,6 +26,7 @@ import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/arena")
+@Slf4j
 public class ArenaV2Controller {
 
     private static final int MANEDER_BAK_I_TID = 2;
@@ -119,7 +121,12 @@ public class ArenaV2Controller {
         RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr())
                 .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
         if (registrert.getKode() == RegistrerIkkeArbeidssokerDto.RESULTAT.OK_REGISTRERT_I_ARENA) {
-            publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+            try {
+                publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+            } catch (Exception e) {
+                /* Skal fortsatt svare med OK, endringer vil propagert via OppfolgingsbrukerEndretSchedule istedet */
+                log.warn("Kunne ikke publisere nylig registrert oppfolgingsbruker på kafka", e);
+            }
             return new ResponseEntity<>(registrert, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
