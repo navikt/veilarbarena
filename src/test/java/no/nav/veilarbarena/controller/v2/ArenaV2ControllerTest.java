@@ -9,6 +9,7 @@ import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
+import no.nav.veilarbarena.service.PubliserOppfolgingsbrukerService;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,8 @@ class ArenaV2ControllerTest {
     @MockBean
     private ArenaService arenaService;
 
+    @MockBean
+    private PubliserOppfolgingsbrukerService publiserOppfolgingsbrukerService;
 
 
     @Test
