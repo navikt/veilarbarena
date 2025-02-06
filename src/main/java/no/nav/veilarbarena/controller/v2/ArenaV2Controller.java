@@ -120,6 +120,7 @@ public class ArenaV2Controller {
         authService.sjekkTilgang(personRequest.getFnr());
         RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr())
                 .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
+<<<<<<< HEAD
         /*
         OK_REGISTRERT_I_ARENA,
         FNR_FINNES_IKKE,
@@ -132,7 +133,10 @@ public class ArenaV2Controller {
             case OK_REGISTRERT_I_ARENA -> {
                     try {
                         arenaService.refreshMaterializedOppfolgingsBrukerView();
-                        publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+                        var blePublisert = publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+                        if (!blePublisert) {
+                            log.warn("Fant ingen oppfølgingsbruker å publisere på kafka");
+                        }
                     } catch (Exception e) {
                         /* Skal fortsatt svare med OK, endringer vil propagert via OppfolgingsbrukerEndretSchedule istedet */
                         log.warn("Kunne ikke publisere nylig registrert oppfolgingsbruker på kafka", e);
