@@ -8,6 +8,7 @@ import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.*;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
+import no.nav.veilarbarena.service.PubliserOppfolgingsbrukerService;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,11 @@ import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 public class ArenaV2Controller {
 
     private static final int MANEDER_BAK_I_TID = 2;
-
     private static final int MANEDER_FREM_I_TID = 1;
-
     private final AuthService authService;
-
     private final ArenaService arenaService;
-
     private final EnvironmentProperties environmentProperties;
+    private final PubliserOppfolgingsbrukerService publiserOppfolgingsbrukerService;
 
 
     @PostMapping("/hent-status")
@@ -118,8 +116,8 @@ public class ArenaV2Controller {
     public ResponseEntity<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
 
         authService.sjekkTilgang(personRequest.getFnr());
-        RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
-
+        RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr())
+                .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
         /*
         OK_REGISTRERT_I_ARENA,
         FNR_FINNES_IKKE,
@@ -129,7 +127,11 @@ public class ArenaV2Controller {
         UKJENT_FEIL
          */
         return switch (registrert.getKode()) {
-            case OK_REGISTRERT_I_ARENA, BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS ->
+            case OK_REGISTRERT_I_ARENA -> {
+                    publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+                    yield new ResponseEntity<>(registrert, HttpStatus.OK);
+            }
+            case BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS ->
                     new ResponseEntity<>(registrert, HttpStatus.OK);
             case UKJENT_FEIL, FNR_FINNES_IKKE, KAN_REAKTIVERES_FORENKLET ->
                     new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);

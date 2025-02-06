@@ -85,6 +85,10 @@ public class ArenaService {
         return oppfolgingsbrukerRepository.hentOppfolgingsbrukerSinPersonId(fnr.get());
     }
 
+    public void refreshMaterializedOppfolgingsBrukerView() {
+        return oppfolgingsbrukerRepository.refreshMaterializedOppfolgingsBrukerView();
+    }
+
     public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
         return arenaOrdsClient.hentArenaOppfolgingsstatus(fnr);
     }
