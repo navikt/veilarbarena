@@ -122,7 +122,10 @@ public class ArenaV2Controller {
                 .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
         if (registrert.getKode() == RegistrerIkkeArbeidssokerDto.RESULTAT.OK_REGISTRERT_I_ARENA) {
             try {
-                publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+                var blePublisert = publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
+                if (!blePublisert) {
+                    log.warn("Fant ingen oppfølgingsbruker å publisere på kafka");
+                }
             } catch (Exception e) {
                 /* Skal fortsatt svare med OK, endringer vil propagert via OppfolgingsbrukerEndretSchedule istedet */
                 log.warn("Kunne ikke publisere nylig registrert oppfolgingsbruker på kafka", e);

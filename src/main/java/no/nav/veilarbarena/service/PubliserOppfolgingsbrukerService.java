@@ -18,10 +18,14 @@ public class PubliserOppfolgingsbrukerService {
         this.kafkaProducerService = kafkaProducerService;
     }
 
-    public void publiserOppfolgingsbruker(String fnr) {
-        oppfolgingsbrukerRepository
-                .hentOppfolgingsbruker(fnr)
-                .ifPresent(this::publiserPaKafka);
+    public Boolean publiserOppfolgingsbruker(String fnr) {
+        var bruker = oppfolgingsbrukerRepository.hentOppfolgingsbruker(fnr);
+        if (bruker.isPresent()) {
+            publiserPaKafka(bruker.get());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void publiserPaKafka(OppfolgingsbrukerEntity bruker) {
