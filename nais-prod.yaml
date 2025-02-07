@@ -99,6 +99,9 @@ spec:
         - application: oppgave
           namespace: aap
           cluster: prod-gcp
+        - application: postmottak-backend
+          namespace: aap
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:

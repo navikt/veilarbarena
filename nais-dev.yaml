@@ -101,6 +101,9 @@ spec:
         - application: oppgave
           namespace: aap
           cluster: dev-gcp
+        - application: postmottak-backend
+          namespace: aap
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
