@@ -86,7 +86,7 @@ public class ArenaService {
     }
 
     public void refreshMaterializedOppfolgingsBrukerView() {
-        return oppfolgingsbrukerRepository.refreshMaterializedOppfolgingsBrukerView();
+        oppfolgingsbrukerRepository.refreshMaterializedOppfolgingsBrukerView();
     }
 
     public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
