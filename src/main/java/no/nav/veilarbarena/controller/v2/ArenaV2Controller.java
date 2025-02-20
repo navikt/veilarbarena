@@ -132,6 +132,7 @@ public class ArenaV2Controller {
             case OK_REGISTRERT_I_ARENA -> {
                     try {
                         arenaService.refreshMaterializedOppfolgingsBrukerView();
+                        log.info("Refeshet materialized view for oppfolgingsbruker");
                         var blePublisert = publiserOppfolgingsbrukerService.publiserOppfolgingsbruker(personRequest.getFnr().get());
                         if (!blePublisert) {
                             log.warn("Fant ingen oppfølgingsbruker å publisere på kafka");
