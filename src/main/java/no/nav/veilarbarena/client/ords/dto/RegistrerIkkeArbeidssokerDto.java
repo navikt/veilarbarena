@@ -1,7 +1,6 @@
 package no.nav.veilarbarena.client.ords.dto;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 public class RegistrerIkkeArbeidssokerDto {
@@ -21,14 +20,13 @@ public class RegistrerIkkeArbeidssokerDto {
     http status 200
         { "resultat": "Ny bruker ble registrert ok som IARBS" }
         { "resultat": "Eksisterende bruker ble oppdatert og registrert ok som IARBS" }
+        { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS" }
+        { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS" }
     http status 422
         { "resultat":"Fødselsnummer 22*******38 finnes ikke i Folkeregisteret" }
         { "resultat":"Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker" }
-        { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS" }
-        { "resultat":"Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS" }
     http status 400
         { "resultat":"Ugyldig eller ingen personident er angitt" }
-
      */
     public static RegistrerIkkeArbeidssokerDto errorResult(String resultat) {
         var result = new RegistrerIkkeArbeidssokerDto(resultat);
@@ -36,10 +34,6 @@ public class RegistrerIkkeArbeidssokerDto {
             result.kode = RESULTAT.FNR_FINNES_IKKE;
         } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet")) {
             result.kode = RESULTAT.KAN_REAKTIVERES_FORENKLET;
-        } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS")) {
-            result.kode = RESULTAT.BRUKER_ALLEREDE_ARBS;
-        } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS")) {
-            result.kode = RESULTAT.BRUKER_ALLEREDE_IARBS;
         } else {
             result.kode = RESULTAT.UKJENT_FEIL;
         }
@@ -47,7 +41,13 @@ public class RegistrerIkkeArbeidssokerDto {
     }
     public static RegistrerIkkeArbeidssokerDto okResult(String resultat) {
         var result = new RegistrerIkkeArbeidssokerDto(resultat);
-        result.kode = RESULTAT.OK_REGISTRERT_I_ARENA;
+        if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS")) {
+            result.kode = RESULTAT.BRUKER_ALLEREDE_ARBS;
+        } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS")) {
+            result.kode = RESULTAT.BRUKER_ALLEREDE_IARBS;
+        } else {
+            result.kode = RESULTAT.OK_REGISTRERT_I_ARENA;
+        }
         return result;
     }
     private RegistrerIkkeArbeidssokerDto(String resultat) {
