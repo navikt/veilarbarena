@@ -120,7 +120,6 @@ public class ArenaV2Controller {
         authService.sjekkTilgang(personRequest.getFnr());
         RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr())
                 .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
-<<<<<<< HEAD
         /*
         OK_REGISTRERT_I_ARENA,
         FNR_FINNES_IKKE,
