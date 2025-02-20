@@ -1,11 +1,9 @@
 package no.nav.veilarbarena.controller.v2;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
-import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.*;
 import no.nav.veilarbarena.service.ArenaService;
@@ -121,11 +119,21 @@ public class ArenaV2Controller {
 
         authService.sjekkTilgang(personRequest.getFnr());
         RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr()).orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
-        if (registrert.getKode() == RegistrerIkkeArbeidssokerDto.RESULTAT.OK_REGISTRERT_I_ARENA) {
-            return new ResponseEntity<>(registrert, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+
+        /*
+        OK_REGISTRERT_I_ARENA,
+        FNR_FINNES_IKKE,
+        KAN_REAKTIVERES_FORENKLET,
+        BRUKER_ALLEREDE_ARBS,
+        BRUKER_ALLEREDE_IARBS,
+        UKJENT_FEIL
+         */
+        return switch (registrert.getKode()) {
+            case OK_REGISTRERT_I_ARENA, BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS ->
+                    new ResponseEntity<>(registrert, HttpStatus.OK);
+            case UKJENT_FEIL, FNR_FINNES_IKKE, KAN_REAKTIVERES_FORENKLET ->
+                    new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
+        };
     }
 
 

@@ -4,7 +4,6 @@ import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
-import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerResponse;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
@@ -24,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
@@ -339,12 +339,23 @@ class ArenaV2ControllerTest {
     }
 
    @Test
-    void registrer_ikke_arbeidssoker_should_return_result_if_user_not_activated() throws Exception {
-       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult("Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker")));
+    void registrer_ikke_arbeidssoker_should_return_422_on_functional_errors() {
+       Map<String, String> funksjonelleFeil = Map.of(
+               "KAN_REAKTIVERES_FORENKLET", "Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker",
+               "FNR_FINNES_IKKE", "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"
+       );
+       funksjonelleFeil.forEach((kode, melding) -> {
+           when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult(melding)));
 
-       mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
-               .contentType(MediaType.APPLICATION_JSON)
-               .content("{\"fnr\":\"" + FNR.get() + "\"}")
-       ).andExpect(status().is(422)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\"KAN_REAKTIVERES_FORENKLET\"")));
-   }
+           try {
+               mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content("{\"fnr\":\"" + FNR.get() + "\"}")
+               ).andExpect(status().is(422)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+           } catch (Exception e) {
+               throw new RuntimeException(e);
+           }
+       });
+    }
+
 }
