@@ -88,10 +88,12 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
 { "resultat":"Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker" }
             */
             if (response.code() == 422) {
-                return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class).map(a -> RegistrerIkkeArbeidssokerDto.errorResult(a.getResultat()));
+                return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class)
+                        .map(a -> RegistrerIkkeArbeidssokerDto.errorResult(a.getResultat()));
             }
             RestUtils.throwIfNotSuccessful(response);
-            return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class).map(a -> RegistrerIkkeArbeidssokerDto.okResult(a.getResultat()));
+            return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class)
+                    .map(a -> RegistrerIkkeArbeidssokerDto.okResult(a.getResultat()));
         }
     }
 

@@ -361,4 +361,42 @@ class ArenaV2ControllerTest {
        });
     }
 
+    @Test
+    void BRUKER_ALLEREDE_IARBS_og_BRUKER_ALLEREDE_ARBS_skal_returnere_200_om_arena_returnerer_422() {
+        Map<String, String> funksjonelleIkkeFeil = Map.of(
+                "BRUKER_ALLEREDE_IARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS",
+                "BRUKER_ALLEREDE_ARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS"
+        );
+        funksjonelleIkkeFeil.forEach((kode, melding) -> {
+            when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult(melding)));
+            try {
+                mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"" + FNR.get() + "\"}")
+                ).andExpect(status().is(200)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void  BRUKER_ALLEREDE_IARBS_og_BRUKER_ALLEREDE_ARBS_skal_returnere_200_om_arena_returnerer_200() {
+        Map<String, String> funksjonelleIkkeHeltRett = Map.of(
+                "BRUKER_ALLEREDE_IARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS",
+                "BRUKER_ALLEREDE_ARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS"
+        );
+        funksjonelleIkkeHeltRett.forEach((kode, melding) -> {
+            when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.okResult(melding)));
+            try {
+                mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"" + FNR.get() + "\"}")
+                ).andExpect(status().is(200)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
 }

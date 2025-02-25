@@ -29,29 +29,30 @@ public class RegistrerIkkeArbeidssokerDto {
         { "resultat":"Ugyldig eller ingen personident er angitt" }
      */
     public static RegistrerIkkeArbeidssokerDto errorResult(String resultat) {
-        var result = new RegistrerIkkeArbeidssokerDto(resultat);
         if (resultat.contains("finnes ikke i Folkeregisteret")) {
-            result.kode = RESULTAT.FNR_FINNES_IKKE;
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.FNR_FINNES_IKKE);
         } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet")) {
-            result.kode = RESULTAT.KAN_REAKTIVERES_FORENKLET;
-        } else {
-            result.kode = RESULTAT.UKJENT_FEIL;
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.KAN_REAKTIVERES_FORENKLET);
+            /* Arena skal snart bytte slik at BRUKER_ALLEREDE_ARBS og BRUKER_ALLEREDE_IARBS kommer med status-kode 200 */
+        } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS")) {
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.BRUKER_ALLEREDE_ARBS);
+        } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS")) {
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.BRUKER_ALLEREDE_IARBS);
+        }else {
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.UKJENT_FEIL);
         }
-        return result;
     }
     public static RegistrerIkkeArbeidssokerDto okResult(String resultat) {
-        var result = new RegistrerIkkeArbeidssokerDto(resultat);
         if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS")) {
-            result.kode = RESULTAT.BRUKER_ALLEREDE_ARBS;
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.BRUKER_ALLEREDE_ARBS);
         } else if (resultat.contains("Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS")) {
-            result.kode = RESULTAT.BRUKER_ALLEREDE_IARBS;
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.BRUKER_ALLEREDE_IARBS);
         } else {
-            result.kode = RESULTAT.OK_REGISTRERT_I_ARENA;
+            return new RegistrerIkkeArbeidssokerDto(resultat, RESULTAT.OK_REGISTRERT_I_ARENA);
         }
-        return result;
     }
-    private RegistrerIkkeArbeidssokerDto(String resultat) {
+    private RegistrerIkkeArbeidssokerDto(String resultat, RESULTAT kode) {
         this.resultat = resultat;
-            this.kode = RESULTAT.OK_REGISTRERT_I_ARENA;
+        this.kode = kode;
     }
 }
