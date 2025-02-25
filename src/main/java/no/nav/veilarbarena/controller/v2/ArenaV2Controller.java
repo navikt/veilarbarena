@@ -145,8 +145,10 @@ public class ArenaV2Controller {
             }
             case BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS ->
                     new ResponseEntity<>(registrert, HttpStatus.OK);
-            case UKJENT_FEIL, FNR_FINNES_IKKE, KAN_REAKTIVERES_FORENKLET ->
-                    new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
+            case UKJENT_FEIL, FNR_FINNES_IKKE, KAN_REAKTIVERES_FORENKLET -> {
+                log.warn("Kunne ikke registrere bruker i arena: {}", registrert.getResultat());
+                yield new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
+            }
         };
     }
 
