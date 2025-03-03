@@ -84,7 +84,7 @@ spec:
           namespace: amt
           cluster: dev-gcp
         - application: azure-token-generator
-          namespace: aura
+          namespace: nais
           cluster: dev-gcp
         - application: veilarbportefolje
           namespace: pto
