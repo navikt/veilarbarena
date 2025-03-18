@@ -22,7 +22,7 @@ public class ImportVaultEnvFiles {
                         int separatorIndex = line.indexOf('=');
                         if (separatorIndex != -1) {
                             String key = line.substring(0, separatorIndex);
-                            String value = line.substring(separatorIndex + 1).replaceAll("(^['\"]|['\"]$)", "");
+                            String value = line.substring(separatorIndex + 1).replaceAll("((^['\"])|(['\"]$))", "");
                             logger.info("- exporting {}", key);
                             setSystemProperty(key, value);
                         } else {
