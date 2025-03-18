@@ -33,8 +33,6 @@ public class EnvironmentProperties {
 
     private String naisStsDiscoveryUrl;
 
-    private String dbUrl;
-
     private String kafkaBrokersUrl;
 
     private String soapStsUrl;
