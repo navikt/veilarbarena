@@ -136,7 +136,7 @@ spec:
     - name: POAO_TILGANG_FSS_CLIENT_ID
       value: f737ff0f-c86a-4a84-8d52-221410234160
     - name: AAP_OPPGAVE_CLIENT_ID
-      value: 3b6b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b #TODO: bytt til riktig client_id
+      value: 2d076bcc-3b6a-4bc7-878e-791aed30433c
     - name: POAO_TILGANG_URL
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
