@@ -137,6 +137,8 @@ spec:
       value: 986c77da-3cfa-4a9e-b11d-b3d193ada8cd
     - name: POAO_TILGANG_FSS_CLIENT_ID
       value: f49ec26a-1bac-4fe4-b234-39a3902acd12
+    - name: AAP_POSTMOTTAK_CLIENT_ID
+      value: 68642ce3-a231-4c82-b106-7a2f4ed899bc
     - name: AAP_OPPGAVE_CLIENT_ID
       value: f915beea-b81f-4d34-b98b-d8b22bcc966f
     - name: POAO_TILGANG_URL

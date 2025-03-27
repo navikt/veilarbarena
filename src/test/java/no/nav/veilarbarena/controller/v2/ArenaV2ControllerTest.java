@@ -77,7 +77,7 @@ class ArenaV2ControllerTest {
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null, null, null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null, null, null, null,null);
     }
 
     @Test
