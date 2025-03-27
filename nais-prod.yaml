@@ -137,6 +137,8 @@ spec:
       value: f737ff0f-c86a-4a84-8d52-221410234160
     - name: AAP_OPPGAVE_CLIENT_ID
       value: 2d076bcc-3b6a-4bc7-878e-791aed30433c
+    - name: AAP_POSTMOTTAK_CLIENT_ID
+      value: 7f9044f1-fa3a-4356-9062-05035400fd6a
     - name: POAO_TILGANG_URL
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE

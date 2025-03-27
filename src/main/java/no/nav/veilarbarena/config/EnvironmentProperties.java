@@ -31,6 +31,8 @@ public class EnvironmentProperties {
 
     private String aapOppgaveClientId;
 
+    private String aapPostmottakClientId;
+
     private String naisStsDiscoveryUrl;
 
     private String kafkaBrokersUrl;
