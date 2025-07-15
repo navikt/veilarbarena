@@ -72,6 +72,14 @@ public class OppfolgingsbrukerRepository {
         return db.query(sql, OppfolgingsbrukerRepository::mapOppfolgingsbruker);
     }
 
+    public void refreshMaterializedOppfolgingsBrukerView() {
+        String sql = """
+        BEGIN
+            DBMS_MVIEW.REFRESH('OPPFOLGINGSBRUKER', '?');
+        END;""";
+        db.execute(sql);
+    }
+
     @SneakyThrows
     private static OppfolgingsbrukerEntity mapOppfolgingsbruker(ResultSet rs, int row) {
         return new OppfolgingsbrukerEntity()

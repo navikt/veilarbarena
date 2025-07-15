@@ -31,9 +31,9 @@ public class EnvironmentProperties {
 
     private String aapOppgaveClientId;
 
-    private String naisStsDiscoveryUrl;
+    private String aapPostmottakClientId;
 
-    private String dbUrl;
+    private String naisStsDiscoveryUrl;
 
     private String kafkaBrokersUrl;
 
@@ -44,4 +44,8 @@ public class EnvironmentProperties {
 	private String poaoTilgangUrl;
 
 	private String poaoTilgangScope;
+
+    private String veilarbaktivitetScope;
+
+    private String veilarbaktivitetUrl;
 }

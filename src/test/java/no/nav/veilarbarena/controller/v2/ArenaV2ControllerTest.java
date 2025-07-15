@@ -3,22 +3,28 @@ package no.nav.veilarbarena.controller.v2;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.config.EnvironmentProperties;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
+import no.nav.veilarbarena.service.PubliserOppfolgingsbrukerService;
 import no.nav.veilarbarena.utils.TestUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
@@ -45,6 +51,8 @@ class ArenaV2ControllerTest {
     @MockBean
     private ArenaService arenaService;
 
+    @MockBean
+    private PubliserOppfolgingsbrukerService publiserOppfolgingsbrukerService;
 
 
     @Test
@@ -69,7 +77,7 @@ class ArenaV2ControllerTest {
         mockMvc.perform(post("/api/v2/arena/hent-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}"));
-        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null, null, null, null);
+        verify(authService, times(1)).sjekkAtSystembrukerErWhitelistet("amt-tiltak", null, null, null, null, null, null, null,null);
     }
 
     @Test
@@ -307,6 +315,88 @@ class ArenaV2ControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"fnr\":\""+FNR.get()+"\"}")
         ).andExpect(status().is(200)).andExpect(content().json(json, true));
+    }
+
+   @Test
+    void registrer_ikke_arbeidssoker_should_create_string_response() throws Exception {
+       String resultMessage = "Ny bruker ble registrert ok som IARBS";
+       String result = "{\"resultat\":\""+resultMessage+"\",\"kode\":\"OK_REGISTRERT_I_ARENA\"}";
+       RegistrerIkkeArbeidssokerDto response = RegistrerIkkeArbeidssokerDto.okResult(resultMessage);
+
+       when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(response));
+
+       mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content("{\"fnr\":\"" + FNR.get() + "\"}")
+       ).andExpect(status().is(200)).andExpect(content().string(result));
+   }
+
+    @Test
+    void registrer_ikke_arbeidssoker_should_return_400_if_invalid_request() throws Exception {
+        when(arenaService.registrerIkkeArbeidssoker(FNR)).thenThrow(new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"));
+
+        mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"something\":\"something\"}")
+        ).andExpect(status().is(400));
+    }
+
+   @Test
+    void registrer_ikke_arbeidssoker_should_return_422_on_functional_errors() {
+       Map<String, String> funksjonelleFeil = Map.of(
+               "KAN_REAKTIVERES_FORENKLET", "Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker",
+               "FNR_FINNES_IKKE", "Fødselsnummer 22*******38 finnes ikke i Folkeregisteret"
+       );
+       funksjonelleFeil.forEach((kode, melding) -> {
+           when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult(melding)));
+
+           try {
+               mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                       .contentType(MediaType.APPLICATION_JSON)
+                       .content("{\"fnr\":\"" + FNR.get() + "\"}")
+               ).andExpect(status().is(422)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+           } catch (Exception e) {
+               throw new RuntimeException(e);
+           }
+       });
+    }
+
+    @Test
+    void BRUKER_ALLEREDE_IARBS_og_BRUKER_ALLEREDE_ARBS_skal_returnere_200_om_arena_returnerer_422() {
+        Map<String, String> funksjonelleIkkeFeil = Map.of(
+                "BRUKER_ALLEREDE_IARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS",
+                "BRUKER_ALLEREDE_ARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS"
+        );
+        funksjonelleIkkeFeil.forEach((kode, melding) -> {
+            when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.errorResult(melding)));
+            try {
+                mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"" + FNR.get() + "\"}")
+                ).andExpect(status().is(200)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void  BRUKER_ALLEREDE_IARBS_og_BRUKER_ALLEREDE_ARBS_skal_returnere_200_om_arena_returnerer_200() {
+        Map<String, String> funksjonelleIkkeHeltRett = Map.of(
+                "BRUKER_ALLEREDE_IARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe IARBS",
+                "BRUKER_ALLEREDE_ARBS", "Eksisterende bruker er ikke oppdatert da bruker er registrert med formidlingsgruppe ARBS"
+        );
+        funksjonelleIkkeHeltRett.forEach((kode, melding) -> {
+            when(arenaService.registrerIkkeArbeidssoker(FNR)).thenReturn(Optional.of(RegistrerIkkeArbeidssokerDto.okResult(melding)));
+            try {
+                mockMvc.perform(post("/api/v2/arena/registrer-i-arena")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"" + FNR.get() + "\"}")
+                ).andExpect(status().is(200)).andExpect(content().string(CoreMatchers.containsString("\"kode\":\""+kode+"\"")));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

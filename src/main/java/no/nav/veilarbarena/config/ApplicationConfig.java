@@ -27,11 +27,14 @@ import no.nav.poao_tilgang.client.PolicyInput;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
 import no.nav.veilarbarena.client.ords.ArenaOrdsTokenProviderClient;
+import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
+import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClientImpl;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClientImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Duration;
@@ -129,6 +132,10 @@ public class ApplicationConfig {
     @Bean
     public ArenaOrdsClient arenaOrdsClient(ArenaOrdsTokenProviderClient arenaOrdsTokenProviderClient) {
         return new ArenaOrdsClientImpl(createArenaOrdsUrl(), arenaOrdsTokenProviderClient::getToken);
+    }
+
+    @Bean VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient(EnvironmentProperties properties, AzureAdMachineToMachineTokenClient tokenClient) {
+        return new VeilarbaktivitetUnleashClientImpl(properties.getVeilarbaktivitetUrl(), () -> tokenClient.createMachineToMachineToken(properties.getVeilarbaktivitetScope()));
     }
 
 	@Bean

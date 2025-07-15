@@ -10,9 +10,8 @@ import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
-import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.*;
+import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.MetricsClientMock;
@@ -121,10 +120,19 @@ public class ApplicationTestConfig {
             }
 
             @Override
+            public Optional<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(Fnr fnr) {
+                return Optional.empty();
+            }
+
+            @Override
             public HealthCheckResult checkHealth() {
                 return HealthCheckResult.healthy();
             }
         };
+    }
+
+    @Bean VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient() {
+        return () -> Optional.of(false);
     }
 
     @Bean

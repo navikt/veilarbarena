@@ -2,14 +2,14 @@ package no.nav.veilarbarena.client;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import no.nav.common.health.HealthCheckResult;
+import no.nav.common.json.JsonUtils;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClientImpl;
-import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.*;
 import no.nav.veilarbarena.utils.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -17,8 +17,7 @@ import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArenaOrdsClientImplTest {
 
@@ -196,6 +195,44 @@ public class ArenaOrdsClientImplTest {
                 .hasFieldOrPropertyWithValue("servicegruppeKode", "IKVAL");
     }
 
+    @Test
+    public void registrer_ikke_arbeidssoker_returnerer_streng() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String response = "Ny bruker ble registrert ok som IARBS";
+        RegistrerIkkeArbeidssokerResponse resultat = new RegistrerIkkeArbeidssokerResponse(response);
+        String jsonResonse = JsonUtils.toJson(resultat);
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+        givenThat(post(urlPathEqualTo("/arena/api/v2/person/oppfoelging/registrer"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withRequestBody(equalToJson("{\"personident\":\"3628714324\"}"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(jsonResonse))
+        );
+        Optional<RegistrerIkkeArbeidssokerDto> result = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(result).isPresent().get().matches(a -> a.getResultat().equals(response));
+    }
+
+    @Test
+    public void registrer_ikke_arbeidssoker_kan_gi_feilresultat() {
+        String apiUrl = "http://localhost:" + wireMockRule.port();
+        String fnr = "3628714324";
+        String response = "Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker";
+        RegistrerIkkeArbeidssokerResponse resultat = new RegistrerIkkeArbeidssokerResponse(response);
+        String jsonResonse = JsonUtils.toJson(resultat);
+        ArenaOrdsClientImpl client = new ArenaOrdsClientImpl(apiUrl, () -> "TEST");
+        givenThat(post(urlPathEqualTo("/arena/api/v2/person/oppfoelging/registrer"))
+                .withHeader("Authorization", equalTo("Bearer TEST"))
+                .withRequestBody(equalToJson("{\"personident\":\"3628714324\"}"))
+                .willReturn(aResponse()
+                        .withStatus(422)
+                        .withBody(jsonResonse))
+        );
+        var forventetResultat = RegistrerIkkeArbeidssokerDto.errorResult(response);
+        Optional<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssokerDto = client.registrerIkkeArbeidssoker(Fnr.of(fnr));
+        assertThat(registrerIkkeArbeidssokerDto).isPresent().get().isEqualTo(forventetResultat);
+    }
 
     @Test
     public void checkHealth_kaller_ping() {

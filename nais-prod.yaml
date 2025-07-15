@@ -43,7 +43,20 @@ spec:
       claims:
         extra:
           - "NAVident"
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   accessPolicy:
+    outbound:
+      rules:
+        - application: veilarbaktivitet
+          namespace: dab
+          cluster: dev-gcp
     inbound:
       rules:
         - application: tiltaksgjennomforing-api
@@ -94,6 +107,9 @@ spec:
         - application: oppgave
           namespace: aap
           cluster: prod-gcp
+        - application: postmottak-backend
+          namespace: aap
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
@@ -124,10 +140,16 @@ spec:
     - name: POAO_TILGANG_FSS_CLIENT_ID
       value: f737ff0f-c86a-4a84-8d52-221410234160
     - name: AAP_OPPGAVE_CLIENT_ID
-      value: 3b6b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b #TODO: bytt til riktig client_id
+      value: 2d076bcc-3b6a-4bc7-878e-791aed30433c
+    - name: AAP_POSTMOTTAK_CLIENT_ID
+      value: 7f9044f1-fa3a-4356-9062-05035400fd6a
     - name: POAO_TILGANG_URL
       value: http://poao-tilgang.poao.svc.nais.local
     - name: POAO_TILGANG_SCOPE
       value: api://prod-fss.poao.poao-tilgang/.default
+    - name: VEILARBAKTIVITET_URL
+      value: https://veilarbaktivitet.intern.nav.no
+    - name: VEILARBAKTIVITET_SCOPE
+      value: api://prod-gcp.dab.veilarbaktivitet/.default
     - name: AMT_PERSON_SERVICE_CLIENT_ID
       value: 71948d71-65be-4335-974f-987e95fc99e5

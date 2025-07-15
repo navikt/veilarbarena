@@ -3,9 +3,7 @@ package no.nav.veilarbarena.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
-import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.*;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
@@ -87,6 +85,10 @@ public class ArenaService {
         return oppfolgingsbrukerRepository.hentOppfolgingsbrukerSinPersonId(fnr.get());
     }
 
+    public void refreshMaterializedOppfolgingsBrukerView() {
+        oppfolgingsbrukerRepository.refreshMaterializedOppfolgingsBrukerView();
+    }
+
     public Optional<ArenaOppfolgingsstatusDTO> hentArenaOppfolgingsstatus(Fnr fnr) {
         return arenaOrdsClient.hentArenaOppfolgingsstatus(fnr);
     }
@@ -97,6 +99,10 @@ public class ArenaService {
 
     public Optional<ArenaAktiviteterDTO> hentArenaAktiviteter(Fnr fnr) {
         return arenaOrdsClient.hentArenaAktiviteter(fnr);
+    }
+
+    public Optional<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(Fnr fnr) {
+        return arenaOrdsClient.registrerIkkeArbeidssoker(fnr);
     }
 
 }

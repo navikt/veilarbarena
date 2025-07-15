@@ -6,11 +6,11 @@ import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.types.identer.Fnr;
-import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
-import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.*;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.util.Optional;
@@ -69,8 +69,36 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
         }
     }
 
+    @Override
     @SneakyThrows
-    private Optional<String> get(String path, Fnr fnr) {
+    public Optional<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(Fnr fnr) {
+        String json = "{\"personident\":\"" + fnr.get() + "\"}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        String url = joinPaths(arenaOrdsUrl, "arena/api/v2/person/oppfoelging/registrer");
+        Request request = new Request.Builder()
+                .url(url)
+                .header(AUTHORIZATION, RestUtils.createBearerToken(arenaOrdsTokenProvider.get()))
+                .post(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            /*
+            422-status-response fra REST-tjeneste:
+{ "resultat":"Fødselsnummer 22*******38 finnes ikke i Folkeregisteret" }
+{ "resultat":"Eksisterende bruker er ikke oppdatert da bruker kan reaktiveres forenklet som arbeidssøker" }
+            */
+            if (response.code() == 422) {
+                return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class)
+                        .map(a -> RegistrerIkkeArbeidssokerDto.errorResult(a.getResultat()));
+            }
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.parseJsonResponse(response, RegistrerIkkeArbeidssokerResponse.class)
+                    .map(a -> RegistrerIkkeArbeidssokerDto.okResult(a.getResultat()));
+        }
+    }
+
+    @SneakyThrows
+    private Optional<String> get (String path, Fnr fnr){
         Request request = new Request.Builder()
                 .url(path)
                 .header("fnr", fnr.get())
@@ -82,5 +110,4 @@ public class ArenaOrdsClientImpl implements ArenaOrdsClient {
             return RestUtils.getBodyStr(response);
         }
     }
-
 }
