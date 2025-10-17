@@ -130,7 +130,7 @@ spec:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: pto.endring-paa-oppfolgingsbruker-v2
     - name: AMT_TILTAK_CLIENT_ID
-      value: dd1086a6-9b1d-4d7e-914e-3d868fb068a7
+      value: fd770a2d-6bbb-4892-88e1-5fc1d853b21f
     - name: VEILARBREGISTRERING_CLIENT_ID
       value: be687d07-407c-43d5-941c-c2dd9939fc00
     - name: VEILARBREGISTRERING_CLIENT_ID_GCP
