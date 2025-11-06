@@ -130,7 +130,7 @@ public class ArenaV2Controller {
         UKJENT_FEIL
          */
         return switch (registrert.getKode()) {
-            case OK_REGISTRERT_I_ARENA -> {
+            case OK_REGISTRERT_I_ARENA, BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS -> {
                     try {
                         arenaService.refreshMaterializedOppfolgingsBrukerView();
                         log.info("Refeshet materialized view for oppfolgingsbruker");
@@ -144,8 +144,6 @@ public class ArenaV2Controller {
                     }
                     yield new ResponseEntity<>(registrert, HttpStatus.OK);
             }
-            case BRUKER_ALLEREDE_ARBS, BRUKER_ALLEREDE_IARBS ->
-                    new ResponseEntity<>(registrert, HttpStatus.OK);
             case UKJENT_FEIL, FNR_FINNES_IKKE, KAN_REAKTIVERES_FORENKLET -> {
                 log.warn("Kunne ikke registrere bruker i arena: {}", registrert.getResultat());
                 yield new ResponseEntity<>(registrert, HttpStatus.UNPROCESSABLE_ENTITY);
