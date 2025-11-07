@@ -16,6 +16,7 @@ import static no.nav.common.auth.Constants.*;
 import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfigs;
 import static no.nav.common.utils.EnvironmentUtils.isDevelopment;
 import static no.nav.common.utils.EnvironmentUtils.requireApplicationName;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.veilarbarena.controller.AdminController.PTO_ADMIN_SERVICE_USER;
 
 @Configuration
@@ -27,7 +28,7 @@ public class FilterConfig {
 
     private OidcAuthenticatorConfig naisStsAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(properties.getNaisStsDiscoveryUrl())
+                .withDiscoveryUrl(joinPaths(properties.getNaisStsDiscoveryUrl(),"/rest/v1/sts/well-known/openid-configuration"))
                 .withClientIds(ALLOWED_SERVICE_USERS)
                 .withUserRole(UserRole.SYSTEM);
     }
