@@ -110,6 +110,9 @@ spec:
         - application: postmottak-backend
           namespace: aap
           cluster: prod-gcp
+        - application: ao-oppfolgingskontor
+          namespace: dab
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
