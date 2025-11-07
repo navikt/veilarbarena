@@ -43,7 +43,8 @@ import java.util.UUID;
 
 import static no.nav.common.kafka.util.KafkaPropertiesPreset.aivenByteProducerProperties;
 import static no.nav.common.utils.NaisUtils.getCredentials;
-import static no.nav.common.utils.UrlUtils.*;
+import static no.nav.common.utils.UrlUtils.createDevInternalIngressUrl;
+import static no.nav.common.utils.UrlUtils.createProdInternalIngressUrl;
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
 
@@ -112,7 +113,7 @@ public class ApplicationConfig {
     @Bean
     public static StsConfig stsConfig(EnvironmentProperties properties, Credentials serviceUserCredentials) {
         return StsConfig.builder()
-                .url(joinPaths(properties.getSoapStsUrl(),"/SecurityTokenServiceProvider/"))
+                .url(properties.getSoapStsUrl())
                 .username(serviceUserCredentials.username)
                 .password(serviceUserCredentials.password)
                 .build();
@@ -120,10 +121,7 @@ public class ApplicationConfig {
 
     @Bean
     public YtelseskontraktClient ytelseskontraktClient(EnvironmentProperties properties, StsConfig stsConfig) {
-        return new YtelseskontraktClientImpl(
-                joinPaths(properties.getYtelseskontraktV3Endpoint(), "/ail_ws/Ytelseskontrakt_v3"),
-                stsConfig
-        );
+        return new YtelseskontraktClientImpl(properties.getYtelseskontraktV3Endpoint(), stsConfig);
     }
 
     @Bean

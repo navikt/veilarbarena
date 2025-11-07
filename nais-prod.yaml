@@ -156,8 +156,8 @@ spec:
     - name: AMT_PERSON_SERVICE_CLIENT_ID
       value: 71948d71-65be-4335-974f-987e95fc99e5
     - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
-      value: https://security-token-service.nais.adeo.no
+      value: https://security-token-service.nais.adeo.no/rest/v1/sts/well-known/openid-configuration
     - name: SECURITYTOKENSERVICE_URL
-      value: https://sts.adeo.no
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL
-      value: https://arena.adeo.no
+      value: https://arena.adeo.no/ail_ws/Ytelseskontrakt_v3
