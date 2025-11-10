@@ -10,6 +10,8 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.YtelseskontraktV3;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Periode;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontraktListeRequest;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontraktListeResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +24,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class YtelseskontraktClientImpl implements YtelseskontraktClient {
 
     private final YtelseskontraktV3 ytelseskontrakt;
+    public static Logger secureLog = LoggerFactory.getLogger("SecureLog");
 
     public YtelseskontraktClientImpl(String ytelseskontraktV3Endpoint, StsConfig stsConfig) {
         ytelseskontrakt = new CXFClient<>(YtelseskontraktV3.class)
@@ -61,7 +64,7 @@ public class YtelseskontraktClientImpl implements YtelseskontraktClient {
             HentYtelseskontraktListeResponse response = ytelseskontrakt.hentYtelseskontraktListe(request);
             return YtelseskontraktMapper.tilYtelseskontrakt(response);
         } catch (HentYtelseskontraktListeSikkerhetsbegrensning hentYtelseskontraktListeSikkerhetsbegrensning) {
-            log.error("Systembruker har ikke tilgang til å søke opp bruker", hentYtelseskontraktListeSikkerhetsbegrensning);
+            secureLog.error("Systembruker har ikke tilgang til å søke opp bruker: {} ", request.getPersonidentifikator(), hentYtelseskontraktListeSikkerhetsbegrensning);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
