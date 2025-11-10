@@ -125,7 +125,6 @@ spec:
       - kvPath: /kv/prod/fss/veilarbarena/default
         mountPath: /var/run/secrets/nais.io/vault
   envFrom:
-    - configmap: pto-config
     - configmap: loginservice-idporten
   env:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
@@ -156,3 +155,9 @@ spec:
       value: api://prod-gcp.dab.veilarbaktivitet/.default
     - name: AMT_PERSON_SERVICE_CLIENT_ID
       value: 71948d71-65be-4335-974f-987e95fc99e5
+    - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
+      value: https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration
+    - name: SECURITYTOKENSERVICE_URL
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
+    - name: VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL
+      value: https://arena.adeo.no/ail_ws/Ytelseskontrakt_v3

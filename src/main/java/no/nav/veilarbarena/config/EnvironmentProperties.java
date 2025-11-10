@@ -21,6 +21,7 @@ public class EnvironmentProperties {
     private String amtPersonServiceClientId;
 
     private String poaoTilgangFSSClientId;
+
     private String poaoTilgangGCPClientId;
 
     private String tiltaksgjennomforingApiClientId;
@@ -34,8 +35,6 @@ public class EnvironmentProperties {
     private String aapPostmottakClientId;
 
     private String naisStsDiscoveryUrl;
-
-    private String kafkaBrokersUrl;
 
     private String soapStsUrl;
 
