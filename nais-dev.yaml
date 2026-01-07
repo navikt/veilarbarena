@@ -126,8 +126,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /kv/preprod/fss/veilarbarena/q1 # Feil i navn, vi bruker (nesten) q2 nå
         mountPath: /var/run/secrets/nais.io/vault
-  envFrom:
-    - configmap: loginservice-idporten
   env:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: pto.endring-paa-oppfolgingsbruker-v2
