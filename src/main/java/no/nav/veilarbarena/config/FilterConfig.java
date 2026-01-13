@@ -32,14 +32,6 @@ public class FilterConfig {
                 .withUserRole(UserRole.SYSTEM);
     }
 
-    private OidcAuthenticatorConfig loginserviceIdportenConfig(EnvironmentProperties environmentProperties) {
-        return new OidcAuthenticatorConfig()
-                .withDiscoveryUrl(environmentProperties.getLoginserviceIdportenDiscoveryUrl())
-                .withClientId(environmentProperties.getLoginserviceIdportenAudience())
-                .withIdTokenCookieName(AZURE_AD_B2C_ID_TOKEN_COOKIE_NAME)
-                .withUserRole(UserRole.EKSTERN);
-    }
-
     private OidcAuthenticatorConfig naisAzureAdConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getNaisAadDiscoveryUrl())
@@ -61,7 +53,6 @@ public class FilterConfig {
         FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
         OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
                 fromConfigs(
-                        loginserviceIdportenConfig(properties),
                         naisStsAuthConfig(properties),
                         naisAzureAdConfig(properties)
                 )

@@ -124,8 +124,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/oracle_creds
       - kvPath: /kv/prod/fss/veilarbarena/default
         mountPath: /var/run/secrets/nais.io/vault
-  envFrom:
-    - configmap: loginservice-idporten
   env:
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: pto.endring-paa-oppfolgingsbruker-v2
