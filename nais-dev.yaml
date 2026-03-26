@@ -115,6 +115,9 @@ spec:
         - application: ao-oppfolgingskontor
           namespace: dab
           cluster: dev-gcp
+        - application: poao-admin
+          namespace: poao
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
