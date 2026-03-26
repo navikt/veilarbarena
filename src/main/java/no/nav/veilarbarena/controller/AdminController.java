@@ -2,8 +2,8 @@ package no.nav.veilarbarena.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.common.auth.context.AuthContextHolder;
-import no.nav.common.auth.context.UserRole;
 import no.nav.common.job.JobRunner;
+import no.nav.common.utils.EnvironmentUtils;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,8 @@ import java.time.LocalDate;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    public final static String PTO_ADMIN_SERVICE_USER = "srvpto-admin";
+    private static final String POAO_ADMIN = String.format("%s-gcp:poao:poao-admin",
+            EnvironmentUtils.isProduction().orElse(false) ? "prod" : "dev");
 
     private final AuthContextHolder authContextHolder;
 
@@ -61,15 +62,17 @@ public class AdminController {
     }
 
     private void sjekkTilgangTilAdmin() {
-        String subject = authContextHolder.getSubject()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        boolean erInternBruker = authContextHolder.erInternBruker();
+        String azpName = authContextHolder.getIdTokenClaims()
+                .map(claims -> {
+                    try { return claims.getStringClaim("azp_name"); }
+                    catch (Exception e) { return null; }
+                })
+                .orElse("");
 
-        UserRole role = authContextHolder.getRole()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        if (erInternBruker && POAO_ADMIN.equals(azpName)) return;
 
-        if (!PTO_ADMIN_SERVICE_USER.equals(subject) || !role.equals(UserRole.SYSTEM)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
 }
