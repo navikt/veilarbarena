@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -37,7 +38,9 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.empty());
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"123\"}"))
                 .andExpect(status().is(401));
     }
 
@@ -46,7 +49,9 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"123\"}"))
                 .andExpect(status().is(401));
     }
 
@@ -55,7 +60,9 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvmyapp"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"123\"}"))
                 .andExpect(status().is(403));
     }
 
@@ -64,7 +71,9 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.EKSTERN));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"123\"}"))
                 .andExpect(status().is(403));
     }
 
@@ -73,7 +82,9 @@ public class AdminControllerTest {
         when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
         when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
 
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker?fnr=123"))
+        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fnr\":\"123\"}"))
                 .andExpect(status().is(200))
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
