@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,11 +50,13 @@ public class AdminController {
         );
     }
 
+    record RepubliserRequest(String fnr) {}
+
     @PostMapping("/republiser/endring-pa-bruker")
-    public String republiserTilstand(@RequestParam String fnr) {
+    public String republiserTilstand(@RequestBody RepubliserRequest request) {
         sjekkTilgangTilAdmin();
         return JobRunner.runAsync("legg-bruker-pa-v2-topic",
-                () -> oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now()))
+                () -> oppdaterteBrukereRepository.insertOppdatering(request.fnr(), Date.valueOf(LocalDate.now()))
         );
     }
 
