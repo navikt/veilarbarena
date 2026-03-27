@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AdminController.class)
-public class AdminControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,18 +42,18 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_403_if_not_intern_bruker() throws Exception {
+    void republiserEndringPaBruker__should_return_403_if_not_intern_bruker() throws Exception {
         when(authContextHolder.erInternBruker()).thenReturn(false);
         when(authContextHolder.getIdTokenClaims()).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(403));
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_403_if_not_poao_admin() throws Exception {
+    void republiserEndringPaBruker__should_return_403_if_not_poao_admin() throws Exception {
         when(authContextHolder.erInternBruker()).thenReturn(true);
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .claim("azp_name", "dev-gcp:poao:some-other-app")
@@ -62,17 +62,17 @@ public class AdminControllerTest {
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(403));
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_job_id_and_republish() throws Exception {
+    void republiserEndringPaBruker__should_return_job_id_and_republish() throws Exception {
         mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(200))
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
@@ -82,7 +82,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_job_id_and_republish_all() throws Exception {
+    void republiserEndringPaBruker__should_return_job_id_and_republish_all() throws Exception {
         mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/all"))
@@ -95,7 +95,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void republiserTilstandFraDato__returnerer_job_id_og_insert_brukere_for_republisering_med_fra_dato() throws Exception {
+    void republiserTilstandFraDato__returnerer_job_id_og_insert_brukere_for_republisering_med_fra_dato() throws Exception {
         mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/fra-dato?fraDato=2021-10-17"))

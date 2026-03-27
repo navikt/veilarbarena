@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,13 +52,15 @@ public class AdminController {
         );
     }
 
-    record RepubliserRequest(String fnr) {}
+    record RepubliserRequest(List<String> fnrs) {}
 
     @PostMapping("/republiser/endring-pa-bruker")
     public String republiserTilstand(@RequestBody RepubliserRequest request) {
         sjekkTilgangTilAdmin();
         return JobRunner.runAsync("legg-bruker-pa-v2-topic",
-                () -> oppdaterteBrukereRepository.insertOppdatering(request.fnr(), Date.valueOf(LocalDate.now()))
+                () -> request.fnrs().forEach(fnr ->
+                        oppdaterteBrukereRepository.insertOppdatering(fnr, Date.valueOf(LocalDate.now()))
+                )
         );
     }
 
