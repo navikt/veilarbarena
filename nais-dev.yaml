@@ -66,19 +66,10 @@ spec:
           cluster: dev-fss
         - application: veilarbregistrering
           namespace: paw
-          cluster: dev-fss
-        - application: veilarbregistrering
-          namespace: paw
           cluster: dev-gcp
-        - application: veilarboppfolging
-          namespace: pto
-          cluster: dev-fss
         - application: veilarboppfolging
           namespace: poao
           cluster: dev-gcp
-        - application: veilarbaktivitet
-          namespace: pto
-          cluster: dev-fss
         - application: veilarbvedtaksstotte
           namespace: obo
           cluster: dev-gcp
@@ -94,9 +85,6 @@ spec:
         - application: azure-token-generator
           namespace: nais
           cluster: dev-gcp
-        - application: veilarbportefolje
-          namespace: pto
-          cluster: dev-fss
         - application: veilarbportefolje
           namespace: obo
           cluster: dev-gcp

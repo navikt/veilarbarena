@@ -64,22 +64,10 @@ spec:
           cluster: prod-fss
         - application: veilarbregistrering
           namespace: paw
-          cluster: prod-fss
-        - application: veilarbregistrering
-          namespace: paw
           cluster: prod-gcp
-        - application: veilarboppfolging
-          namespace: pto
-          cluster: prod-fss
         - application: veilarboppfolging
           namespace: poao
           cluster: prod-gcp
-        - application: veilarbaktivitet
-          namespace: pto
-          cluster: prod-fss
-        - application: veilarbvedtaksstotte
-          namespace: pto
-          cluster: prod-fss
         - application: veilarbvedtaksstotte
           namespace: obo
           cluster: prod-gcp
@@ -92,9 +80,6 @@ spec:
         - application: amt-person-service
           namespace: amt
           cluster: prod-gcp
-        - application: veilarbportefolje
-          namespace: pto
-          cluster: prod-fss
         - application: veilarbportefolje
           namespace: obo
           cluster: prod-gcp

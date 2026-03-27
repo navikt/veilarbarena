@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.controller;
 
+import com.nimbusds.jwt.JWTClaimsSet;
 import no.nav.common.auth.context.AuthContextHolder;
-import no.nav.common.auth.context.UserRole;
 import no.nav.veilarbarena.repository.OppdaterteBrukereRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AdminController.class)
-public class AdminControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,58 +33,46 @@ public class AdminControllerTest {
     @MockBean
     private OppdaterteBrukereRepository oppdaterteBrukereRepository;
 
-    @Test
-    public void republiserEndringPaBruker__should_return_401_if_user_missing() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.empty());
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
-
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
-                .andExpect(status().is(401));
+    private void mockPoaoAdminAuth() {
+        when(authContextHolder.erInternBruker()).thenReturn(true);
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .claim("azp_name", "dev-gcp:poao:poao-admin")
+                .build();
+        when(authContextHolder.getIdTokenClaims()).thenReturn(Optional.of(claims));
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_401_if_role_missing() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.empty());
+    void republiserEndringPaBruker__should_return_403_if_not_intern_bruker() throws Exception {
+        when(authContextHolder.erInternBruker()).thenReturn(false);
+        when(authContextHolder.getIdTokenClaims()).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
-                .andExpect(status().is(401));
-    }
-
-    @Test
-    public void republiserEndringPaBruker__should_return_403_if_not_pto_admin() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvmyapp"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
-
-        mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(403));
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_403_if_not_system_user() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.EKSTERN));
+    void republiserEndringPaBruker__should_return_403_if_not_poao_admin() throws Exception {
+        when(authContextHolder.erInternBruker()).thenReturn(true);
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .claim("azp_name", "dev-gcp:poao:some-other-app")
+                .build();
+        when(authContextHolder.getIdTokenClaims()).thenReturn(Optional.of(claims));
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(403));
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_job_id_and_republish() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
+    void republiserEndringPaBruker__should_return_job_id_and_republish() throws Exception {
+        mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"fnr\":\"123\"}"))
+                        .content("{\"fnrs\":[\"123\"]}"))
                 .andExpect(status().is(200))
                 .andExpect(content().string(matchesPattern("^([a-f0-9]+)$")));
 
@@ -94,9 +82,8 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void republiserEndringPaBruker__should_return_job_id_and_republish_all() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
+    void republiserEndringPaBruker__should_return_job_id_and_republish_all() throws Exception {
+        mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/all"))
                 .andExpect(status().is(200))
@@ -108,9 +95,8 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void republiserTilstandFraDato__returnerer_job_id_og_insert_brukere_for_republisering_med_fra_dato() throws Exception {
-        when(authContextHolder.getSubject()).thenReturn(Optional.of("srvpto-admin"));
-        when(authContextHolder.getRole()).thenReturn(Optional.of(UserRole.SYSTEM));
+    void republiserTilstandFraDato__returnerer_job_id_og_insert_brukere_for_republisering_med_fra_dato() throws Exception {
+        mockPoaoAdminAuth();
 
         mockMvc.perform(post("/api/admin/republiser/endring-pa-bruker/fra-dato?fraDato=2021-10-17"))
                 .andExpect(status().is(200))
