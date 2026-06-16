@@ -1,9 +1,10 @@
 package no.nav.veilarbarena.config;
 
 import no.nav.veilarbarena.utils.ImportVaultEnvFiles;
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 
 public class ImportVaultEnvFilesRunListener implements SpringApplicationRunListener {
 
@@ -12,7 +13,7 @@ public class ImportVaultEnvFilesRunListener implements SpringApplicationRunListe
     }
 
     @Override
-    public void starting(ConfigurableBootstrapContext bootstrapContext) {
+    public void starting(@NotNull ConfigurableBootstrapContext bootstrapContext) {
         ImportVaultEnvFiles.main(new String[]{});
     }
 
