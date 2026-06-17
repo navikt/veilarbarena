@@ -1,7 +1,7 @@
 package no.nav.veilarbarena.client.unleash;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
@@ -50,7 +50,7 @@ public class VeilarbaktivitetUnleashClientImpl implements VeilarbaktivitetUnleas
                         try {
                             Map<String, Boolean> map = JsonUtils.getMapper().readValue(stringBody, typeRef);
                             return Optional.ofNullable(map.get(FEATURE_TOGGLE_NAME));
-                        } catch (JsonProcessingException e) {
+                        } catch (JacksonException e) {
                             throw new RuntimeException(e);
                         }
                     });

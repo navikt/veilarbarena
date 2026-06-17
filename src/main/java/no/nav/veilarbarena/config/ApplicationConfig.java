@@ -18,6 +18,7 @@ import no.nav.common.token_client.client.AzureAdMachineToMachineTokenClient;
 import no.nav.common.utils.Credentials;
 import no.nav.common.utils.EnvironmentUtils;
 import no.nav.common.rest.client.RestClient;
+import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse;
 import no.nav.poao_tilgang.client.AdGruppe;
 import no.nav.poao_tilgang.client.Decision;
 import no.nav.poao_tilgang.client.PoaoTilgangCachedClient;
@@ -64,6 +65,9 @@ public class ApplicationConfig {
 	private final Cache<String, Boolean> norskIdentToErSkjermetCache = Caffeine.newBuilder()
 			.expireAfterWrite(Duration.ofMinutes(30))
 			.build();
+    private final Cache<String, TilgangsattributterResponse> tilgangsAttributterCache = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(30))
+            .build();
 
     @Bean
     public Credentials serviceUserCredentials() {
@@ -148,7 +152,8 @@ public class ApplicationConfig {
 			),
 			policyInputToDecisionCache,
 			navAnsattIdToAzureAdGrupperCache,
-			norskIdentToErSkjermetCache
+			norskIdentToErSkjermetCache,
+            tilgangsAttributterCache
 		);
 	}
 

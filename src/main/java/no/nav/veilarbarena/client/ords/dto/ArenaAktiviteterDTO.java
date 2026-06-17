@@ -1,12 +1,12 @@
 package no.nav.veilarbarena.client.ords.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import no.nav.veilarbarena.utils.XmlUtils;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @Data
 public class ArenaAktiviteterDTO {
