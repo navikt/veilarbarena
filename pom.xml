@@ -20,7 +20,7 @@
     <properties>
         <java.version>21</java.version>
         <testcontainers.version>2.0.5</testcontainers.version>
-        <common.version>4.2026.06.09_07.11-eccd6d131c44</common.version>
+        <common.version>4.2026.06.17_05.49-50af4f38147e</common.version>
         <poao-tilgang.version>4.2026.06.16_06.29-0135da432633</poao-tilgang.version>
         <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
         <cxf-codegen.version>4.2.2</cxf-codegen.version>
