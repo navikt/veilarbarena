@@ -22,7 +22,7 @@
         <testcontainers.version>2.0.5</testcontainers.version>
         <common.version>4.2026.06.25_10.50-baa9d54e3cd8</common.version>
         <poao-tilgang.version>4.2026.06.25_08.04-196859226c7c</poao-tilgang.version>
-        <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
+        <tjenestespesifikasjoner.version>1.2021.02.22-10.45-4201aaea72fb</tjenestespesifikasjoner.version>
         <cxf-codegen.version>4.2.2</cxf-codegen.version>
         <okhttp.version>5.4.0</okhttp.version>
     </properties>
