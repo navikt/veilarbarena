@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        OppfolgingsstatusController.class,
         InternalController.class,
         ArenaController.class,
         ArenaV2Controller.class,
