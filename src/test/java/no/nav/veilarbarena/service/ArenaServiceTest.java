@@ -1,16 +1,14 @@
 package no.nav.veilarbarena.service;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
-import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
 import no.nav.veilarbarena.repository.OppfolgingsbrukerRepository;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 import no.nav.veilarbarena.utils.DtoMapper;
 import org.junit.Test;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,9 +20,7 @@ public class ArenaServiceTest {
 
     private final OppfolgingsbrukerRepository oppfolgingsbrukerRepository = mock(OppfolgingsbrukerRepository.class);
 
-    private final YtelseskontraktClient ytelseskontraktClient = mock(YtelseskontraktClient.class);
-
-    private final ArenaService arenaService = new ArenaService(arenaOrdsClient, oppfolgingsbrukerRepository, ytelseskontraktClient);
+    private final ArenaService arenaService = new ArenaService(arenaOrdsClient, oppfolgingsbrukerRepository);
 
     @Test
     public void hentArenaStatus__skal_returnere_status_fra_database_hvis_funnet() {

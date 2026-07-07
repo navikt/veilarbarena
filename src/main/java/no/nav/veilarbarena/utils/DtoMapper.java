@@ -1,52 +1,21 @@
 package no.nav.veilarbarena.utils;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.pto_schema.enums.arena.*;
 import no.nav.pto_schema.kafka.json.topic.onprem.EndringPaaOppfoelgingsBrukerV2;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
 import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
-import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.controller.response.OppfolgingsstatusDTO;
-import no.nav.veilarbarena.controller.response.YtelserDTO;
 import no.nav.veilarbarena.repository.entity.OppfolgingsbrukerEntity;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.Optional.ofNullable;
-import static no.nav.veilarbarena.utils.DateUtils.convertToLocalDate;
 import static no.nav.veilarbarena.utils.EnumUtils.safeValueOf;
 
 public class DtoMapper {
-
-    public static YtelserDTO mapTilYtelserDTO(YtelseskontraktResponse ytelseskontraktResponse) {
-        List<YtelserDTO.Vedtak> vedtakListe = ytelseskontraktResponse.getVedtaksliste()
-                .stream()
-                .map(vedtak -> new YtelserDTO.Vedtak()
-                        .setType(vedtak.getVedtakstype())
-                        .setStatus(vedtak.getStatus())
-                        .setAktivitetsfase(vedtak.getAktivitetsfase())
-                        .setRettighetsgruppe(vedtak.getRettighetsgruppe())
-                        .setFraDato(convertToLocalDate(vedtak.getFraDato()))
-                        .setTilDato(convertToLocalDate(vedtak.getTilDato())))
-                .collect(Collectors.toList());
-
-        List<YtelserDTO.Ytelseskontrakt> ytelseskontraktListe = ytelseskontraktResponse.getYtelser()
-                .stream()
-                .map(ytelse -> new YtelserDTO.Ytelseskontrakt()
-                        .setType(ytelse.getYtelsestype())
-                        .setStatus(ytelse.getStatus())
-                        .setMotattDato(convertToLocalDate(ytelse.getMotattDato()))
-                        .setFraDato(convertToLocalDate(ytelse.getFraDato()))
-                        .setTilDato(convertToLocalDate(ytelse.getTilDato())))
-                .collect(Collectors.toList());
-
-        return new YtelserDTO(vedtakListe, ytelseskontraktListe);
-    }
 
     public static OppfolgingsstatusDTO mapTilOppfolgingsstatusDTO(ArenaOppfolgingsstatusDTO statusDto) {
         OppfolgingsstatusDTO dto = new OppfolgingsstatusDTO();
