@@ -32,10 +32,6 @@ public class EnvironmentProperties {
 
     private String naisStsDiscoveryUrl;
 
-    private String soapStsUrl;
-
-    private String ytelseskontraktV3Endpoint;
-
 	private String poaoTilgangUrl;
 
 	private String poaoTilgangScope;

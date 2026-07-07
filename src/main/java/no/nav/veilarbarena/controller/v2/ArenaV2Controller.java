@@ -1,27 +1,25 @@
 package no.nav.veilarbarena.controller.v2;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
 import no.nav.veilarbarena.client.ords.dto.PersonRequest;
 import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
 import no.nav.veilarbarena.config.EnvironmentProperties;
-import no.nav.veilarbarena.controller.response.*;
+import no.nav.veilarbarena.controller.response.AktiviteterDTO;
+import no.nav.veilarbarena.controller.response.ArenaStatusDTO;
+import no.nav.veilarbarena.controller.response.KanEnkeltReaktiveresDTO;
+import no.nav.veilarbarena.controller.response.OppfolgingssakDTO;
 import no.nav.veilarbarena.service.ArenaService;
 import no.nav.veilarbarena.service.AuthService;
 import no.nav.veilarbarena.service.PubliserOppfolgingsbrukerService;
 import no.nav.veilarbarena.utils.DtoMapper;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,8 +27,6 @@ import static no.nav.veilarbarena.utils.DtoMapper.mapTilYtelserDTO;
 @Slf4j
 public class ArenaV2Controller {
 
-    private static final int MANEDER_BAK_I_TID = 2;
-    private static final int MANEDER_FREM_I_TID = 1;
     private final AuthService authService;
     private final ArenaService arenaService;
     private final EnvironmentProperties environmentProperties;
@@ -78,27 +74,6 @@ public class ArenaV2Controller {
         return arenaService.hentArenaOppfolginssak(personRequest.getFnr())
                 .map(DtoMapper::mapTilOppfolgingssakDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    @PostMapping("/hent-ytelser")
-    public YtelserDTO hentYtelserV2(
-            @RequestBody PersonRequest personRequest,
-            @RequestParam(value = "fra", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fra,
-            @RequestParam(value = "til", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate til
-    ) {
-        authService.sjekkTilgang(personRequest.getFnr());
-
-        if (fra != null ^ til != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Både \"fra\" og \"til\" må settes eller ingen av de");
-        } else if (fra == null) {
-            // Hvis "fra" == null så vil alltid "til" være null
-            fra = LocalDate.now().minusMonths(MANEDER_BAK_I_TID);
-            til = LocalDate.now().plusMonths(MANEDER_FREM_I_TID);
-        }
-
-        var ytelseskontrakt = arenaService.hentYtelseskontrakt(personRequest.getFnr(), fra, til);
-
-        return mapTilYtelserDTO(ytelseskontrakt);
     }
 
     @PostMapping("/hent-aktiviteter")

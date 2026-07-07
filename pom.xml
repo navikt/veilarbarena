@@ -21,9 +21,7 @@
         <java.version>21</java.version>
         <testcontainers.version>2.0.5</testcontainers.version>
         <common.version>4.2026.06.25_10.50-baa9d54e3cd8</common.version>
-        <poao-tilgang.version>4.2026.06.25_08.04-196859226c7c</poao-tilgang.version>
-        <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
-        <cxf-codegen.version>4.2.2</cxf-codegen.version>
+        <poao-tilgang.version>4.2026.06.26_13.31-ba260c104ee7</poao-tilgang.version>
         <okhttp.version>5.4.0</okhttp.version>
     </properties>
 
@@ -45,76 +43,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>resource-dependencies</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                                    <artifactId>ytelseskontrakt-v3-tjenestespesifikasjon</artifactId>
-                                    <version>${tjenestespesifikasjoner.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>
-                                wsdl/**
-                            </includes>
-                            <outputDirectory>${project.build.outputDirectory}/classes</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-codegen-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>wsdl-to-java-ytelseskontrakt</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlOptions>
-                                <wsdlOption>
-                                    <wsdl>${project.build.outputDirectory}/wsdl/tjenestespesifikasjon/no/nav/tjeneste/virksomhet/ytelseskontrakt/v3/Binding.wsdl</wsdl>
-                                </wsdlOption>
-                            </wsdlOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
         <finalName>veilarbarena</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-codegen-plugin</artifactId>
-                    <version>${cxf-codegen.version}</version>
-                    <executions>
-                        <execution>
-                            <id>wsdl-to-java</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>wsdl2java</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
     <dependencies>
@@ -196,11 +126,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
-            <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
             <version>${common.version}</version>
         </dependency>
@@ -222,11 +147,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
-            <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>sts</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>
