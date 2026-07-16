@@ -9,7 +9,6 @@ spec:
   image: {{image}}
   ingresses:
     - https://veilarbarena.prod-fss-pub.nais.io
-    - https://veilarbarena.nais.adeo.no
     - https://veilarbarena.intern.nav.no
   port: 8080
   prometheus:
