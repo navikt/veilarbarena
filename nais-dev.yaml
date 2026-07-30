@@ -26,11 +26,11 @@ spec:
     cpuThresholdPercentage: 75
   resources:
     limits:
-      cpu: "2"
-      memory: 2048Mi
-    requests:
-      cpu: "1"
+      cpu: "200m"
       memory: 1024Mi
+    requests:
+      cpu: "50m"
+      memory: 480Mi
   webproxy: true
   leaderElection: true
   kafka:
