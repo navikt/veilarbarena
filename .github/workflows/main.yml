@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
         env:
           CLUSTER: dev-fss
           RESOURCE: nais-dev.yaml
@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
         env:
           CLUSTER: prod-fss
           RESOURCE: nais-prod.yaml
