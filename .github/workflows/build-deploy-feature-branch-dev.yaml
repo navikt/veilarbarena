@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           java-version: 21
           distribution: 'temurin'
@@ -33,7 +33,7 @@ jobs:
         run: mvn -B package
 
       - name: Build and push Docker image
-        uses: nais/docker-build-push@31c3a7321909bcb20799fdf46153fec721fd9512
+        uses: nais/docker-build-push@8e41f1f58749b9248e376c25d33bfbdd2b1163c0
         id: docker-build-push
         with:
           team: pto # This is not app namespace but team which is admin in github
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
         env:
           CLUSTER: dev-fss
           RESOURCE: nais-dev.yaml
