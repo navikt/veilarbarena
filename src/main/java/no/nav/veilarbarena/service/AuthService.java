@@ -73,6 +73,32 @@ public class AuthService {
         }
     }
 
+    public void sjekkTilgangKjerneregler(Fnr fnr) {
+        /* Systembrukere må være hvitelistet i nais-yaml for å komme inn hit derfor sjekker vi ikke mer */
+        if (erSystembruker() && harAADRolleForSystemTilSystemTilgang()) return;
+        if (!erSystembruker()) {
+            if (authContextHolder.erEksternBruker()) {
+                harSikkerhetsNivaa4();
+                Decision desicion = poaoTilgangClient.evaluatePolicy(new EksternBrukerTilgangTilEksternBrukerPolicyInput(
+                        hentInnloggetPersonIdent(), fnr.get()
+                )).getOrThrow();
+                if (desicion.isDeny()) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
+            } else {
+                Decision desicion = poaoTilgangClient.evaluatePolicy(new NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput(
+                        hentInnloggetVeilederUUID(), TilgangType.LESE, fnr.get()
+                )).getOrThrow();
+                if (desicion.isDeny()) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
+            }
+        } else {
+            log.warn("Har systembruker rolle men mangler rolle access_as_application in claims. Dette skal ikke skje.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
 
     public boolean erSystembruker() {
         return authContextHolder.erSystemBruker();
