@@ -29,7 +29,7 @@ public class OppfolgingsstatusV3Controller {
 
     @PostMapping("/hent-oppfolgingsstatus")
     public OppfolgingsstatusDTO hentArenaOppfolgingsstatusV3(@RequestBody PersonRequest personRequest) {
-        authService.sjekkTilgang(personRequest.getFnr());
+        authService.sjekkTilgangKjerneregler(personRequest.getFnr());
         return arenaService.hentArenaOppfolgingsstatus(personRequest.getFnr())
                 .map(DtoMapper::mapTilOppfolgingsstatusDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));

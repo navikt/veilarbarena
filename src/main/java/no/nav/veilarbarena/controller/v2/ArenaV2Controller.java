@@ -93,7 +93,7 @@ public class ArenaV2Controller {
     @PostMapping("/registrer-i-arena")
     public ResponseEntity<RegistrerIkkeArbeidssokerDto> registrerIkkeArbeidssoker(@RequestBody PersonRequest personRequest) {
 
-        authService.sjekkTilgang(personRequest.getFnr());
+        authService.sjekkTilgangKjerneregler(personRequest.getFnr());
         RegistrerIkkeArbeidssokerDto registrert = arenaService.registrerIkkeArbeidssoker(personRequest.getFnr())
                 .orElse(RegistrerIkkeArbeidssokerDto.errorResult("Bruker ikke registrert"));
         /*
