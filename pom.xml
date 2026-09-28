@@ -23,6 +23,7 @@
         <common.version>4.2026.09.01_09.49-e681e09ca089</common.version>
         <poao-tilgang.version>4.2026.09.04_09.38-a5310c220f1b</poao-tilgang.version>
         <okhttp.version>5.5.0</okhttp.version>
+        <tomcat.version>11.0.26</tomcat.version>
     </properties>
 
     <repositories>
