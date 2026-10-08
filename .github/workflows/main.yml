@@ -35,7 +35,7 @@ jobs:
         run: mvn -B package
 
       - name: Build and push Docker image
-        uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795
+        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a
         id: docker-build-push
         with:
           team: pto
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
+        uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7
         env:
           CLUSTER: dev-fss
           RESOURCE: nais-dev.yaml
@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
+        uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7
         env:
           CLUSTER: prod-fss
           RESOURCE: nais-prod.yaml
