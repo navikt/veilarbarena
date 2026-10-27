@@ -1,5 +1,7 @@
 package no.nav.veilarbarena.controller;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import no.nav.common.types.identer.Fnr;
 import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;

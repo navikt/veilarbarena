@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
@@ -20,11 +20,10 @@
     <properties>
         <java.version>21</java.version>
         <testcontainers.version>2.0.5</testcontainers.version>
-        <common.version>4.2026.06.25_10.50-baa9d54e3cd8</common.version>
-        <poao-tilgang.version>4.2026.06.25_08.04-196859226c7c</poao-tilgang.version>
-        <tjenestespesifikasjoner.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjoner.version>
-        <cxf-codegen.version>4.2.2</cxf-codegen.version>
-        <okhttp.version>5.4.0</okhttp.version>
+        <common.version>4.2026.10.19_05.55-7add0b457c1d</common.version>
+        <poao-tilgang.version>4.2026.09.04_09.38-a5310c220f1b</poao-tilgang.version>
+        <okhttp.version>5.5.0</okhttp.version>
+        <tomcat.version>11.0.26</tomcat.version>
     </properties>
 
     <repositories>
@@ -45,76 +44,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>resource-dependencies</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                                    <artifactId>ytelseskontrakt-v3-tjenestespesifikasjon</artifactId>
-                                    <version>${tjenestespesifikasjoner.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>
-                                wsdl/**
-                            </includes>
-                            <outputDirectory>${project.build.outputDirectory}/classes</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-codegen-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>wsdl-to-java-ytelseskontrakt</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlOptions>
-                                <wsdlOption>
-                                    <wsdl>${project.build.outputDirectory}/wsdl/tjenestespesifikasjon/no/nav/tjeneste/virksomhet/ytelseskontrakt/v3/Binding.wsdl</wsdl>
-                                </wsdlOption>
-                            </wsdlOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
         <finalName>veilarbarena</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-codegen-plugin</artifactId>
-                    <version>${cxf-codegen.version}</version>
-                    <executions>
-                        <execution>
-                            <id>wsdl-to-java</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>wsdl2java</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
     <dependencies>
@@ -154,7 +85,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>3.0.3</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -196,11 +127,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
-            <artifactId>cxf</artifactId>
-            <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
             <version>${common.version}</version>
         </dependency>
@@ -222,11 +148,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
-            <version>${common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>sts</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>
@@ -264,7 +185,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.46</version>
+            <version>1.18.48</version>
             <optional>true</optional>
         </dependency>
         <dependency>

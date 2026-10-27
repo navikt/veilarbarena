@@ -1,5 +1,8 @@
 package no.nav.veilarbarena.config;
 
+import java.util.Optional;
+import java.util.Properties;
+import javax.sql.DataSource;
 import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.client.aktoroppslag.AktorOppslagClient;
@@ -10,10 +13,11 @@ import no.nav.common.metrics.MetricsClient;
 import no.nav.common.types.identer.Fnr;
 import no.nav.common.utils.Credentials;
 import no.nav.veilarbarena.client.ords.ArenaOrdsClient;
-import no.nav.veilarbarena.client.ords.dto.*;
+import no.nav.veilarbarena.client.ords.dto.ArenaAktiviteterDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingssakDTO;
+import no.nav.veilarbarena.client.ords.dto.ArenaOppfolgingsstatusDTO;
+import no.nav.veilarbarena.client.ords.dto.RegistrerIkkeArbeidssokerDto;
 import no.nav.veilarbarena.client.unleash.VeilarbaktivitetUnleashClient;
-import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktClient;
-import no.nav.veilarbarena.client.ytelseskontrakt.YtelseskontraktResponse;
 import no.nav.veilarbarena.mock.MetricsClientMock;
 import no.nav.veilarbarena.utils.LocalH2Database;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
@@ -25,11 +29,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import javax.sql.DataSource;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Optional;
-import java.util.Properties;
 
 import static no.nav.veilarbarena.config.KafkaConfig.PRODUCER_CLIENT_ID;
 
@@ -134,25 +133,4 @@ public class ApplicationTestConfig {
     @Bean VeilarbaktivitetUnleashClient veilarbaktivitetUnleashClient() {
         return () -> Optional.of(false);
     }
-
-    @Bean
-    public YtelseskontraktClient ytelseskontraktClient() {
-        return new YtelseskontraktClient() {
-            @Override
-            public YtelseskontraktResponse hentYtelseskontraktListe(Fnr personId, XMLGregorianCalendar periodeFom, XMLGregorianCalendar periodeTom) {
-                return null;
-            }
-
-            @Override
-            public YtelseskontraktResponse hentYtelseskontraktListe(Fnr personId) {
-                return null;
-            }
-
-            @Override
-            public HealthCheckResult checkHealth() {
-                return HealthCheckResult.healthy();
-            }
-        };
-    }
-
 }

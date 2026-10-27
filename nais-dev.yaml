@@ -9,9 +9,6 @@ spec:
   image: {{image}}
   ingresses:
     - https://veilarbarena.dev-fss-pub.nais.io
-    - https://veilarbarena-q1.nais.preprod.local
-    - https://app-q1.adeo.no/veilarbarena
-    - https://veilarbarena.dev.intern.nav.no
     - https://veilarbarena.intern.dev.nav.no
   port: 8080
   prometheus:
@@ -29,11 +26,10 @@ spec:
     cpuThresholdPercentage: 75
   resources:
     limits:
-      cpu: "2"
-      memory: 2048Mi
-    requests:
-      cpu: "1"
       memory: 1024Mi
+    requests:
+      cpu: "50m"
+      memory: 480Mi
   webproxy: true
   leaderElection: true
   kafka:
@@ -145,7 +141,3 @@ spec:
       value: edad39b1-51a3-40f0-a3eb-b4097e9fcca6
     - name: SECURITY_TOKEN_SERVICE_DISCOVERY_URL
       value: https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration
-    - name: SECURITYTOKENSERVICE_URL
-      value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
-    - name: VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL
-      value: https://arena-q2.adeo.no/ail_ws/Ytelseskontrakt_v3
