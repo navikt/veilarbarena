@@ -33,7 +33,7 @@ jobs:
         run: mvn -B package
 
       - name: Build and push Docker image
-        uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795
+        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1
         id: docker-build-push
         with:
           team: pto # This is not app namespace but team which is admin in github
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
+        uses: nais/deploy/actions/deploy@f93637de5533a1bb573f940ceb7527a5b3b0dea0
         env:
           CLUSTER: dev-fss
           RESOURCE: nais-dev.yaml
