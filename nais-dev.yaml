@@ -111,6 +111,8 @@ spec:
       - kvPath: /kv/preprod/fss/veilarbarena/q1 # Feil i navn, vi bruker (nesten) q2 nå
         mountPath: /var/run/secrets/nais.io/vault
   env:
+    - name: JAVA_TOOL_OPTIONS
+      value: "$(JAVA_PROXY_OPTIONS)"
     - name: ENDRING_PAA_OPPFOELGINGSBRUKER_TOPIC
       value: pto.endring-paa-oppfolgingsbruker-v2
     - name: AMT_TILTAK_CLIENT_ID
