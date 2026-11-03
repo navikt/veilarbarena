@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath/>
     </parent>
 
@@ -22,7 +22,7 @@
         <testcontainers.version>2.0.5</testcontainers.version>
         <common.version>4.2026.10.19_05.55-7add0b457c1d</common.version>
         <poao-tilgang.version>4.2026.09.04_09.38-a5310c220f1b</poao-tilgang.version>
-        <okhttp.version>5.5.0</okhttp.version>
+        <okhttp.version>5.5.1</okhttp.version>
         <tomcat.version>11.0.26</tomcat.version>
     </properties>
 
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>3.1.1</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
